@@ -1,4 +1,4 @@
-{pkgs ? import (fetchTarball https://github.com/nixos/nixpkgs-channels/archive/nixos-17.03.tar.gz) {} }:
+{pkgs ? import <nixpkgs> {} }:
 let
   callPackage = pkgs.lib.callPackageWith (pkgs // pkgs.xlibs // self);
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
@@ -7,6 +7,7 @@ let
     batsim = callPackage ./batsim { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
+    evalys = callPackage ./evalys { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
     zymake = pkgs.ocamlPackages.callPackage ./zymake { };
     ocs = pkgs.ocamlPackages.callPackage ./ocs {
