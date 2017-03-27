@@ -4,7 +4,7 @@
 
 List available packages using:
 ```
-nix-env -qa -f /path/to/datamove-nix
+nix-env -qaP -f /path/to/datamove-nix
 ```
 
 Install a package using:
