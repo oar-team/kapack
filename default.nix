@@ -7,6 +7,7 @@ let
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
+    zymake = pkgs.ocamlPackages.callPackage ./zymake { };
     #ocs = pkgs.ocamlPackages.callPackage ./ocs { };
   };
 in
