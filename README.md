@@ -2,6 +2,8 @@
 
 #### Usage
 
+Clone the repository.
+
 List available packages using:
 ```
 nix-env -qaP -f /path/to/datamove-nix
