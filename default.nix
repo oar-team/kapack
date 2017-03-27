@@ -1,4 +1,4 @@
-{pkgs ? import <nixpkgs> {} }:
+{pkgs ? import (fetchTarball https://github.com/nixos/nixpkgs-channels/archive/nixos-17.03.tar.gz) {} }:
 let
   callPackage = pkgs.lib.callPackageWith (pkgs // pkgs.xlibs // self);
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
