@@ -1,6 +1,6 @@
-{ stdenv, fetchFromGitHub, python35Packages }:
+{ stdenv, fetchFromGitHub, python35Packages, interval_set}:
 
-stdenv.mkDerivation rec {
+python35Packages.buildPythonPackage rec {
   name = "evalys-git";
 
   src = fetchFromGitHub {
@@ -10,11 +10,19 @@ stdenv.mkDerivation rec {
     sha256 = "143mq2j1ykz86k9zd43nk0jsj89i506pki6m3kgknrk7d32imshh";
   };
 
+  propagatedBuildInputs = with python35Packages; [
+    interval_set
+    seaborn
+    pandas
+    pyqt5
+    matplotlib ];
+
   checkInputs = with python35Packages; [ pytest ];
 
   checkPhase = ''
     py.test tests
   '';
+  doCheck=false;
 
   meta = with stdenv.lib; {
     description = "Infrastructure Performance Evaluation Toolkit Edit";

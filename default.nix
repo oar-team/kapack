@@ -7,7 +7,8 @@ let
     batsim = callPackage ./batsim { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
-    evalys = callPackage ./evalys { };
+    interval_set = callPackage ./interval-set { };
+    evalys = callPackage ./evalys { interval_set = callPackage ./interval-set { }; };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
     zymake = pkgs.ocamlPackages.callPackage ./zymake { };
     ocs = pkgs.ocamlPackages.callPackage ./ocs {
