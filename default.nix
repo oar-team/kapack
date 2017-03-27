@@ -13,7 +13,7 @@ let
     zymake = pkgs.ocamlPackages.callPackage ./zymake { };
     ocs = pkgs.ocamlPackages.callPackage ./ocs { inherit obandit; };
     evalysEnv=pkgs.stdenv.mkDerivation {
-      name = "evalys";
+      name = "evalysEnv";
       buildInputs = [ pkgs.python3 pkgs.python35Packages.matplotlib evalys  ];
       shellHook = ''
         python3 -i -c "import evalys;import matplotlib;matplotlib.use('Qt5Agg');from matplotlib import pyplot as plt"
