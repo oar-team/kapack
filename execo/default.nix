@@ -1,22 +1,21 @@
-{ stdenv, fetchFromGitHub, python35Packages}:
+{ stdenv, fetchFromGitHub, python35Packages, pkgs}:
 
 python35Packages.buildPythonPackage rec {
-  name = "execo-git";
-
-  src = fetchFromGitHub {
-    owner = "mickours";
-    repo = "execo";
-    rev = "a0a73f286ef6f337cc0746a6d6a9df3a8d1c9b43";
-    sha256 = "0dsk1ybdhg7gx93bf0s3by6513sn0dj7i3n5sf4hwikgv78xc0hb";
+  name = "execo-2.6.1";
+  src = pkgs.fetchurl {
+    url = "https://pypi.python.org/packages/4a/b8/d801111afdbb5e32ce05ce0553e5ebb1a8174e2c00808b8efdbfa55f7d30/execo-2.6.1.tar.gz";
+    sha256 = "098142efb0a0e06f9bd72c529dfc3d805b751e91c902ecb67b8160ec69f8cecd";
   };
 
   doCheck=false;
+
+  patches = [ ./2.6.1.post0.patch ];
 
   meta = with stdenv.lib; {
     description = "Python library that allows you to finely manage unix processes on thousands of remote hosts ";
     homepage    = http://execo.gforge.inria.fr/doc/latest-stable/execo.html;
     platforms   = platforms.unix;
-
+    licence = licences.gpl3Plus;
     longDescription = ''
       Execo offers a Python API for asynchronous control of local or remote,
       standalone or parallel, unix processes. It is especially well suited
