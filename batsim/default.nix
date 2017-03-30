@@ -16,6 +16,10 @@ stdenv.mkDerivation rec {
   ];
   nativeBuildInputs= [ cmake ];
 
+  # Use debug flags to keep the assertions that make batsim more safe
+  preConfigure =
+    ''export cmakeFlags="$cmakeFlags -DCMAKE_BUILD_TYPE=Debug"'';
+
   doCheck = false; # change this to true to enable tests (experimental)
 
   checkTarget = "test";
