@@ -3,8 +3,8 @@
 python35Packages.buildPythonPackage rec {
   name = "execo-2.6.1";
   src = pkgs.fetchurl {
-    url = "https://pypi.python.org/packages/4a/b8/d801111afdbb5e32ce05ce0553e5ebb1a8174e2c00808b8efdbfa55f7d30/execo-2.6.1.tar.gz";
-    sha256 = "098142efb0a0e06f9bd72c529dfc3d805b751e91c902ecb67b8160ec69f8cecd";
+    url = "mirror://pipy/e/execo/${name}.tar.gz";
+    sha256 = "1kffz1lyqq41gfvfq0n9j4g7anw07py9slicsydnzq50n3pl5089";
   };
 
   checkPhase = ''
@@ -12,6 +12,8 @@ python35Packages.buildPythonPackage rec {
   '';
   doCheck = true;
 
+  # Use this patch to enable cwd options for Process and make the engin
+  # parameters override works
   patches = [ ./2.6.1.post0.patch ];
 
   meta = with stdenv.lib; {

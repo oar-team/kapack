@@ -2,6 +2,11 @@
 gmp, rapidjson, openssl, redox, hiredis, libev, cppzmq,
 zeromq, execo, pkgs}:
 
+let
+  checkInstall = pkgs.python35.withPackages (
+    ps: [ps.redis ps.pyyaml ps.sortedcontainers ps.pandas execo]
+  );
+in
 stdenv.mkDerivation rec {
   name = "batsim";
 
@@ -13,21 +18,18 @@ stdenv.mkDerivation rec {
 
   buildInputs = [
     simgrid_batsim boost gmp rapidjson openssl redox hiredis libev cppzmq zeromq
-  ];
+    pkgs.python35 checkInstall ];
   nativeBuildInputs= [ cmake ];
 
   # Use debug flags to keep the assertions that make batsim more safe
   preConfigure =
     ''export cmakeFlags="$cmakeFlags -DCMAKE_BUILD_TYPE=Debug"'';
 
-  doCheck = false; # change this to true to enable tests (experimental)
+  doCheck = true; # change this to true to enable tests (experimental)
 
   checkTarget = "test";
-  checkInputs = [
-    pkgs.python35 pkgs.python35Packages.redis pkgs.python35Packages.pyyaml
-    pkgs.python35Packages.sortedcontainers pkgs.python35Packages.pandas
-    execo
-  ];
+
+  tototatat = [  ];
 
   meta = with stdenv.lib; {
     description = "A batch scheduler simulator with a focus on realism that facilitates comparison.";
