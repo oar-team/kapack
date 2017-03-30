@@ -16,16 +16,14 @@ stdenv.mkDerivation rec {
   ];
   nativeBuildInputs= [ cmake ];
 
+  doCheck = false; # change this to true to enable tests (experimental)
+
+  checkTarget = "test";
   checkInputs = [
-    pkgs.python3 pkgs.python35Packages.redis pkgs.python35Packages.pyyaml
+    pkgs.python35 pkgs.python35Packages.redis pkgs.python35Packages.pyyaml
     pkgs.python35Packages.sortedcontainers pkgs.python35Packages.pandas
-    pkgs.python2 pkgs.python27Packages.redis pkgs.python27Packages.pyyaml
-    pkgs.python27Packages.sortedcontainers pkgs.python27Packages.pandas
     execo
   ];
-  checkTarget = "test";
-
-  doCheck = true;
 
   meta = with stdenv.lib; {
     description = "A batch scheduler simulator with a focus on realism that facilitates comparison.";

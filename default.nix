@@ -13,11 +13,18 @@ let
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
     zymake = pkgs.ocamlPackages.callPackage ./zymake { };
     ocs = pkgs.ocamlPackages.callPackage ./ocs { inherit obandit; };
-    evalysEnv=pkgs.stdenv.mkDerivation {
+    evalysEnv = pkgs.stdenv.mkDerivation {
       name = "evalysEnv";
       buildInputs = [ pkgs.python3 pkgs.python35Packages.matplotlib pkgs.python35Packages.ipython evalys  ];
       shellHook = ''
         ipython3 -i -c "import evalys;import matplotlib;matplotlib.use('Qt5Agg');from matplotlib import pyplot as plt"
+      '';
+    };
+    execoEnv = pkgs.stdenv.mkDerivation {
+      name = "execoEnv";
+      buildInputs = [ pkgs.python3 pkgs.python35Packages.ipython execo  ];
+      shellHook = ''
+        ipython3 -i -c "import execo"
       '';
     };
   };
