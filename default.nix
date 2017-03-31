@@ -4,6 +4,9 @@ let
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
   self = rec {
     simgrid_batsim = callPackage ./simgrid/batsim.nix { };
+    boost_gcc6 = pkgs.boost.overrideDerivation (oldAttrs: rec {
+      nativeBuildInputs = pkgs.gcc6;
+    });
     batsim = callPackage ./batsim { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
