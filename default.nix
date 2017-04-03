@@ -8,6 +8,7 @@ let
       nativeBuildInputs = pkgs.gcc6;
     });
     batsim = callPackage ./batsim { };
+    batsimTests = callPackage ./batsim/tests.nix { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
     interval_set = callPackage ./interval-set { };
