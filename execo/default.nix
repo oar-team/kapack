@@ -3,7 +3,7 @@
 python35Packages.buildPythonPackage rec {
   name = "execo-2.6.1";
   src = pkgs.fetchurl {
-    url = "mirror://pipy/e/execo/${name}.tar.gz";
+    url = "mirror://pypi/e/execo/${name}.tar.gz";
     sha256 = "1kffz1lyqq41gfvfq0n9j4g7anw07py9slicsydnzq50n3pl5089";
   };
 
@@ -14,7 +14,7 @@ python35Packages.buildPythonPackage rec {
 
   # Use this patch to enable cwd options for Process and make the engin
   # parameters override works
-  patches = [ ./2.6.1.post0.patch ];
+  patches = [ ./add_cwd_attribute_2.6.1.post0.patch ];
 
   meta = with stdenv.lib; {
     description = "Python library that allows you to finely manage unix processes on thousands of remote hosts ";
