@@ -1,4 +1,4 @@
-{pkgs ? import <nixpkgs> {} }:
+{pkgs ? import (fetchTarball https://github.com/nixos/nixpkgs-channels/archive/nixos-17.03.tar.gz) {} }:
 let
   callPackage = pkgs.lib.callPackageWith (pkgs // pkgs.xlibs // self);
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
@@ -15,9 +15,9 @@ let
     evalysEnv=pkgs.stdenv.mkDerivation {
       name = "evalysEnv";
       buildInputs = [ pkgs.python3 pkgs.python35Packages.matplotlib evalys  ];
-      #shellHook = ''
-        #python3 -i -c "import evalys;import matplotlib;matplotlib.use('Qt5Agg');from matplotlib import pyplot as plt"
-      #'';
+      shellHook = ''
+        python3 -i -c "import evalys;import matplotlib;matplotlib.use('Qt5Agg');from matplotlib import pyplot as plt"
+      '';
     };
   };
 in
