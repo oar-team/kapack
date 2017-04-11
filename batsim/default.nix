@@ -1,13 +1,14 @@
-{ stdenv, fetchgit, cmake, simgrid_batsim, boost_gcc6,
+{stdenv, fetchgit, cmake, simgrid_batsim, boost_gcc6,
 gmp, rapidjson, openssl, redox, hiredis, libev, cppzmq,
 zeromq, execo, gcc6, git, python35Packages, redis}:
 
 stdenv.mkDerivation rec {
   name = "batsim";
+  version = "unstable";
 
   src = fetchgit {
     url = "https://gitlab.inria.fr/batsim/batsim.git";
-    rev = "c077777fbdf11e4e771815fff6629b9de1c16769";
+    rev = "f4fe044055386758f3f49859eef789a2a91ec1f9";
     fetchSubmodules = true;
   };
 
