@@ -1,4 +1,5 @@
-{pkgs ? import (fetchTarball https://github.com/nixos/nixpkgs-channels/archive/nixos-unstable.tar.gz) {} }:
+#{pkgs ? import (fetchTarball https://github.com/nixos/nixpkgs-channels/archive/nixos-unstable.tar.gz) {} }:
+{pkgs ? import ../nixpkgs {} }:
 let
   callPackage = pkgs.lib.callPackageWith (pkgs // pkgs.xlibs // self);
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
@@ -37,19 +38,23 @@ let
       src = pkgs.fetchgit {
         url = "file:///home/mercierm/Projects/batsim";
         rev = "cac343d5a60111b2f21778b507c9e79aebebca3f";
-        fetchSubmodules = true;
+        fetchSubmodules = false;
       };
-      doInstallCheck = true;
+      doInstallCheck = false;
       # Add debug tools
-      propagatedNativeBuildInputs = attrs.propagatedNativeBuildInputs ++ [ pkgs.cmake pkgs.bash ];
+      # propagatedNativeBuildInputs = attrs.propagatedNativeBuildInputs ++ [ pkgs.cmake pkgs.bash ];
     });
     debianImage = pkgs.dockerTools.pullImage {
-      imageName = "debian";
-      imageTag = "jessie";
-      sha256 = "72f784399fd2719b4cb4e16ef8e369a39dc67f53d978cd3e2e7bf4e502c7b793";
+      image = "debian:jessie";
+      sha256 = "1n1v72kcyxm7chnb0qafdzkfk7vybicix23vd6f380bhcyvx6mm3";
+    };
+    busyBoxImage = pkgs.dockerTools.pullImage {
+      image = "busybox:latest";
+      sha256 = "1ndqwxzmm88wq2hgvyvikrakh4a6h65ar5nf22d16fzm89jxf51f";
     };
     batsimImage = callPackage ./batsim/batsim-docker.nix {};
     batsimDocker_git = batsimImage batsim_git null;
+    batsimDocker_debug = batsimImage batsim_git busyBoxImage;
     batsimDocker_gitOnDebian = batsimImage batsim_git debianImage;
   };
 in
