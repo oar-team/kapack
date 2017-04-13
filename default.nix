@@ -9,7 +9,7 @@ let
       nativeBuildInputs = pkgs.gcc6;
     });
     batsim = callPackage ./batsim { };
-    batsimTests = callPackage ./batsim/tests.nix { };
+    pybatsim = callPackage ./pybatsim { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
     interval_set = callPackage ./interval-set { };
@@ -37,10 +37,11 @@ let
       version = "dev";
       src = pkgs.fetchgit {
         url = "file:///home/mercierm/Projects/batsim";
-        rev = "cac343d5a60111b2f21778b507c9e79aebebca3f";
+        rev = "8346f5925adeedae260bdfab426390d6d3379a99";
         fetchSubmodules = false;
       };
       doInstallCheck = false;
+      propagatedNativeBuildInputs = [ ];
       # Add debug tools
       # propagatedNativeBuildInputs = attrs.propagatedNativeBuildInputs ++ [ pkgs.cmake pkgs.bash ];
     });

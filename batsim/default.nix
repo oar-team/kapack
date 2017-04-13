@@ -17,11 +17,12 @@ stdenv.mkDerivation rec {
     ''export cmakeFlags="$cmakeFlags -DCMAKE_BUILD_TYPE=Debug -Dignore_assertions=OFF -Dtreat_warnings_as_errors=OFF"'';
 
   buildInputs = [
-    gcc6 simgrid_batsim boost_gcc6 gmp rapidjson openssl redox hiredis
+    simgrid_batsim boost_gcc6 gmp rapidjson openssl redox hiredis
     libev cppzmq zeromq
   ];
-  propagatedBuildInputs = [ redis ];
-  nativeBuildInputs= [ cmake ];
+  nativeBuildInputs = [ cmake gcc6 ];
+
+  enableParallelBuilding = true;
 
   # change this to true to enable tests (experimental)
   doInstallCheck = true;
@@ -42,6 +43,7 @@ stdenv.mkDerivation rec {
     python35Packages.pyzmq
     python35Packages.ipython
     execo
+    redis
   ];
   installCheckTarget = "CTEST_OUTPUT_ON_FAILURE=1 test";
 
