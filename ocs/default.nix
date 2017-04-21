@@ -1,19 +1,22 @@
-{ stdenv, fetchzip, ocaml, findlib, ocamlbuild, opam, ocaml_batteries, topkg,  cmdliner }:
+{ stdenv, fetchFromGitHub, ocaml, findlib, ocamlbuild, opam, ocaml_batteries, topkg, obandit, cmdliner }:
+
 
 stdenv.mkDerivation rec {
 	name = "ocs-${version}";
 	version = "0.2";
 
-  src = fetchzip {
-    url= https://zenodo.org/record/439758/files/freuk/ocst-zenodo-up.zip;
-    sha256 = "1aqwzagjwf7p0v3gqnjcr3v9pfwpkgm0h5bdik4dm29fzzak5r71";
+  src = fetchFromGitHub {
+    owner = "freuk";
+    repo = "ocst";
+    rev = "9872b40a4c0d7213b69a2b6c8c555b44bd7ca644";
+    sha256 = "1l40w41g3zjjjml84brnbr1ml7mzs4vx41viwmpyivn05ah7nykl";
   };
 
 	unpackCmd = "tar xjf $src";
 
-	buildInputs = [ ocaml_batteries ocaml findlib ocamlbuild topkg opam ];
+	buildInputs = [ ocaml findlib ocamlbuild topkg opam ];
 
-  propagatedBuildInputs = [ ocaml_batteries cmdliner ];
+  propagatedBuildInputs = [ ocaml_batteries obandit cmdliner ];
 
   inherit (topkg) buildPhase installPhase;
 
