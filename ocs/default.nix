@@ -1,4 +1,4 @@
-{ stdenv, fetchFromGitHub, ocaml, findlib, ocamlbuild, opam, ocaml_batteries, topkg, obandit, cmdliner, ppx_sexp_conv, sexplib }:
+{ stdenv, fetchFromGitHub, ocaml, findlib, ocamlbuild, opam, ocaml_batteries, topkg, obandit, cmdliner, ppx_sexp_conv, sexplib, ppx_deriving }:
 
 
 stdenv.mkDerivation rec {
@@ -16,7 +16,7 @@ stdenv.mkDerivation rec {
 
 	buildInputs = [ ocaml findlib ocamlbuild topkg opam ];
 
-  propagatedBuildInputs = [ ocaml_batteries obandit cmdliner ppx_sexp_conv ];
+  propagatedBuildInputs = [ ocaml_batteries obandit cmdliner ppx_sexp_conv ppx_deriving ];
 
   inherit (topkg) buildPhase installPhase;
 
