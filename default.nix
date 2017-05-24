@@ -11,6 +11,7 @@ let
     evalys = callPackage ./evalys { inherit interval_set; };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
     zymake = pkgs.ocamlPackages.callPackage ./zymake { };
+    onanomsg = pkgs.ocamlPackages.callPackage ./onanomsg { };
     ocs = pkgs.ocamlPackages.callPackage ./ocs { inherit obandit; };
     evalysEnv = pkgs.stdenv.mkDerivation {
       name = "evalysEnv";
