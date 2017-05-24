@@ -12,6 +12,7 @@ let
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
     zymake = pkgs.ocamlPackages.callPackage ./zymake { };
     onanomsg = pkgs.ocamlPackages.callPackage ./onanomsg { };
+    ppx_deriving_protobuf = pkgs.ocamlPackages.callPackage ./ppx_deriving_protobuf { };
     ocs = pkgs.ocamlPackages.callPackage ./ocs { inherit obandit; };
     evalysEnv = pkgs.stdenv.mkDerivation {
       name = "evalysEnv";
