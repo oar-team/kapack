@@ -9,6 +9,7 @@ let
     rapidjson = callPackage ./rapidjson { };
     interval_set = callPackage ./interval-set { };
     evalys = callPackage ./evalys { inherit interval_set; };
+    nnpy = callPackage ./nnpy { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
     zymake = pkgs.ocamlPackages.callPackage ./zymake { };
     onanomsg = pkgs.ocamlPackages.callPackage ./onanomsg { };
