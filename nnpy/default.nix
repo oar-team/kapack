@@ -9,8 +9,8 @@ python35Packages.buildPythonPackage rec {
     sha256 = "19r65irxh6givs8x3k9qci6m9x2nz20sxjpalrinxvwawy73196m";
   };
 
-  #propagatedBuildInputs = [  ];
-  buildInputs = [ nanomsg python35Packages.cffi  ];
+  propagatedBuildInputs = [  python35Packages.cffi ];
+  buildInputs = [ nanomsg  ];
   #nativeBuildinputs = [ pkgconfig ];
 
   patches = [ ./nnpy.patch ];
