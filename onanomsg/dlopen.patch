@@ -1,0 +1,13 @@
+diff --git a/lib/nanomsg_ctypes.ml b/lib/nanomsg_ctypes.ml
+index 53a7f91..f2409ff 100644
+--- a/lib/nanomsg_ctypes.ml
++++ b/lib/nanomsg_ctypes.ml
+@@ -35,7 +35,7 @@ let nnsym_type = field nn_symbol_properties "type" int
+ let nnsym_unit = field nn_symbol_properties "unit" int
+ let () = seal nn_symbol_properties
+ 
+-let from = Dl.(dlopen ~filename:"libnanomsg.so" ~flags:[RTLD_NOW])
++let from = Dl.(dlopen ~filename:"@NIXNANOMSGLIB@" ~flags:[RTLD_NOW])
+ 
+ let nn_errno      = foreign ~from "nn_errno" (void @-> returning int)
+ let nn_strerror   = foreign ~from "nn_strerror" (int @-> returning string)
