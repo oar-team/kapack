@@ -18,7 +18,11 @@ stdenv.mkDerivation rec {
 
   propagatedBuildInputs = [ ocaml_batteries obandit cmdliner ppx_sexp_conv ppx_deriving ppx_deriving_protobuf onanomsg ];
 
-  inherit (topkg) buildPhase installPhase;
+  inherit (topkg) buildPhase;
+
+  installPhase = topkg.installPhase + ''
+    ;cp _build/src/*.protoc $out/lib/
+  '';
 
 	meta = {
 		license = stdenv.lib.licenses.isc;
