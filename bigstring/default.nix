@@ -14,7 +14,9 @@ stdenv.mkDerivation rec {
 
   #propagatedBuildInputs = [ ];
   #ocamlfind install bigstring META $(TO_INSTALL)
-  #installPhase = "mkdir -p $out/lib/opam-installer -i --prefix=$out --libdir=$OCAMLFIND_DESTDIR";
+  #installPhase = ''
+    #make PREFIX=$out install
+  #'';
   installPhase = ''
     mkdir -p $out/lib/ocaml/4.02.3/site-lib/bigstring; 
     make install
