@@ -12,10 +12,12 @@ let
     nnpy = callPackage ./nnpy { };
     nanomsg = callPackage ./nanomsg { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
+    lwt-zmq = pkgs.ocamlPackages.callPackage ./lwt-zmq { lwt = pkgs.ocamlPackages.ocaml_lwt;};
     bigstring = pkgs.ocamlPackages.callPackage ./bigstring { };
     oocvx = pkgs.ocamlPackages.callPackage ./oocvx { };
     zymake = pkgs.ocamlPackages.callPackage ./zymake { };
-    onanomsg = pkgs.ocamlPackages.callPackage ./onanomsg { inherit nanomsg; };
+    uint = pkgs.ocamlPackages.callPackage ./uint { };
+    onanomsg = pkgs.ocamlPackages.callPackage ./onanomsg { inherit nanomsg bigstring; };
     ppx_deriving_protobuf = pkgs.ocamlPackages.callPackage ./ppx_deriving_protobuf { };
     ocs = pkgs.ocamlPackages.callPackage ./ocs { inherit obandit ppx_deriving_protobuf onanomsg nanomsg; };
     help = pkgs.stdenv.mkDerivation {
