@@ -12,11 +12,11 @@ let
     nnpy = callPackage ./nnpy { };
     nanomsg = callPackage ./nanomsg { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
-    lwt-zmq = pkgs.ocamlPackages.callPackage ./lwt-zmq { lwt = pkgs.ocamlPackages.ocaml_lwt;};
+    ocaml-zmq = pkgs.ocamlPackages.callPackage ./ocaml-zmq { inherit stdint; };
     bigstring = pkgs.ocamlPackages.callPackage ./bigstring { };
     oocvx = pkgs.ocamlPackages.callPackage ./oocvx { };
     zymake = pkgs.ocamlPackages.callPackage ./zymake { };
-    uint = pkgs.ocamlPackages.callPackage ./uint { };
+    stdint = pkgs.ocamlPackages.callPackage ./stdint { };
     onanomsg = pkgs.ocamlPackages.callPackage ./onanomsg { inherit nanomsg bigstring; };
     ppx_deriving_protobuf = pkgs.ocamlPackages.callPackage ./ppx_deriving_protobuf { };
     ocs = pkgs.ocamlPackages.callPackage ./ocs { inherit obandit ppx_deriving_protobuf onanomsg nanomsg; };

@@ -1,5 +1,5 @@
 { stdenv, fetchurl, ocaml, findlib, ocamlbuild, opam, cstruct, ctypes, ppx_deriving,
-topkg, ipaddr, nanomsg, containers, pkgconfig}:
+topkg, ipaddr, nanomsg, containers, pkgconfig, bigstring}:
 
 stdenv.mkDerivation rec {
   name = "onanomsg-${version}";
@@ -10,7 +10,7 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ pkgconfig ];
-  buildInputs = [ ocaml findlib ocamlbuild topkg opam ];
+  buildInputs = [ ocaml findlib ocamlbuild topkg opam bigstring ];
 
   propagatedBuildInputs = [ cstruct ctypes ppx_deriving ipaddr nanomsg containers ];
 

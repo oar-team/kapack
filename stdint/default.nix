@@ -1,11 +1,11 @@
 { stdenv, fetchurl, ocaml, findlib, ocamlbuild, opam  }:
 
 stdenv.mkDerivation rec {
-	name = "uint-${version}";
-	version = "1.2.0";
+	name = "stdint-${version}";
+	version = "0.3.0";
 	src = fetchurl {
-		url = "https://github.com/andrenth/ocaml-uint/archive/1.2.0.tar.gz";
-		sha256 = "1376ms42jj0i2g8l991h02d9w1sv6x2p0b3sn9s1r106niybprgw";
+		url = "https://github.com/andrenth/ocaml-stdint/archive/${version}.tar.gz";
+		sha256 = "19mvagz19w6yk6mf750prraw28xjxz8ki9k4k57jdy02y77h7z88";
 	};
 
   configurePhase = '' ocaml setup.ml -configure --prefix $out '';
