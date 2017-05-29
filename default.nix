@@ -12,6 +12,8 @@ let
     nnpy = callPackage ./nnpy { };
     nanomsg = callPackage ./nanomsg { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
+    bigstring = pkgs.ocamlPackages.callPackage ./bigstring { };
+    oocvx = pkgs.ocamlPackages.callPackage ./oocvx { };
     zymake = pkgs.ocamlPackages.callPackage ./zymake { };
     onanomsg = pkgs.ocamlPackages.callPackage ./onanomsg { inherit nanomsg; };
     ppx_deriving_protobuf = pkgs.ocamlPackages.callPackage ./ppx_deriving_protobuf { };
