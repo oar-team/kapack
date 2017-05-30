@@ -1,4 +1,4 @@
-{ stdenv, fetchgit, ocaml, findlib, ocamlbuild, opam, ocaml_batteries, topkg, obandit, cmdliner, ppx_sexp_conv, sexplib, ppx_deriving, onanomsg, nanomsg, ppx_deriving_protobuf, pkgconfig }:
+{ stdenv, fetchgit, ocaml, findlib, ocamlbuild, opam, ocaml_batteries, topkg, obandit, cmdliner, ppx_sexp_conv, sexplib, ppx_deriving, ppx_deriving_protobuf, zmq, pkgconfig }:
 
 stdenv.mkDerivation rec {
   name = "ocs-${version}";
@@ -15,7 +15,15 @@ stdenv.mkDerivation rec {
 
   buildInputs = [ ocaml findlib ocamlbuild topkg opam ];
 
-  propagatedBuildInputs = [ ocaml_batteries obandit cmdliner ppx_sexp_conv ppx_deriving ppx_deriving_protobuf onanomsg nanomsg ];
+  propagatedBuildInputs = [
+    ocaml_batteries 
+    obandit 
+    cmdliner
+    ppx_sexp_conv
+    ppx_deriving
+    ppx_deriving_protobuf
+    zmq
+  ];
 
   inherit (topkg) buildPhase;
 
