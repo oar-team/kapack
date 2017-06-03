@@ -1,4 +1,4 @@
-{ stdenv, fetchFromGitHub, ocaml, findlib, ocamlbuild, opam, topkg }:
+{ stdenv, fetchFromGitHub, ocaml, findlib, ocamlbuild, opam, topkg, ocaml_batteries }:
 
 stdenv.mkDerivation rec {
 	name = "zymake";
@@ -12,7 +12,7 @@ stdenv.mkDerivation rec {
 
 	#unpackCmd = "tar xjf $src";
 
-	buildInputs = [ ocaml findlib ocamlbuild topkg opam ];
+	buildInputs = [ ocaml findlib ocamlbuild topkg opam ocaml_batteries ];
 
 	inherit (topkg) buildPhase installPhase;
 
