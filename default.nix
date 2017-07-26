@@ -20,7 +20,7 @@ let
     onanomsg = pkgs.ocamlPackages.callPackage ./onanomsg { inherit nanomsg bigstring; };
     ppx_deriving_protobuf = pkgs.ocamlPackages.callPackage ./ppx_deriving_protobuf { };
     ocs = pkgs.ocamlPackages.callPackage ./ocs { 
-      inherit obandit ppx_deriving_protobuf;
+      inherit obandit oocvx ppx_deriving_protobuf;
       zmq=ocaml-zmq; 
     };
     help = pkgs.stdenv.mkDerivation {
