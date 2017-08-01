@@ -1,4 +1,4 @@
-{ stdenv, fetchgit, ocaml, findlib, ocamlbuild, opam, ocaml_batteries, topkg, obandit, cmdliner, ppx_sexp_conv, sexplib, ppx_deriving, ppx_deriving_protobuf, zmq, pkgconfig }:
+{ stdenv, fetchgit, ocaml, findlib, ocamlbuild, opam, ocaml_batteries, topkg, obandit, cmdliner, ppx_sexp_conv, sexplib, ppx_deriving, ppx_deriving_protobuf, zmq, pkgconfig, oocvx}:
 
 stdenv.mkDerivation rec {
   name = "ocs-${version}";
@@ -18,6 +18,7 @@ stdenv.mkDerivation rec {
   propagatedBuildInputs = [
     ocaml_batteries 
     obandit 
+    oocvx
     cmdliner
     ppx_sexp_conv
     ppx_deriving
