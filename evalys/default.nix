@@ -1,23 +1,23 @@
-{ stdenv, fetchFromGitHub, python35Packages, interval_set}:
+{ stdenv, fetchFromGitHub, python36Packages, procset}:
 
-python35Packages.buildPythonPackage rec {
+python36Packages.buildPythonPackage rec {
   name = "evalys-git";
 
   src = fetchFromGitHub {
     owner = "oar-team";
     repo = "evalys";
-    rev = "dfcfcf7fc0b3388c6af366e4727db3dc104a47a5";
-    sha256 = "143mq2j1ykz86k9zd43nk0jsj89i506pki6m3kgknrk7d32imshh";
+    rev = "9e590c6df6fdd2a9f2fa0255ac3d0bd6a4bb147c";
+    sha256 = "00ald8r4ijbizw94jaxilhjcfblsnwy3f4ql63p528hh9hh5hvr1";
   };
 
-  propagatedBuildInputs = with python35Packages; [
-    interval_set
+  propagatedBuildInputs = with python36Packages; [
+    procset
     seaborn
     pandas
     pyqt5
     matplotlib ];
 
-  checkInputs = with python35Packages; [ pytest ];
+  checkInputs = with python36Packages; [ pytest ];
 
   checkPhase = ''
     py.test tests

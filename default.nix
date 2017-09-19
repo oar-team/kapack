@@ -7,8 +7,8 @@ let
     batsim = callPackage ./batsim { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
-    interval_set = callPackage ./interval-set { };
-    evalys = callPackage ./evalys { inherit interval_set; };
+    procset = callPackage ./procset { };
+    evalys = callPackage ./evalys { inherit procset; };
     nnpy = callPackage ./nnpy { };
     nanomsg = callPackage ./nanomsg { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
