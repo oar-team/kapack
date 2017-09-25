@@ -1,14 +1,14 @@
-{ stdenv, fetchgit, cmake, simgrid_batsim, boost,
+{ stdenv, fetchurl, cmake, simgrid_batsim, boost,
 gmp, rapidjson, openssl, redox, hiredis, libev, cppzmq,
 zeromq}:
 
 stdenv.mkDerivation rec {
   name = "batsim";
+  version = "1.2.0";
 
-  src = fetchgit {
-    url = "https://github.com/freuk/batsim.git";
-    rev = "refs/heads/master";
-    sha256 = "1h9l87xhbavv8q3vjjhlf3n4dzjh85aq2n0xzxs16gqjsvimbcqa";
+  src = fetchurl {
+    url = "https://gitlab.inria.fr/batsim/batsim/repository/v${version}/archive.tar.gz";
+    sha256 = "1sp2wanmb4q78bq00wrbd05kwb619y2wpp5nxz7js913qi29p2sk";
   };
 
   buildInputs = [ simgrid_batsim  boost  gmp  rapidjson openssl redox hiredis libev cppzmq zeromq];

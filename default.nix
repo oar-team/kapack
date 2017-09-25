@@ -49,6 +49,7 @@ let
 
     batsimImage = callPackage ./batsim/batsim-docker.nix {};
     batsimDocker_git = batsimImage batsim_git null;
+    batsimDocker = batsimImage batsim null;
   };
 in
   self

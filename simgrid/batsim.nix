@@ -1,4 +1,4 @@
-{ fetchgit, stdenv, cmake, perl, ruby, boost, lua5_1, graphviz, libsigcxx
+{ fetchgit, stdenv, coreutils, cmake, perl, ruby, boost, lua5_1, graphviz, libsigcxx
 , libunwind, elfutils, python3, doxygen
 }:
 
@@ -12,30 +12,34 @@ stdenv.mkDerivation rec {
     sha256 = "042ac6dhqlb9kbprsjhxx7jklpwyl2wf6rr39fs0pwninzyzxpxl";
   };
 
-  buildInputs = [ cmake perl ruby boost lua5_1 graphviz libsigcxx libunwind
-    elfutils python3 doxygen
-    ];
+  nativeBuildInputs = [ cmake perl ruby elfutils python3 doxygen ];
+  buildInputs = [ boost libsigcxx libunwind ];
 
   preConfigure =
     # Make it so that libsimgrid.so will be found when running programs from
     # the build dir.
-    '' export LD_LIBRARY_PATH="$PWD/src/.libs"
-       export cmakeFlags="-Dprefix=$out"
+    ''
+    export LD_LIBRARY_PATH="$PWD/src/.libs"
+    export cmakeFlags="-Dprefix=$out"
 
-       export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE
-         -isystem $(echo "${libsigcxx}/lib/"sigc++*/include)
-	 -isystem $(echo "${libsigcxx}/include"/sigc++* )
-	 "
-       export CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH:$(echo "${libsigcxx}/lib/"sigc++*)"
+    export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE
+       -isystem $(echo "${libsigcxx}/lib/"sigc++*/include)
+       -isystem $(echo "${libsigcxx}/include"/sigc++* )
+       "
 
-       # Enable more functionality.
-       export cmakeFlags="$cmakeFlags -Denable_tracing=on -Denable_jedule=on
-         -Denable_latency_bound_tracking=on -Denable_lua=on
-	  -Denable_ns3=on -Denable_gtnets=on
-    -Denable_ns3=off -Denable_lua=off
-    -Denable_debug=on
-    -DCMAKE_BUILD_TYPE=Debug
-	 "
+    export CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH:$(echo "${libsigcxx}/lib/"sigc++*)"
+
+    # Enable more functionality.
+    export cmakeFlags="$cmakeFlags
+       -Denable_latency_bound_tracking=off
+       -Denable_tracing=off
+       -Denable_jedule=off
+       -Denable_gtnets=off
+       -Denable_ns3=off
+       -Denable_lua=off
+       -Denable_debug=on
+       -DCMAKE_BUILD_TYPE=Debug
+       "
     '';
 
   makeFlags = "VERBOSE=1";
@@ -52,19 +56,10 @@ stdenv.mkDerivation rec {
     */
     '' export LD_LIBRARY_PATH="$PWD/lib:$LD_LIBRARY_PATH"
        echo "\$LD_LIBRARY_PATH is \`$LD_LIBRARY_PATH'"
-    '';
 
-  patchPhase =
-    '' for i in "src/smpi/"*
-       do
-         test -f "$i" &&
-         sed -i "$i" -e's|/bin/bash|/bin/sh|g'
-       done
-
-       for i in $(grep -rl /usr/bin/perl .)
-       do
-         sed -i "$i" -e's|/usr/bin/perl|${perl}/bin/perl|g'
-       done
+       # Some perl scripts are called to generate test during build which
+       # is before the fixupPhase of nix, so do this manualy here:
+       patchShebangs ..
     '';
 
   # Fixing the few tests that fail is left as an exercise to the reader.
@@ -85,7 +80,5 @@ stdenv.mkDerivation rec {
     homepage = http://simgrid.gforge.inria.fr/;
 
     license = stdenv.lib.licenses.lgpl2Plus;
-
-    platforms = stdenv.lib.platforms.gnu;  # arbitrary choice
   };
 }

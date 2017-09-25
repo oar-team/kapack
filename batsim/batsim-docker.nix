@@ -1,12 +1,12 @@
-{ stdenv, batsim_git, dockerTools}:
+{ stdenv, batsim, dockerTools}:
 
 batsim: baseImage: dockerTools.buildImage {
-  name = "batsim";
+  name = "oarteam/batsim";
   tag = batsim.version;
   fromImage = baseImage;
 
   config = {
-    Entrypoint = [ "${batsim_git}/bin/batsim" ];
+    Entrypoint = [ "${batsim}/bin/batsim" ];
     ExposedPorts = {
       "28000/tcp" = {};
     };
