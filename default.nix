@@ -5,6 +5,7 @@ let
   self = rec {
     simgrid_batsim = callPackage ./simgrid/batsim.nix { };
     batsim = callPackage ./batsim { };
+    pybatsim = callPackage ./pybatsim { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
     procset = callPackage ./procset { };
