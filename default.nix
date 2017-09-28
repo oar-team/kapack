@@ -39,11 +39,18 @@ let
           pkgs.python36Packages.matplotlib
           pkgs.python36Packages.ipython
           evalys  ];
-      shellHook = ''
-          echo Evalys version: ${version}
-          ipython3 -i -c "import evalys;import matplotlib;matplotlib.use('Qt5Agg');from matplotlib import pyplot as plt" && exit
-      '';
     };
+
+    #evalysEnvInteractive = pkgs.stdenv.mkDerivation rec {
+
+    #  buildInputs = pkgs.python36.withPackages (ps: with ps; [evalys matplotlib]);
+    #  inherit (evalys) version;
+
+    #  shellHook = ''
+    #      echo Evalys version: ${version}
+    #      ipython3 -i -c "import evalys;import matplotlib;matplotlib.use('Qt5Agg');from matplotlib import pyplot as plt" && exit
+    #  '';
+    #};
 
     evalys_git = evalys.overrideDerivation (attrs: rec {
       version = "dev";
