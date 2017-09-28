@@ -1,4 +1,4 @@
-{ stdenv, pkgs, fetchgit, python36Packages, procset}:
+{ stdenv, pkgs, pypi_url, fetchgit, python36Packages, procset}:
 
 python36Packages.buildPythonPackage rec {
     pname = "pybatsim";
@@ -6,7 +6,7 @@ python36Packages.buildPythonPackage rec {
     name = "${pname}-${version}";
 
     src = pkgs.fetchurl {
-      url = "mirror://pypi/p/${pname}/${name}.tar.gz";
+      url = pypi_url pname name;
       sha256 = "f87f4f756b2d5ae6b259720033b6a560d298c43a934f45915996f86b4b11746e";
     };
 

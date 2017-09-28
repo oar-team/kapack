@@ -8,11 +8,11 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://gitlab.inria.fr/batsim/batsim/repository/v${version}/archive.tar.gz";
-    sha256 = "1sp2wanmb4q78bq00wrbd05kwb619y2wpp5nxz7js913qi29p2sk";
+    sha256 = "0kbhb0hygv408k6fm1b7hs2psjkhsx97xfiavlj5v7rcn3kq2ia2";
   };
 
-  buildInputs = [ simgrid_batsim  boost  gmp  rapidjson openssl redox hiredis libev cppzmq zeromq];
-  nativeBuildInputs= [ cmake ];
+  # buildInputs = [ ];
+  nativeBuildInputs= [ simgrid_batsim  boost  gmp  rapidjson openssl redox hiredis libev cppzmq zeromq cmake ];
 
   meta = with stdenv.lib; {
     description = "A batch scheduler simulator with a focus on realism that facilitates comparison.";
