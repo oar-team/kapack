@@ -17,14 +17,17 @@ let
     nnpy = callPackage ./nnpy { };
     nanomsg = callPackage ./nanomsg { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
-    ocaml-zmq = pkgs.ocamlPackages.callPackage ./ocaml-zmq { };
+    ocaml-zmq = pkgs.ocamlPackages.callPackage ./ocaml-zmq { inherit stdint; };
     bigstring = pkgs.ocamlPackages.callPackage ./bigstring { };
     oocvx = pkgs.ocamlPackages.callPackage ./oocvx { };
     zymake = pkgs.ocamlPackages.callPackage ./zymake { };
     stdint = pkgs.ocamlPackages.callPackage ./stdint { };
-    onanomsg = pkgs.ocamlPackages.callPackage ./onanomsg { };
+    onanomsg = pkgs.ocamlPackages.callPackage ./onanomsg { inherit nanomsg bigstring; };
     ppx_deriving_protobuf = pkgs.ocamlPackages.callPackage ./ppx_deriving_protobuf { };
-    ocs = pkgs.ocamlPackages.callPackage ./ocs { zmq=ocaml-zmq; };
+    ocs = pkgs.ocamlPackages.callPackage ./ocs {
+      inherit obandit oocvx ppx_deriving_protobuf;
+      zmq=ocaml-zmq;
+    };
 
     help = pkgs.stdenv.mkDerivation {
       name = "help";
@@ -52,6 +55,25 @@ let
     #  '';
     #};
 
+    evalysNotebookEnv = pkgs.stdenv.mkDerivation {
+      name = "jupyterEnv";
+      buildInputs =
+      with pkgs.python36Packages;
+      [
+        jupyter
+        pyqt5
+        pandas
+        docopt
+        matplotlib
+        pip
+        evalys
+      ];
+      shellHook = ''
+          echo Evalys version: ${evalys.version}
+          jupyter-notebook
+      '';
+    };
+
     evalys_git = evalys.overrideDerivation (attrs: rec {
       version = "dev";
       src = builtins.fetchTarball "https://gitlab.inria.fr/batsim/evalys/repository/master/archive.tar.gz";
@@ -65,9 +87,6 @@ let
       version = "dev";
       src = builtins.fetchTarball "https://gitlab.inria.fr/batsim/batsim/repository/master/archive.tar.gz";
       doInstallCheck = false;
-      propagatedNativeBuildInputs = [ ];
-      # Add debug tools
-      # propagatedNativeBuildInputs = attrs.propagatedNativeBuildInputs ++ [ pkgs.cmake pkgs.bash ];
     });
 
     batsimImage = callPackage ./batsim/batsim-docker.nix {};
