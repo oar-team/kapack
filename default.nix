@@ -58,8 +58,8 @@ let
       doInstallCheck = false;
     });
 
-    evalysImage = callPackage ./evalys/docker.nix {};
-    evalysDocker = evalysImage evalysEnv null;
+    #evalysImage = callPackage ./evalys/docker.nix {};
+    #evalysDocker = evalysImage evalysEnv null;
 
     batsim_git = batsim.overrideDerivation (attrs: rec {
       version = "dev";
