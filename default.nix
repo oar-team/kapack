@@ -7,13 +7,17 @@ let
   callPackage = pkgs.lib.callPackageWith (pkgs // pkgs.xlibs // mylib // self);
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
   self = rec {
+    # Batsim tools an dependencies
     simgrid_batsim = callPackage ./simgrid/batsim.nix { };
     batsim = callPackage ./batsim { };
+    batsched = callPackage ./batsched { };
     pybatsim = callPackage ./pybatsim { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
     procset = callPackage ./procset { };
     evalys = callPackage ./evalys { };
+
+    # l2sched tools and dependencies
     nnpy = callPackage ./nnpy { };
     nanomsg = callPackage ./nanomsg { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
