@@ -6,7 +6,11 @@ let
   # Add libraries to the scope of callPackage
   callPackage = pkgs.lib.callPackageWith (pkgs // pkgs.xlibs // mylib // self);
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
+
   self = rec {
+    # Fix python version to 3.6
+    pythonPackages = pkgs.python36Packages;
+
     # Batsim tools an dependencies
     simgrid_batsim = callPackage ./simgrid/batsim.nix { };
     batsim = callPackage ./batsim { };
@@ -16,6 +20,10 @@ let
     rapidjson = callPackage ./rapidjson { };
     procset = callPackage ./procset { };
     evalys = callPackage ./evalys { };
+    execo = callPackage ./execo { };
+    # TODO push this in nixpkgs
+    coloredlogs = callPackage ./coloredlogs { inherit humanfriendly; };
+    humanfriendly = callPackage ./humanfriendly { };
 
     # l2sched tools and dependencies
     nnpy = callPackage ./nnpy { };
@@ -33,79 +41,18 @@ let
       zmq=ocaml-zmq;
     };
 
-    help = pkgs.stdenv.mkDerivation {
-      name = "help";
-      buildInputs = [ ocs ];
-    };
+    # Freeze python version to 3.6
+    python = pkgs.python36;
+    evalysEnv = (python.withPackages (ps: [ ps.ipython evalys ])).env;
 
-    evalysEnv = pkgs.stdenv.mkDerivation rec {
-      name = "evalysEnv";
-      inherit (evalys) version;
-      buildInputs = [
-          pkgs.python3
-          pkgs.python36Packages.matplotlib
-          pkgs.python36Packages.ipython
-          evalys  ];
-    };
-
-    #evalysEnvInteractive = pkgs.stdenv.mkDerivation rec {
-
-    #  buildInputs = pkgs.python36.withPackages (ps: with ps; [evalys matplotlib]);
-    #  inherit (evalys) version;
-
-    #  shellHook = ''
-    #      echo Evalys version: ${version}
-    #      ipython3 -i -c "import evalys;import matplotlib;matplotlib.use('Qt5Agg');from matplotlib import pyplot as plt" && exit
-    #  '';
-    #};
-
-    evalysNotebookEnv = pkgs.stdenv.mkDerivation {
-      name = "jupyterEnv";
-      buildInputs =
-      with pkgs.python36Packages;
-      [
+    evalysNotebookEnv = (python.withPackages (ps: with ps; [
         jupyter
-        pyqt5
-        pandas
-        docopt
-        matplotlib
-        pip
         evalys
-      ];
-      shellHook = ''
-          echo Evalys version: ${evalys.version}
-          jupyter-notebook
-      '';
-    };
-
-    evalys_git = evalys.overrideDerivation (attrs: rec {
-      version = "dev";
-      src = builtins.fetchTarball "https://gitlab.inria.fr/batsim/evalys/repository/master/archive.tar.gz";
-      doInstallCheck = false;
-    });
-
-    #evalysImage = callPackage ./evalys/docker.nix {};
-    #evalysDocker = evalysImage evalysEnv null;
-
-    batsim_git = batsim.overrideDerivation (attrs: rec {
-      version = "dev";
-      src = builtins.fetchTarball "https://gitlab.inria.fr/batsim/batsim/repository/master/archive.tar.gz";
-      doInstallCheck = false;
-    });
+        pip
+      ])).env;
 
     batsimImage = callPackage ./batsim/batsim-docker.nix {};
-    batsimDocker_git = batsimImage batsim_git null;
     batsimDocker = batsimImage batsim null;
-
-    batsimEnv = pkgs.stdenv.mkDerivation {
-      name = "batsimEnv";
-      buildInputs = [ batsim  ];
-      shellHook = ''
-        echo "Welcome to the batcave!!!"
-        batsim --version
-      '';
-    };
-
 
   };
 in

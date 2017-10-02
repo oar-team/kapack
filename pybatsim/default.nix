@@ -1,16 +1,16 @@
-{ stdenv, pkgs, pypi_url, fetchgit, python36Packages, procset}:
+{ stdenv, pythonPackages, fetchurl, pypi_url }:
 
-python36Packages.buildPythonPackage rec {
+pythonPackages.buildPythonPackage rec {
     pname = "pybatsim";
     version = "1.2";
     name = "${pname}-${version}";
 
-    src = pkgs.fetchurl {
+    src = fetchurl {
       url = pypi_url pname name;
       sha256 = "f87f4f756b2d5ae6b259720033b6a560d298c43a934f45915996f86b4b11746e";
     };
 
-    propagatedBuildInputs = with python36Packages; [
+    propagatedBuildInputs = with pythonPackages; [
       sortedcontainers
       pyzmq
       redis
@@ -21,9 +21,9 @@ python36Packages.buildPythonPackage rec {
 
     doCheck = false;
 
-    meta = {
+    meta = with stdenv.lib; {
       homepage = "https://gitlab.inria.fr/batsim/pybatsim";
       description = "Python Schedulers for Batsim";
-      license = stdenv.licenses.lgpl3;
+      license = licenses.lgpl3;
     };
 }

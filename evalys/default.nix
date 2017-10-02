@@ -1,20 +1,20 @@
-{ stdenv, lib, pypi_url, fetchurl, python36Packages, procset}:
-python36Packages.buildPythonPackage rec {
+{ stdenv, pypi_url, fetchurl, pythonPackages, procset}:
+pythonPackages.buildPythonPackage rec {
   pname = "evalys";
   version = "2.6.0";
   name = "${pname}-${version}";
 
   src = fetchurl {
     url = pypi_url pname name;
-    #url = "mirror://pypi/${builtins.head (lib.strings.stringToCharacters pname)}/${pname}/${name}.tar.gz";
     sha256 = "538ea54bbeffe36d21cfc56c1659a91e5b58059cbbdbdd55116b12109478801d";
   };
 
-  propagatedBuildInputs = with python36Packages; [
+  propagatedBuildInputs = with pythonPackages; [
     procset
     seaborn
     pandas
     pyqt5
+    ipywidgets
     matplotlib
   ];
 
