@@ -4,7 +4,7 @@ zeromq}:
 
 stdenv.mkDerivation rec {
   name = "batsim";
-  version = "1.2.0";
+  version = "1.3.0";
 
   src = fetchurl {
     url = "https://gitlab.inria.fr/batsim/batsim/repository/v${version}/archive.tar.gz";
