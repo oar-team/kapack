@@ -14,9 +14,11 @@ stdenv.mkDerivation rec {
   # buildInputs = [ ];
   nativeBuildInputs= [ simgrid_batsim  boost  gmp  rapidjson openssl redox hiredis libev cppzmq zeromq cmake ];
 
+  enableParallelBuilding = true;
+
   meta = with stdenv.lib; {
     description = "A batch scheduler simulator with a focus on realism that facilitates comparison.";
-    homepage    = https://github.com/oar-team/batsim;
+    homepage    = "https://github.com/oar-team/batsim";
     platforms   = platforms.unix;
 
     longDescription = ''

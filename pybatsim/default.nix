@@ -1,15 +1,19 @@
-{ stdenv, pythonPackages, fetchurl, pypi_url }:
+{ stdenv, pythonPackages, fetchurl }:
 
 pythonPackages.buildPythonPackage rec {
     pname = "pybatsim";
-    version = "1.2";
+    version = "2.0";
     name = "${pname}-${version}";
 
     src = fetchurl {
-      url = pypi_url pname name;
-      sha256 = "f87f4f756b2d5ae6b259720033b6a560d298c43a934f45915996f86b4b11746e";
+      url = "https://pypi.python.org/packages/56/32/37c5c5fcd2c770b986e4ae05395004531176cb291e54a6f4ce0434b89e3d/pybatsim-2.0.tar.gz";
+      sha256 = "1185e6c38676903fe230212f550f6a7ff3ab8670f074279a894071225924c951";
     };
 
+    buildInputs = with pythonPackages; [
+      autopep8
+      coverage
+    ];
     propagatedBuildInputs = with pythonPackages; [
       sortedcontainers
       pyzmq
