@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://gitlab.inria.fr/batsim/batsim/repository/v${version}/archive.tar.gz";
-    sha256 = "0kbhb0hygv408k6fm1b7hs2psjkhsx97xfiavlj5v7rcn3kq2ia2";
+    sha256 = "436e5a304451b34e11d3547404f5e6e27bb9297803ee38ab66eeb813546d2a58";
   };
 
   # buildInputs = [ ];
