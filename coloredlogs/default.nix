@@ -16,9 +16,9 @@ pkgs.python36Packages.buildPythonPackage rec {
 
     doCheck = false;
 
-    meta = {
+    meta = with stdenv.lib; {
       homepage = "https://coloredlogs.readthedocs.io";
       description = "Colored terminal output for Python's logging module";
-      license = stdenv.licenses.mit;
+      license = licenses.mit;
     };
 }
