@@ -12,9 +12,9 @@ pkgs.python36Packages.buildPythonPackage rec {
 
     doCheck = false;
 
-    meta = {
+    meta = with stdenv.lib; {
       homepage = "https://humanfriendly.readthedocs.io";
       description = "Human friendly output for text interfaces using Python";
-      license = stdenv.licenses.mit;
+      license = licenses.mit;
     };
 }
