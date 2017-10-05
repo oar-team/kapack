@@ -6,8 +6,8 @@ stdenv.mkDerivation rec {
 
   src = fetchgit {
     url= "https://gitlab.inria.fr/vreis/ocst.git";
-    rev= "e4845babcf4c456d6bd9af8b0995e7c2039ef47d";
-    sha256= "1a9418k4ldcfhwdlx4ddhma1zwx8n0i2f66rqhrb117a6ic948v6";
+    rev= "1b09dfe045174a34b9b0feabd64bab9271777b69";
+    sha256= "1p9fspcn1llgq3prlyxpdpsj8vljg22ijnxk23qb2y1bx56yfxmq";
   };
 
 
