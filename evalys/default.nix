@@ -1,12 +1,12 @@
 { stdenv, pypi_url, fetchurl, pythonPackages, procset}:
 pythonPackages.buildPythonPackage rec {
   pname = "evalys";
-  version = "2.6.0";
+  version = "2.6.1";
   name = "${pname}-${version}";
 
   src = fetchurl {
     url = pypi_url pname name;
-    sha256 = "538ea54bbeffe36d21cfc56c1659a91e5b58059cbbdbdd55116b12109478801d";
+    sha256 = "25c4806121764afdd657cc43ff25ac233fd4f9ce4e398f1fbe29b87fed36dbe1";
   };
 
   propagatedBuildInputs = with pythonPackages; [
