@@ -1,5 +1,5 @@
 {
-  pkgs ? import <nixpkgs> {},
+  pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/17.09.tar.gz") {},
   mylib ? import ./mylib {}
 }:
 let
@@ -53,7 +53,7 @@ let
 
     batsimImage = callPackage ./batsim/batsim-docker.nix {};
     batsimDocker = batsimImage batsim null;
-
+    inherit pkgs;
   };
 in
   self
