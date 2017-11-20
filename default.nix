@@ -14,6 +14,7 @@ let
     # Batsim tools an dependencies
     simgrid_batsim = callPackage ./simgrid/batsim.nix { };
     batsim = callPackage ./batsim { };
+    batsim_ci = callPackage ./batsim/continous-integration.nix { };
     batsched = callPackage ./batsched { };
     pybatsim = callPackage ./pybatsim { };
     redox = callPackage ./redox { };
