@@ -1,7 +1,7 @@
 { stdenv, pkgs, batsim
-, clangSupport ? false, clang
-, doTests ? true, coloredlogs, execo, batsched, pybatsim
-, buildDoc ? true
+, clangSupport ? true, clang
+, doTests ? false, coloredlogs, execo, batsched, pybatsim
+, buildDoc ? false,
 }:
 {
   batsim_ci = batsim.overrideDerivation (attrs: rec {
@@ -41,10 +41,11 @@
       export CC=clang
       export CXX=clang++
     '';
-
+    cmakeBuildType = "Debug";
+    cmakeFlags = attrs.cmakeFlags ++ ["-Dtreat_warnings_as_errors=ON"];
     enableParallelBuilding = true;
 
-    doCheck = true;
+    doCheck = doTests;
     preCheck = ''
       # Patch tests script she bang
       patchShebangs ..
@@ -63,7 +64,7 @@
       PATH="$(pwd):$PATH" ctest --output-on-failure -E 'remote'
 
       runHook postCheck
-      '';
+    '';
     postCheck = ''
       kill $REDIS_PID
     '';

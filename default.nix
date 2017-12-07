@@ -47,13 +47,17 @@ let
     evalysEnv = (python.withPackages (ps: [ ps.ipython evalys ])).env;
 
     evalysNotebookEnv = (python.withPackages (ps: with ps; [
-        jupyter
-        evalys
-        pip
-      ])).env;
+      jupyter
+      evalys
+      pip
+    ])).env;
 
     batsimImage = callPackage ./batsim/batsim-docker.nix {};
     batsimDocker = batsimImage batsim null;
+
+    # For CI
+    CIImage = callPackage ./docker-nix.nix {};
+    CIDocker = CIImage "dev";
     inherit pkgs;
   };
 in
