@@ -1,5 +1,5 @@
 {
-  pkgs ? import <nixpkgs> {},
+  pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/17.09.tar.gz") {},
   mylib ? import ./mylib {}
 }:
 let
@@ -14,6 +14,7 @@ let
     # Batsim tools an dependencies
     simgrid_batsim = callPackage ./simgrid/batsim.nix { };
     batsim = callPackage ./batsim { };
+    batsim_ci = callPackage ./batsim/continous-integration.nix { };
     batsched = callPackage ./batsched { };
     pybatsim = callPackage ./pybatsim { };
     redox = callPackage ./redox { };
@@ -54,7 +55,7 @@ let
 
     batsimImage = callPackage ./batsim/batsim-docker.nix {};
     batsimDocker = batsimImage batsim null;
-
+    inherit pkgs;
   };
 in
   self

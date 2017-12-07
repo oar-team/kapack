@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
     # the build dir.
     ''
     export LD_LIBRARY_PATH="$PWD/src/.libs"
-    export cmakeFlags="-Dprefix=$out"
+    export cmakeFlags="$cmakeFlags -Dprefix=$out"
 
     export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE
        -isystem $(echo "${libsigcxx}/lib/"sigc++*/include)
@@ -28,20 +28,17 @@ stdenv.mkDerivation rec {
        "
 
     export CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH:$(echo "${libsigcxx}/lib/"sigc++*)"
-
-    # Enable more functionality.
-    export cmakeFlags="$cmakeFlags
-       -Denable_latency_bound_tracking=off
-       -Denable_tracing=off
+    '';
+  # Enable more functionality.
+  cmakeFlags= ''
        -Denable_jedule=off
-       -Denable_gtnets=off
        -Denable_ns3=off
        -Denable_lua=off
        -Denable_debug=on
+       -Denable_compile_warnings=on
+        -Denable_compile_optimizations=off
        -DCMAKE_BUILD_TYPE=Debug
-       "
     '';
-
   makeFlags = "VERBOSE=1";
 
   preBuild =
