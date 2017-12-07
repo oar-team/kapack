@@ -9,7 +9,7 @@ stdenv.mkDerivation rec {
     url = "https://github.com/joergen7/cuneiform/releases/download/2.2.1-release/cuneiform";
   };
 
-  phases = [ "installPhase" ];
+  phases = [ "installPhase" "fixupPhase" ];
 
   installPhase = ''
   mkdir -p $out/bin
@@ -17,4 +17,5 @@ stdenv.mkDerivation rec {
   '';
 
 	buildInputs = [ erlang ];
+	propagatedBuildInputs = [ erlang ];
 }
