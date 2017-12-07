@@ -9,7 +9,7 @@ let
 
   self = rec {
     # Fix python version to 3.6
-    pythonPackages = pkgs.python36Packages;
+    pythonPackages = pkgs.python35Packages;
 
     # Batsim tools an dependencies
     simgrid_batsim = callPackage ./simgrid/batsim.nix { };
