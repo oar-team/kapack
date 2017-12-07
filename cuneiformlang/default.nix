@@ -1,17 +1,19 @@
 { stdenv, fetchurl, erlang, ... }:
 
 stdenv.mkDerivation rec {
-	name = "cuneiform";
+	name = "cuneiformlang";
 
   src = fetchurl {
-    sha256 = "10q7y64qnspvhxldaq5lnk3a6mncirrp8vkp3zdcc776x33bz65i";
+    executable = true;
+    sha256 = "1ars3yysi1n8xcxa2rdl6l04hmd89f0yink0y2c7ng3arllbcdya";
     url = "https://github.com/joergen7/cuneiform/releases/download/2.2.1-release/cuneiform";
   };
 
-  buildPhase = ''
+  phases = [ "installPhase" ];
+
+  installPhase = ''
   mkdir -p $out/bin
-  cp cuneiform $out/bin
-  chmod u+x $out/bin/cuneiform
+  cp $src $out/bin/cuneiform
   '';
 
 	buildInputs = [ erlang ];

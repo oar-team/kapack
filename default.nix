@@ -41,7 +41,7 @@ let
       inherit obandit oocvx ppx_deriving_protobuf;
       zmq=ocaml-zmq;
     };
-    cuneiform = callPackage ./cuneiform { };
+    cuneiformlang = callPackage ./cuneiformlang { };
 
     # Freeze python version to 3.6
     python = pkgs.python36;
