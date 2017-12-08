@@ -1,6 +1,6 @@
-{ stdenv, pkgs, pypi_url }:
+{ stdenv, pkgs, pypi_url, pythonPackages }:
 
-pkgs.python36Packages.buildPythonPackage rec {
+pythonPackages.buildPythonPackage rec {
     pname = "humanfriendly";
     version = "7.3";
     name = "${pname}-${version}";
