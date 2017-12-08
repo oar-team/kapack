@@ -1,6 +1,6 @@
-{ stdenv, pkgs, pypi_url, humanfriendly }:
+{ stdenv, pkgs, pypi_url, pythonPackages, humanfriendly }:
 
-pkgs.python36Packages.buildPythonPackage rec {
+pythonPackages.buildPythonPackage rec {
     pname = "coloredlogs";
     version = "4.4.1";
     name = "${pname}-${version}";
