@@ -1,6 +1,6 @@
-{ stdenv, pkgs, fetchgit, python36Packages}:
+{ stdenv, pkgs, fetchgit, pythonPackages}:
 
-python36Packages.buildPythonPackage rec {
+pythonPackages.buildPythonPackage rec {
   name = "procset-git";
 
   src = fetchgit {

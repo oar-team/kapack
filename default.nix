@@ -8,13 +8,14 @@ let
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
 
   self = rec {
-    # Fix python version to 3.6
+    # Freeze python version to 3.5
     pythonPackages = pkgs.python35Packages;
+    python = pkgs.python35;
 
     # Batsim tools an dependencies
     simgrid_batsim = callPackage ./simgrid/batsim.nix { };
     batsim = callPackage ./batsim { };
-    batsim_ci = callPackage ./batsim/continous-integration.nix { };
+    batsim_dev = callPackage ./batsim/dev.nix { };
     batsched = callPackage ./batsched { };
     pybatsim = callPackage ./pybatsim { };
     redox = callPackage ./redox { };
@@ -43,8 +44,6 @@ let
     };
     cuneiformlang = callPackage ./cuneiformlang { };
 
-    # Freeze python version to 3.6
-    python = pkgs.python36;
     evalysEnv = (python.withPackages (ps: [ ps.ipython evalys ])).env;
 
     evalysNotebookEnv = (python.withPackages (ps: with ps; [

@@ -1,10 +1,10 @@
-{ stdenv, fetchFromGitHub, python35Packages}:
+{ stdenv, fetchFromGitHub, pythonPackages}:
 
 #
 # WARNING: This package is deprecated in favor of procset.py
 #
 
-python36Packages.buildPythonPackage rec {
+pythonPackages.buildPythonPackage rec {
   name = "interval-set-git";
 
   src = fetchFromGitHub {
