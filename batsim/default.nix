@@ -4,11 +4,11 @@ gmp, rapidjson, openssl, redox, hiredis, libev, cppzmq, zeromq
 
 stdenv.mkDerivation rec {
   name = "batsim";
-  version = "1.3.0";
+  version = "1.4.0";
 
   src = fetchurl {
     url = "https://gitlab.inria.fr/batsim/batsim/repository/v${version}/archive.tar.gz";
-    sha256 = "436e5a304451b34e11d3547404f5e6e27bb9297803ee38ab66eeb813546d2a58";
+    sha256 = "01pm96zgy4pdykkss5viwfni20bnhccxnbrxd0mwn5rg8af0jcjb";
   };
 
   nativeBuildInputs= [ simgrid_batsim  boost  gmp  rapidjson openssl redox
