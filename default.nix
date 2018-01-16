@@ -1,13 +1,13 @@
 {
   pkgs ? import (
     fetchTarball "https://github.com/NixOS/nixpkgs/archive/17.09.tar.gz") {},
-  pkgs-unstable ? import (
-    fetchTarball "https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz") {},
+    #pkgs-unstable ? import (
+    #pkfetchTarball "https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz") {},
   mylib ? import ./mylib {}
 }:
 let
   # Add libraries to the scope of callPackage
-  callPackage = pkgs.lib.callPackageWith (pkgs-unstable  // pkgs // pkgs.xlibs // mylib // self);
+  callPackage = pkgs.lib.callPackageWith (pkgs // pkgs.xlibs // mylib // self);
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
 
   self = rec {
@@ -16,7 +16,8 @@ let
     python = pkgs.python35;
 
     # Batsim tools an dependencies
-    simgrid_batsim = callPackage ./simgrid/batsim.nix { simgrid=pkgs-unstable.simgrid; };
+    simgrid = callPackage ./simgrid { };
+    simgrid_batsim = callPackage ./simgrid/batsim.nix { inherit simgrid; };
     batsim = callPackage ./batsim { };
     batsim_dev = callPackage ./batsim/dev.nix { };
     batsched = callPackage ./batsched { };
