@@ -48,6 +48,10 @@ let
     };
     cuneiformlang = callPackage ./cuneiformlang { };
 
+    # Misc.
+    cgvg = callPackage ./cgvg { };
+    cgvg_mpoquet = callPackage ./cgvg/mpoquet.nix { };
+
     evalysEnv = (python.withPackages (ps: [ ps.ipython evalys ])).env;
 
     evalysNotebookEnv = (python.withPackages (ps: with ps; [
