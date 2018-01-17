@@ -5,6 +5,7 @@
 , buildDoc ? true, doxygen, graphviz
 }:
 batsim.overrideDerivation (attrs: rec {
+    name = "batsim_dev";
     version = "dev";
     src = (fetchTarball
     https://gitlab.inria.fr/batsim/batsim/repository/master/archive.tar.gz);
