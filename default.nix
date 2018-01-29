@@ -19,8 +19,9 @@ let
     simgrid = callPackage ./simgrid { };
     simgrid_batsim = callPackage ./simgrid/batsim.nix { inherit simgrid; };
     batsim = callPackage ./batsim { };
-    batsim_dev = callPackage ./batsim/dev.nix { };
+    batsim_dev = callPackage ./batsim/dev.nix { batsched = batsched_dev; };
     batsched = callPackage ./batsched { };
+    batsched_dev = callPackage ./batsched/dev.nix { };
     pybatsim = callPackage ./pybatsim { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };

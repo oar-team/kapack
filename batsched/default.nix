@@ -3,11 +3,11 @@ gmp, rapidjson, openssl, redox, hiredis, libev, cppzmq,
 zeromq}:
 
 stdenv.mkDerivation rec {
-  name = "batsched";
-  version = "git";
+  name = "batsched-${version}";
+  version = "v1.0.0";
 
   src = fetchurl {
-    url = "https://gitlab.inria.fr/batsim/batsched/repository/v1.0.0/archive.tar.gz";
+    url = "https://gitlab.inria.fr/batsim/batsched/repository/${version}/archive.tar.gz";
     sha256 = "0y44gax22c2774g6jypi47qbnv61m19n38j5d21kc3wp49xl40lr";
   };
 
