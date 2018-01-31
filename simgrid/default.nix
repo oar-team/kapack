@@ -89,6 +89,8 @@ stdenv.mkDerivation rec {
        patchShebangs ..
     '';
 
+  patches = [ ./fix_libunwind.patch ];
+
   doCheck = true;
   preCheck = ''
        # Patch inside scripts in the yaml test files that are not
