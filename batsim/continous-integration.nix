@@ -4,7 +4,7 @@
 , buildDoc ? true
 }:
 {
-  batsim_ci = batsim.overrideDerivation (attrs: rec {
+  batsim_ci = batsim.overrideAttrs (attrs: rec {
     version = "dev";
     #src = /builds/batsim/batsim/src;
     src = /home/mmercier/Projects/batsim;
