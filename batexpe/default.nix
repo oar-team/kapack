@@ -3,15 +3,15 @@
 
 buildGoPackage rec {
   name = "batexpe-unstable-${version}";
-  version = "2018-01-26";
-  rev = "7d9a5f276caa14465a04fa6f4e023f4733e64c30";
+  version = "2018-02-01";
+  rev = "c264ed675093574491b395a006657f16926c7415";
 
   goPackagePath = "gitlab.inria.fr/batsim/batexpe";
 
   src = fetchgit {
     inherit rev;
     url = "https://gitlab.inria.fr/batsim/batexpe.git";
-    sha256 = "15zfpqhvvhph32k94zpdrvz5ms35039293kh77si15dnf3jqaarc";
+    sha256 = "0mn7hqprjwdyigcbnp2pwanc40g724lxjdw9rs3f93fijk1fcqhx";
   };
 
   goDeps = ./deps.nix;
