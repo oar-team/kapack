@@ -1,23 +1,24 @@
-{ stdenv, pkgs, batsim
+{ stdenv, batsim
 , clangSupport ? false, clang
-, doTests ? true, coloredlogs, execo, batsched, pybatsim
-, buildDoc ? true
+, doTests ? true, batsched, pybatsim, coloredlogs, execo, pythonPackages
+, redis, python, R, rPackages, psmisc, iproute, coreutils
+, buildDoc ? true, doxygen, graphviz
 }:
-{
-  batsim_ci = batsim.overrideAttrs (attrs: rec {
+batsim.overrideAttrs (attrs: rec {
+    name = "batsim_dev";
     version = "dev";
-    #src = /builds/batsim/batsim/src;
-    src = /home/mmercier/Projects/batsim;
+    src = (fetchTarball
+    https://gitlab.inria.fr/batsim/batsim/repository/master/archive.tar.gz);
     preConfigure = "rm -rf ./build/*";
-    expeToolInputs = with pkgs.python36Packages; [
+    expeToolInputs = with pythonPackages; [
       async-timeout
       coloredlogs
       pandas
       pyyaml
       execo
     ];
-    testInputs = with pkgs; [
-      (python36.withPackages (ps: [ pybatsim ]))
+    testInputs = [
+      (python.withPackages (ps: [ pybatsim ]))
       batsched
       redis
       R
@@ -27,7 +28,7 @@
       psmisc # for pstree
       iproute # for ss
     ];
-    docInputs = with pkgs; [
+    docInputs = [
       doxygen
       graphviz
     ];
@@ -51,7 +52,7 @@
 
       # Patch inside scripts in the yaml test files that are not catch by
       # patchShebangs utility
-      find .. -type f | xargs sed -i -e 's#\(.*\)/usr/bin/env\(.*\)#\1${pkgs.coreutils}/bin/env\2#'
+      find .. -type f | xargs sed -i -e 's#\(.*\)/usr/bin/env\(.*\)#\1${coreutils}/bin/env\2#'
 
       # start Redis and keep PID
       redis-server > /dev/null &
@@ -67,5 +68,4 @@
     postCheck = ''
       kill $REDIS_PID
     '';
-  });
-}
+})

@@ -1,5 +1,8 @@
 {
-  pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/17.09.tar.gz") {},
+  pkgs ? import (
+    fetchTarball "https://github.com/NixOS/nixpkgs/archive/17.09.tar.gz") {},
+    #pkgs-unstable ? import (
+    #pkfetchTarball "https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz") {},
   mylib ? import ./mylib {}
 }:
 let
@@ -8,14 +11,18 @@ let
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
 
   self = rec {
-    # Fix python version to 3.6
+    # Freeze python version to 3.5
     pythonPackages = pkgs.python35Packages;
+    python = pkgs.python35;
 
     # Batsim tools an dependencies
-    simgrid_batsim = callPackage ./simgrid/batsim.nix { };
+    simgrid = callPackage ./simgrid { };
+    simgrid_batsim = callPackage ./simgrid/batsim.nix { inherit simgrid; };
+    batexpe = callPackage ./batexpe { };
     batsim = callPackage ./batsim { };
-    batsim_ci = callPackage ./batsim/continous-integration.nix { };
+    batsim_dev = callPackage ./batsim/dev.nix { batsched = batsched_dev; };
     batsched = callPackage ./batsched { };
+    batsched_dev = callPackage ./batsched/dev.nix { };
     pybatsim = callPackage ./pybatsim { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
@@ -43,8 +50,10 @@ let
     };
     cuneiformlang = callPackage ./cuneiformlang { };
 
-    # Freeze python version to 3.6
-    python = pkgs.python36;
+    # Misc.
+    cgvg = callPackage ./cgvg { };
+    cgvg_mpoquet = callPackage ./cgvg/mpoquet.nix { };
+
     evalysEnv = (python.withPackages (ps: [ ps.ipython evalys ])).env;
 
     evalysNotebookEnv = (python.withPackages (ps: with ps; [

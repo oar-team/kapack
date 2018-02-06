@@ -1,5 +1,5 @@
-{ stdenv, fetchFromGitHub, python35Packages, nanomsg}:
-python35Packages.buildPythonPackage rec {
+{ stdenv, fetchFromGitHub, pythonPackages, nanomsg}:
+pythonPackages.buildPythonPackage rec {
   name = "nnpy";
 
   src = fetchFromGitHub {
@@ -9,7 +9,7 @@ python35Packages.buildPythonPackage rec {
     sha256 = "19r65irxh6givs8x3k9qci6m9x2nz20sxjpalrinxvwawy73196m";
   };
 
-  propagatedBuildInputs = [  python35Packages.cffi ];
+  propagatedBuildInputs = [  pythonPackages.cffi ];
   buildInputs = [ nanomsg  ];
   #nativeBuildinputs = [ pkgconfig ];
 
@@ -26,7 +26,6 @@ python35Packages.buildPythonPackage rec {
 
   meta = with stdenv.lib; {
     description = "cffi-based python bindings for nanomsg";
-    homepage    = https://github.com/oar-team/interval_set;
     platforms   = platforms.unix;
   };
 }

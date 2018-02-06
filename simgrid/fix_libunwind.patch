@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 6a9c7c138..956e2972b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -369,7 +369,7 @@ else()
+ endif()
+
+ include(FindLibunwind)
+-if(HAVE_LIBUNWIND)
++if((HAVE_LIBUNWIND) AND (enable_model-checking))
+   if(NOT APPLE)
+     SET(SIMGRID_DEP "${SIMGRID_DEP} -lunwind")
+   else()
