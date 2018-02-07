@@ -21,7 +21,7 @@ stdenv.mkDerivation rec {
   minor_version = "17";
   version = "v${major_version}.${minor_version}";
   tagged_version = "${major_version}_${minor_version}";
-  name = "simgrid";
+  name = "simgrid-${version}";
 
   src = fetchFromGitHub {
     owner = "simgrid";
