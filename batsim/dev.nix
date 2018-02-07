@@ -32,8 +32,8 @@ batsim.overrideAttrs (attrs: rec {
       doxygen
       graphviz
     ];
-    buildInputs =
-    attrs.buildInputs
+    nativeBuildInputs =
+    attrs.nativeBuildInputs
     ++ stdenv.lib.optional clangSupport clang
     ++ stdenv.lib.optional doTests (testInputs ++ expeToolInputs)
     ++ stdenv.lib.optional buildDoc docInputs;
