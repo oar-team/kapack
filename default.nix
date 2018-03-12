@@ -19,6 +19,7 @@ let
     simgrid = callPackage ./simgrid { };
     simgrid_batsim = callPackage ./simgrid/batsim.nix { inherit simgrid; };
     simgrid_remotesg = callPackage ./simgrid/remotesg.nix { inherit simgrid; };
+    remote_simgrid = callPackage ./remote-simgrid { };
     batexpe = callPackage ./batexpe { };
     batsim = callPackage ./batsim { };
     batsim_dev = callPackage ./batsim/dev.nix { batsched = batsched_dev; };
