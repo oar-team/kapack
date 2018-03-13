@@ -1,4 +1,4 @@
-{ simgrid, fetchgit }:
+{ simgrid, fetchgit, glibcLocales }:
 
 simgrid.overrideAttrs (oldAttrs: rec {
   version = "remotesg";
@@ -9,6 +9,9 @@ simgrid.overrideAttrs (oldAttrs: rec {
     rev = "55da8092d6bc5acff7c392d2c9e5379351d88def";
     sha256 = "1b7cvbw9p2pxss44sp83hvc3dmjgy148z78qc6dljyfv76jp81lg";
   };
+
+  LC_ALL = "en_US.UTF-8";
+  buildInputs = [ glibcLocales ];
 
   doCheck = false;
   patches = [];
