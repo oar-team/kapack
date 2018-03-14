@@ -11,19 +11,23 @@ let
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
 
   self = rec {
-    # Freeze python version to 3.5
-    pythonPackages = pkgs.python35Packages;
-    python = pkgs.python35;
+    # Freeze python version to 3.6
+    pythonPackages = pkgs.python36Packages;
+    python = pkgs.python36;
 
     # Batsim tools an dependencies
     simgrid = callPackage ./simgrid { };
     simgrid_batsim = callPackage ./simgrid/batsim.nix { inherit simgrid; };
     batexpe = callPackage ./batexpe { };
     batsim = callPackage ./batsim { };
-    batsim_dev = callPackage ./batsim/dev.nix { batsched = batsched_dev; };
+    batsim_dev = callPackage ./batsim/dev.nix {
+      batsched = batsched_dev;
+      pybatsim = pybatsim_dev;
+    };
     batsched = callPackage ./batsched { };
     batsched_dev = callPackage ./batsched/dev.nix { };
     pybatsim = callPackage ./pybatsim { };
+    pybatsim_dev = callPackage ./pybatsim/dev.nix { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
     procset = callPackage ./procset { };
