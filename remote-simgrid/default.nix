@@ -7,8 +7,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "simgrid";
     repo = "remote-simgrid";
-    rev = "v0.1.0";
-    sha256 = "0vs1ggibixxl44n8923yiw62z07mg5h9kpgbg8dzwcv2p32wsj3s";
+    rev = "a223dadbed4bc1aaa248a857c980c4367d2652b6";
+    sha256 = "01vnhrjprf38v5k4wqqj3hxybsd5k9nxvpmq28kjg00jk4c7lqja";
   };
 
   nativeBuildInputs = [ simgrid_remotesg boost cppzmq zeromq cmake thrift ];
@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
 
   enableParallelBuilding = true;
 
-  doCheck = true;
+  doCheck = false;
   checkPhase = ''
     runHook preCheck
 
@@ -31,10 +31,6 @@ stdenv.mkDerivation rec {
 
     runHook postCheck
     '';
-
-  installPhase = ''
-    # not possible for the moment
-  '';
 
   meta = with stdenv.lib; {
     description = "A solution to execute your distributed application on top of SimGrid.";
