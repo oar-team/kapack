@@ -5,10 +5,9 @@
 , buildDoc ? true, doxygen, graphviz
 }:
 batsim.overrideAttrs (attrs: rec {
-    name = "batsim_dev";
-    version = "dev";
-    src = (fetchTarball
-    https://gitlab.inria.fr/batsim/batsim/repository/master/archive.tar.gz);
+    name = "batsim-${version}";
+    version = "git";
+    src = fetchTarball "https://gitlab.inria.fr/batsim/batsim/repository/master/archive.tar.gz";
     preConfigure = "rm -rf ./build/*";
     expeToolInputs = with pythonPackages; [
       async-timeout
@@ -34,7 +33,7 @@ batsim.overrideAttrs (attrs: rec {
     ];
     nativeBuildInputs =
     attrs.nativeBuildInputs
-    ++ stdenv.lib.optional clangSupport clang
+    ++ stdenv.lib.optional clangSupport [clang]
     ++ stdenv.lib.optional doTests (testInputs ++ expeToolInputs)
     ++ stdenv.lib.optional buildDoc docInputs;
 
@@ -42,6 +41,9 @@ batsim.overrideAttrs (attrs: rec {
       export CC=clang
       export CXX=clang++
     '';
+
+    # Make autocompletion works for YCM
+    cmakeFlags = attrs.cmakeFlags ++ ["-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"];
 
     enableParallelBuilding = true;
 
