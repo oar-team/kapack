@@ -2,16 +2,16 @@
 { stdenv, buildGoPackage, fetchgit, fetchhg, fetchbzr, fetchsvn }:
 
 buildGoPackage rec {
-  name = "batexpe-unstable-${version}";
-  version = "2018-02-01";
-  rev = "c264ed675093574491b395a006657f16926c7415";
+  name = "batexpe-v${version}";
+  version = "0.2.0";
+  rev = "b9a38fd8f37304894d5d3c88c3ee68569d3883ba";
 
   goPackagePath = "gitlab.inria.fr/batsim/batexpe";
 
   src = fetchgit {
     inherit rev;
     url = "https://gitlab.inria.fr/batsim/batexpe.git";
-    sha256 = "0mn7hqprjwdyigcbnp2pwanc40g724lxjdw9rs3f93fijk1fcqhx";
+    sha256 = "1iam499l38nwckdk0znh8xxn16k29fpcr6pgz4vza43rqa5mrh22";
   };
 
   goDeps = ./deps.nix;
