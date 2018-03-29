@@ -32,8 +32,8 @@
     fetch = {
       type = "git";
       url = "https://github.com/sirupsen/logrus";
-      rev = "768a92a02685ee7535069fc1581341b41bab9b72";
-      sha256 = "1m67cxb6p0zgq0xba63qb4vvy6z5d78alya0vnx5djfixygiij53";
+      rev = "90150a8ed11b6ce285e77e8af2b0109559ce4777";
+      sha256 = "0klgl9nn4lw4s7gi07xqrrmijygd2jjg42kfw9v3a0kd10daqlbh";
     };
   }
   {
@@ -41,8 +41,8 @@
     fetch = {
       type = "git";
       url = "https://go.googlesource.com/crypto";
-      rev = "1875d0a70c90e57f11972aefd42276df65e895b9";
-      sha256 = "1kprrdzr4i4biqn7r9gfxzsmijya06i9838skprvincdb1pm0q2q";
+      rev = "88942b9c40a4c9d203b82b3731787b672d6e809b";
+      sha256 = "0jw1faq8krcxwf1fv3w75apk1ncnykwg8y5ahs5rasjmspvkv8cw";
     };
   }
   {
@@ -50,8 +50,8 @@
     fetch = {
       type = "git";
       url = "https://go.googlesource.com/sys";
-      rev = "37707fdb30a5b38865cfb95e5aab41707daec7fd";
-      sha256 = "1abrr2507a737hdqv4q7pw7hv6ls9pdiq9crhdi52r3gcz6hvizg";
+      rev = "13d03a9a82fba647c21a0ef8fba44a795d0f0835";
+      sha256 = "1lmyd4mk7lbgnxyvr6ndfdfafazp9a4cc6c0a2q2j4n53g2vwbgk";
     };
   }
   {
@@ -59,8 +59,8 @@
     fetch = {
       type = "git";
       url = "https://gopkg.in/yaml.v2";
-      rev = "d670f9405373e636a5a2765eea47fac0c9bc91a4";
-      sha256 = "1w1xid51n8v1mydn2m3vgggw8qgpd5a5sr62snsc77d99fpjsrs0";
+      rev = "86f5ed62f8a0ee96bd888d2efdfd6d4fb100a4eb";
+      sha256 = "064bmkb2cq22agbicn6fmrl5s6msjxjw68qfbfy2ff9slzlfxwq2";
     };
   }
 ]
