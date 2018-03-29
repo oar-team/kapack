@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, cmake, simgrid_batsim, boost,
+{ stdenv, fetchurl, cmake, simgrid, boost,
 gmp, rapidjson, openssl, redox, hiredis, libev, cppzmq, zeromq
 }:
 
@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
     sha256 = "1r5yfj984xbzlgv5zzai2w19z174s7j52nkdzfsgfqqrzzz5g3r2";
   };
 
-  nativeBuildInputs= [ simgrid_batsim  boost  gmp  rapidjson openssl redox
+  nativeBuildInputs= [ simgrid  boost  gmp  rapidjson openssl redox
   hiredis libev cppzmq zeromq cmake ];
 
   cmakeFlags = ["-DCMAKE_BUILD_TYPE=Debug"];

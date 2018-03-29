@@ -17,11 +17,12 @@ let
 
     # Batsim tools an dependencies
     simgrid = callPackage ./simgrid { };
+    simgrid_dev = callPackage ./simgrid/dev.nix { };
     simgrid_batsim = callPackage ./simgrid/batsim.nix { inherit simgrid; };
     simgrid_remotesg = callPackage ./simgrid/remotesg.nix { inherit simgrid; };
     remote_simgrid = callPackage ./remote-simgrid { };
     batexpe = callPackage ./batexpe { };
-    batsim = callPackage ./batsim { };
+    batsim = callPackage ./batsim { simgrid = simgrid_batsim; };
     batsim_dev = callPackage ./batsim/dev.nix {
       batsched = batsched_dev;
       pybatsim = pybatsim_dev;
