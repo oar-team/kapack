@@ -3,7 +3,7 @@ gmp, rapidjson, openssl, redox, hiredis, libev, cppzmq, zeromq
 }:
 
 stdenv.mkDerivation rec {
-  name = "batsim";
+  name = "batsim-${version}";
   version = "2.0.0";
 
   src = fetchurl {

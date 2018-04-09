@@ -23,6 +23,7 @@ let
     remote_simgrid = callPackage ./remote-simgrid { };
     batexpe = callPackage ./batexpe { };
     batsim = callPackage ./batsim { simgrid = simgrid_batsim; };
+    batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim; };
     batsim_dev = callPackage ./batsim/dev.nix {
       batsched = batsched_dev;
       pybatsim = pybatsim_dev;
