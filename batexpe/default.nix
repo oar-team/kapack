@@ -4,16 +4,16 @@
 }:
 
 buildGoPackage rec {
-  name = "batexpe-v${version}";
-  version = "0.3.0";
-  rev = "4b67f973a7c69bc75c08a5311d9c774f8200a2b0";
+  name = "batexpe-${version}";
+  version = "1.0.0";
+  rev = "3e80900c7b4fca8211e059df0fc548d9b32e3477";
 
   goPackagePath = "gitlab.inria.fr/batsim/batexpe";
 
   src = fetchgit {
     inherit rev;
     url = "https://gitlab.inria.fr/batsim/batexpe.git";
-    sha256 = "02003bm8ddyq3fhq817dhq8r9m4dq5waz3ssi3vn6q3s0lj5pdiq";
+    sha256 = "1h3b6j423bcfp3wi1wkjxcd467m61s9hry87ghaf8ayf288py0xh";
   };
 
   runtimeDependencies = [procps iproute];
