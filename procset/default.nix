@@ -1,12 +1,13 @@
 { stdenv, pkgs, fetchgit, pythonPackages}:
 
 pythonPackages.buildPythonPackage rec {
-  name = "procset-git";
+  name = "procset-${version}";
+  version = "v0.4";
 
   src = fetchgit {
     url = "https://gitlab.inria.fr/bleuse/procset.py.git";
-    rev = "c1b3c9ce3c86a10423afa6f29b94ec5da29e7ec5";
-    sha256 = "1fwm3s8rzmkp7nx2xsnyazp8dldhfgw4klafp25p5xxc0qxzimxm";
+    rev = version;
+    sha256 = "07vcsag212ln2fgrr4pj3n4d5gwqrm7wacksg57wq4lf0qggnr5d";
   };
 
   LC_ALL = "en_US.UTF-8";
