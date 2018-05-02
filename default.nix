@@ -15,6 +15,9 @@ let
     pythonPackages = pkgs.python36Packages;
     python = pkgs.python36;
 
+    # use Clang instead of GCC
+    stdenv = pkgs.clangStdenv;
+
     # Batsim tools an dependencies
     simgrid = callPackage ./simgrid { };
     simgrid_dev = callPackage ./simgrid/dev.nix { };
