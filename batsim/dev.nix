@@ -1,31 +1,20 @@
-{ stdenv, batsim
-, clangSupport ? false, clang
-, doTests ? true, batsched, pybatsim, coloredlogs, execo, pythonPackages
-, redis, python, R, rPackages, psmisc, iproute, coreutils
+{ stdenv, batsim, simgrid
+, doTests ? true, batsched, pybatsim, python, pythonPackages, batexpe, redis, coreutils
 , buildDoc ? true, doxygen, graphviz
 }:
-batsim.overrideAttrs (attrs: rec {
+(batsim.override {inherit simgrid;}).overrideAttrs (attrs: rec {
     name = "batsim-${version}";
     version = "git";
     src = fetchTarball "https://gitlab.inria.fr/batsim/batsim/repository/master/archive.tar.gz";
     preConfigure = "rm -rf ./build/*";
-    expeToolInputs = with pythonPackages; [
-      async-timeout
-      coloredlogs
-      pandas
-      pyyaml
-      execo
+    expeToolInputs = [
+      pythonPackages.pandas
+      batexpe
     ];
     testInputs = [
       (python.withPackages (ps: [ pybatsim ]))
       batsched
       redis
-      R
-      rPackages.ggplot2
-      rPackages.dplyr
-      rPackages.scales
-      psmisc # for pstree
-      iproute # for ss
     ];
     docInputs = [
       doxygen
@@ -33,17 +22,8 @@ batsim.overrideAttrs (attrs: rec {
     ];
     nativeBuildInputs =
     attrs.nativeBuildInputs
-    ++ stdenv.lib.optional clangSupport [clang]
     ++ stdenv.lib.optional doTests (testInputs ++ expeToolInputs)
     ++ stdenv.lib.optional buildDoc docInputs;
-
-    configurePhase = stdenv.lib.optionalString clangSupport ''
-      export CC=clang
-      export CXX=clang++
-    '';
-
-    # Make autocompletion works for YCM
-    cmakeFlags = attrs.cmakeFlags ++ ["-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"];
 
     enableParallelBuilding = true;
 

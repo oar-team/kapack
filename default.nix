@@ -27,6 +27,7 @@ let
     batsim = callPackage ./batsim { simgrid = simgrid_batsim; };
     batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim; };
     batsim_dev = callPackage ./batsim/dev.nix {
+      simgrid = simgrid_dev;
       batsched = batsched_dev;
       pybatsim = pybatsim_dev;
     };
