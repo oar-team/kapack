@@ -43,6 +43,7 @@ let
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
     procset = callPackage ./procset { };
+    procset_dev = callPackage ./procset/dev.nix { };
     evalys = callPackage ./evalys { };
     execo = callPackage ./execo { };
     # TODO push this in nixpkgs
