@@ -19,6 +19,7 @@ let
     stdenv = pkgs.clangStdenv;
 
     # Batsim tools an dependencies
+    # FIXME: Maybe use upstream Simgrid instead
     simgrid = callPackage ./simgrid { };
     simgrid_dev = callPackage ./simgrid/dev.nix { };
     simgrid_batsim = callPackage ./simgrid/batsim.nix { inherit simgrid; };
@@ -51,7 +52,7 @@ let
     procset_dev = callPackage ./procset/dev.nix { };
     evalys = callPackage ./evalys { };
     execo = callPackage ./execo { };
-    # TODO push this in nixpkgs
+    # TODO push this in nixpkgs (not even used here anymore)
     coloredlogs = callPackage ./coloredlogs { inherit humanfriendly; };
     humanfriendly = callPackage ./humanfriendly { };
 

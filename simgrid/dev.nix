@@ -6,5 +6,7 @@ simgrid.overrideAttrs (oldAttrs: rec {
 
   patches = [];
   src = fetchTarball "https://github.com/simgrid/simgrid/archive/master.tar.gz";
-  }
-)
+
+  # Avoid debug information striping
+  dontStrip = true;
+})
