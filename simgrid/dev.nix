@@ -1,6 +1,6 @@
 { simgrid }:
 
-simgrid.overrideAttrs (oldAttrs: rec {
+(simgrid.override { debug = true; }).overrideAttrs (oldAttrs: rec {
   name = "simgrid-${version}";
   version = "git";
 
@@ -9,4 +9,5 @@ simgrid.overrideAttrs (oldAttrs: rec {
 
   # Avoid debug information striping
   dontStrip = true;
+  doCheck = false;
 })
