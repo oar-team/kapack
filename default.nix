@@ -15,8 +15,9 @@ let
     pythonPackages = pkgs.python36Packages;
     python = pkgs.python36;
 
-    # use Clang instead of GCC
-    stdenv = pkgs.clangStdenv;
+    # use Clang instead of GCC 
+    # NOTE: Clang seems to optimize things even with -O0 so don't use this for debug
+    #stdenv = pkgs.clangStdenv;
 
     # Batsim tools an dependencies
     # FIXME: Maybe use upstream Simgrid instead
