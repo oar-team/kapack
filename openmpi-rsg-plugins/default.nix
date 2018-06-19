@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
     sha256 = "07n0vc0xpxlnb36qfn439iy475nl7g19pqfx4r42v35f1cl1kcm0";
   };
 
-  nativeBuildInputs = [ simgrid_remotesg boost zeromq cmake thrift ];
+  nativeBuildInputs = [ simgrid_remotesg boost zeromq cmake thrift remote_simgrid];
   buildInputs = [ glibcLocales ];
 
   # Not expected to compile yet
