@@ -28,6 +28,8 @@ let
     remote_simgrid = callPackage ./remote-simgrid { };
     remote_simgrid_dev = callPackage ./remote-simgrid/dev.nix {
       remote_simgrid = remote_simgrid; };
+    openmpi_rsg_plugins = callPackage ./openmpi-rsg-plugins {};
+    openmpi_rsg_plugins_dev = callPackage ./openmpi-rsg-plugins/dev.nix {};
     pajeng = callPackage ./pajeng { };
     batexpe = callPackage ./batexpe { };
     batsim = callPackage ./batsim { simgrid = simgrid_batsim; };
