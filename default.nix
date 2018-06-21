@@ -79,6 +79,10 @@ let
     # Misc.
     cgvg = callPackage ./cgvg { };
     cgvg_mpoquet = callPackage ./cgvg/mpoquet.nix { };
+    yamldiff = callPackage ./yamldiff { };
+    gocov = callPackage ./gocov { };
+    gocovmerge = callPackage ./gocovmerge { };
+    gocov_xml = callPackage ./gocov-xml { };
 
     evalysEnv = (python.withPackages (ps: [ ps.ipython evalys ])).env;
 
