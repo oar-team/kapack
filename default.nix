@@ -15,7 +15,7 @@ let
     pythonPackages = pkgs.python36Packages;
     python = pkgs.python36;
 
-    # use Clang instead of GCC 
+    # use Clang instead of GCC
     # NOTE: Clang seems to optimize things even with -O0 so don't use this for debug
     #stdenv = pkgs.clangStdenv;
 
