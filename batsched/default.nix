@@ -4,11 +4,11 @@ zeromq}:
 
 stdenv.mkDerivation rec {
   name = "batsched-${version}";
-  version = "1.2.0";
+  version = "1.2.1";
 
   src = fetchurl {
     url = "https://gitlab.inria.fr/batsim/batsched/repository/v${version}/archive.tar.gz";
-    sha256 = "0ph3xgwlgrv3na3srnwqx2yxyw67kd2wsv5v5vdswdx9vk6h4al2";
+    sha256 = "0apdbx48ywazi9y8q7hylix8ngw52qvr11i5jq8c4pl6ip1hbym3";
   };
 
   nativeBuildInputs= [ simgrid_batsim  boost  gmp  rapidjson openssl redox hiredis libev cppzmq zeromq cmake ];
