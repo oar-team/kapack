@@ -2,9 +2,9 @@
 
 (simgrid.override { debug = true; }).overrideAttrs (oldAttrs: rec {
   name = "simgrid-${version}";
-  version = "git";
+  version = "dev";
 
-  patches = [];
+  patches = [ ./fix_smpi_host_init.patch ];
   src = fetchTarball "https://github.com/simgrid/simgrid/archive/master.tar.gz";
 
   # Avoid debug information striping
