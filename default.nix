@@ -23,6 +23,7 @@ let
     # FIXME: Maybe use upstream Simgrid instead
     simgrid = callPackage ./simgrid { };
     simgrid_dev = callPackage ./simgrid/dev.nix { };
+    simgrid_dev_batsim = callPackage ./simgrid/dev_batsim.nix { };
     simgrid_batsim = callPackage ./simgrid/batsim.nix { inherit simgrid; };
     simgrid_remotesg = callPackage ./simgrid/remotesg.nix { inherit simgrid; };
     simgrid_temperature = callPackage ./simgrid/temperature.nix { inherit simgrid; };
@@ -36,6 +37,11 @@ let
     batsim = callPackage ./batsim { simgrid = simgrid_batsim; };
     batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim; };
     batsim_dev = callPackage ./batsim/dev.nix {
+      simgrid = simgrid_dev_batsim;
+      batsched = batsched_dev;
+      pybatsim = pybatsim_dev;
+    };
+    batsim_dev_upstreamsg = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev;
       batsched = batsched_dev;
       pybatsim = pybatsim_dev;
