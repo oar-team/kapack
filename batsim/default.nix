@@ -1,5 +1,6 @@
 { stdenv, fetchurl, cmake, simgrid, boost,
-gmp, rapidjson, openssl, redox, hiredis, libev, cppzmq, zeromq
+gmp, rapidjson, openssl, redox, hiredis, libev, cppzmq, zeromq, docopt_cpp,
+pugixml
 }:
 
 stdenv.mkDerivation rec {
@@ -12,7 +13,7 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs= [ simgrid  boost  gmp  rapidjson openssl redox
-  hiredis libev cppzmq zeromq cmake ];
+  hiredis libev cppzmq zeromq docopt_cpp pugixml cmake ];
 
   cmakeFlags = ["-DCMAKE_BUILD_TYPE=Debug"];
 
