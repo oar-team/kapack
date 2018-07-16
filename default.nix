@@ -27,9 +27,10 @@ let
     simgrid_batsim = callPackage ./simgrid/batsim.nix { inherit simgrid; };
     simgrid_remotesg = callPackage ./simgrid/remotesg.nix { inherit simgrid; };
     simgrid_temperature = callPackage ./simgrid/temperature.nix { inherit simgrid; };
-    remote_simgrid = callPackage ./remote-simgrid { };
+    remote_simgrid = callPackage ./remote-simgrid {
+      simgrid = simgrid_remotesg; };
     remote_simgrid_dev = callPackage ./remote-simgrid/dev.nix {
-      remote_simgrid = remote_simgrid; };
+      simgrid = simgrid_dev_working; };
     openmpi_rsg_plugins = callPackage ./openmpi-rsg-plugins {};
     openmpi_rsg_plugins_dev = callPackage ./openmpi-rsg-plugins/dev.nix {};
     pajeng = callPackage ./pajeng { };

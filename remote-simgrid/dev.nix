@@ -1,6 +1,6 @@
-{ remote_simgrid }:
+{ remote_simgrid, simgrid }:
 
-remote_simgrid.overrideAttrs (oldAttrs: rec {
+(remote_simgrid.override {inherit simgrid;}).overrideAttrs (oldAttrs: rec {
   name = "remote-simgrid-${version}";
   version = "git";
 

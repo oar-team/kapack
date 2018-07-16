@@ -1,4 +1,4 @@
-{ stdenv, fetchFromGitHub, cmake, simgrid_remotesg, boost, cppzmq, zeromq, thrift, glibcLocales }:
+{ stdenv, fetchFromGitHub, cmake, simgrid, boost, cppzmq, zeromq, thrift, glibcLocales }:
 
 stdenv.mkDerivation rec {
   name = "remote-simgrid-${version}";
@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
     sha256 = "01vnhrjprf38v5k4wqqj3hxybsd5k9nxvpmq28kjg00jk4c7lqja";
   };
 
-  nativeBuildInputs = [ simgrid_remotesg boost cppzmq zeromq cmake thrift ];
+  nativeBuildInputs = [ simgrid boost cppzmq zeromq cmake thrift ];
   buildInputs = [ glibcLocales ];
 
   cmakeFlags = ["-DCMAKE_BUILD_TYPE=Debug"
