@@ -1,6 +1,13 @@
 {
-  pkgs ? import (
-    fetchTarball "https://github.com/NixOS/nixpkgs/archive/17.09.tar.gz") {},
+  pkgs ? (let
+      hostPkgs = import <nixpkgs> {};
+      pinnedVersion = hostPkgs.lib.importJSON ./nixpkgs-18.03.json;
+      pinnedPkgs = hostPkgs.fetchFromGitHub {
+        owner = "NixOS";
+        repo = "nixpkgs-channels";
+        inherit (pinnedVersion) rev sha256;
+      };
+    in import pinnedPkgs {}),
     #pkgs-unstable ? import (
     #pkfetchTarball "https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz") {},
   mylib ? import ./mylib {}
