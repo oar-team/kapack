@@ -32,7 +32,10 @@ let
     remote_simgrid_dev = callPackage ./remote-simgrid/dev.nix {
       simgrid = simgrid_dev_working; };
     openmpi_rsg_plugins = callPackage ./openmpi-rsg-plugins {};
-    openmpi_rsg_plugins_dev = callPackage ./openmpi-rsg-plugins/dev.nix {};
+    openmpi_rsg_plugins_dev = callPackage ./openmpi-rsg-plugins/dev.nix {
+      simgrid = simgrid_dev_working;
+      remote_simgrid = remote_simgrid_dev;
+    };
     pajeng = callPackage ./pajeng { };
     batexpe = callPackage ./batexpe { };
     batsim = callPackage ./batsim { simgrid = simgrid_batsim; };

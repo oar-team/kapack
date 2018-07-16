@@ -1,6 +1,6 @@
-{ openmpi_rsg_plugins, remote_simgrid }:
+{ openmpi_rsg_plugins, simgrid, remote_simgrid }:
 
-(openmpi_rsg_plugins.override {inherit remote_simgrid;}).overrideAttrs (oldAttrs: rec {
+(openmpi_rsg_plugins.override {inherit simgrid; inherit remote_simgrid; }).overrideAttrs (oldAttrs: rec {
   name = "openmpi-rsg-plugins-${version}";
   version = "git";
 

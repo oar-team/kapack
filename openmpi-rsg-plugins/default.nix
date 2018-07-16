@@ -1,4 +1,4 @@
-{ stdenv, fetchgit, cmake, simgrid_remotesg, remote_simgrid,
+{ stdenv, fetchgit, cmake, simgrid, remote_simgrid,
   boost, cppzmq, zeromq, thrift, glibcLocales }:
 
 stdenv.mkDerivation rec {
@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
     sha256 = "07n0vc0xpxlnb36qfn439iy475nl7g19pqfx4r42v35f1cl1kcm0";
   };
 
-  nativeBuildInputs = [ simgrid_remotesg boost zeromq cmake thrift remote_simgrid];
+  nativeBuildInputs = [ simgrid boost zeromq cmake thrift remote_simgrid];
   buildInputs = [ glibcLocales ];
 
   # Not expected to compile yet
@@ -19,7 +19,7 @@ stdenv.mkDerivation rec {
 
   # Environment variables used by cmake (convenient for shell)
   RSG_INSTALL_PATH = "${remote_simgrid}";
-  SimGrid_PATH = "${simgrid_remotesg}";
+  SimGrid_PATH = "${simgrid}";
 
   enableParallelBuilding = true;
 
