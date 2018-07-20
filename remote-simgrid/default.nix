@@ -1,14 +1,14 @@
-{ stdenv, fetchFromGitHub, cmake, simgrid, boost, cppzmq, zeromq, thrift, glibcLocales }:
+{ stdenv, fetchgit, cmake, simgrid, boost, cppzmq, zeromq, thrift, glibcLocales }:
 
 stdenv.mkDerivation rec {
   name = "remote-simgrid-${version}";
-  version = "0.1.0";
+  version = "0.2.0";
+  rev = "v${version}";
 
-  src = fetchFromGitHub {
-    owner = "simgrid";
-    repo = "remote-simgrid";
-    rev = "a223dadbed4bc1aaa248a857c980c4367d2652b6";
-    sha256 = "01vnhrjprf38v5k4wqqj3hxybsd5k9nxvpmq28kjg00jk4c7lqja";
+  src = fetchgit {
+    inherit rev;
+    url = "https://github.com/simgrid/remote-simgrid";
+    sha256 = "0c77h7b4xypp7a1s5kbkp3zwi7vzzkiygkpg6i1dgjqk0gxsnhfr";
   };
 
   nativeBuildInputs = [ simgrid boost cppzmq zeromq cmake thrift ];
