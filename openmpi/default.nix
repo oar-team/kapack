@@ -40,6 +40,10 @@ in clangStdenv.mkDerivation rec {
 
   enableParallelBuilding = true;
 
+  preBuild = ''
+    patchShebangs .
+  '';
+
   postInstall = ''
     rm -f $out/lib/*.la
 
