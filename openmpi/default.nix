@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, gfortran, perl, libnl, rdma-core, zlib
+{ clangStdenv, fetchurl, gfortran, perl, libnl, rdma-core, zlib
 
 # Actually, rev from util-linux is desired, not eject at all
 , eject
@@ -14,7 +14,7 @@ let
   majorVersion = "3.1";
   minorVersion = "1";
 
-in stdenv.mkDerivation rec {
+in clangStdenv.mkDerivation rec {
   name = "openmpi-3.1.1";
 
   src = fetchurl {
@@ -26,13 +26,13 @@ in stdenv.mkDerivation rec {
     patchShebangs ./
   '';
 
-  buildInputs = with stdenv; [ gfortran zlib ]
+  buildInputs = with clangStdenv; [ gfortran zlib ]
     ++ lib.optional isLinux libnl
     ++ lib.optional (isLinux || isFreeBSD) rdma-core;
 
   nativeBuildInputs = [ perl eject ];
 
-  configureFlags = with stdenv; []
+  configureFlags = with clangStdenv; []
     ++ lib.optional isLinux  "--with-libnl=${libnl.dev}"
     ++ lib.optional enableSGE "--with-sge"
     ++ lib.optional enablePrefix "--enable-mpirun-prefix-by-default"
@@ -61,7 +61,7 @@ in stdenv.mkDerivation rec {
 
   doCheck = true;
 
-  meta = with stdenv.lib; {
+  meta = with clangStdenv.lib; {
     homepage = http://www.open-mpi.org/;
     description = "Open source MPI-3 implementation";
     longDescription = "The Open MPI Project is an open source MPI-3 implementation that is developed and maintained by a consortium of academic, research, and industry partners. Open MPI is therefore able to combine the expertise, technologies, and resources from all across the High Performance Computing community in order to build the best MPI library available. Open MPI offers advantages for system and software vendors, application developers and computer science researchers.";
