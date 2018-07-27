@@ -1,5 +1,5 @@
 { clangStdenv, fetchgit, cmake, simgrid, remote_simgrid,
-  boost, cppzmq, zeromq, thrift, glibcLocales, openmpi, jansson }:
+  boost, cppzmq, glibcLocales, openmpi, jansson }:
 
 clangStdenv.mkDerivation rec {
   name = "openmpi-rsg-plugins-${version}";
@@ -11,8 +11,7 @@ clangStdenv.mkDerivation rec {
     sha256 = "1yyzdv1995lizl7n85i0d2ibkxslx4cpjkncwgkkfdkjc9fhkgqw";
   };
 
-  nativeBuildInputs = [ simgrid boost zeromq cmake thrift jansson
-    remote_simgrid openmpi];
+  nativeBuildInputs = [ remote_simgrid boost cmake jansson openmpi ];
   buildInputs = [ glibcLocales ];
 
   # Not expected to compile yet

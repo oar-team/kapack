@@ -11,7 +11,8 @@ stdenv.mkDerivation rec {
     sha256 = "0c77h7b4xypp7a1s5kbkp3zwi7vzzkiygkpg6i1dgjqk0gxsnhfr";
   };
 
-  nativeBuildInputs = [ simgrid boost cppzmq zeromq cmake thrift ];
+  nativeBuildInputs = [ boost cmake ];
+  propagatedBuildInputs = [ simgrid zeromq cppzmq thrift ];
   buildInputs = [ glibcLocales ];
 
   cmakeFlags = ["-DCMAKE_BUILD_TYPE=Debug"
