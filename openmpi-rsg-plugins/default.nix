@@ -18,8 +18,9 @@ clangStdenv.mkDerivation rec {
     sha256 = "1yyzdv1995lizl7n85i0d2ibkxslx4cpjkncwgkkfdkjc9fhkgqw";
   };
 
-  nativeBuildInputs = [ remote_simgrid boost cmake jansson openmpi which ];
+  nativeBuildInputs = [ boost cmake openmpi which ];
   buildInputs = [ glibcLocales ];
+  propagatedBuildInputs = [ remote_simgrid jansson ];
 
   # Environment variables used by cmake (convenient for shell)
   SimGrid_PATH = "${simgrid}";
