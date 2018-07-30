@@ -1,5 +1,8 @@
 { clangStdenv, fetchurl, gfortran, perl, libnl, rdma-core, zlib
 
+# Needed by autoconf.pl to generate configure
+, autoconf, libtool, automake, flex
+
 # Actually, rev from util-linux is desired, not eject at all
 , eject
 
@@ -26,7 +29,10 @@ in clangStdenv.mkDerivation rec {
     patchShebangs ./
   '';
 
+  autoconfInputs = [ autoconf libtool automake flex ];
+
   buildInputs = with clangStdenv; [ gfortran zlib ]
+    ++ autoconfInputs
     ++ lib.optional isLinux libnl
     ++ lib.optional (isLinux || isFreeBSD) rdma-core;
 
@@ -40,10 +46,17 @@ in clangStdenv.mkDerivation rec {
 
   enableParallelBuilding = true;
 
-  preBuild = ''
+  # Patch shebangs of all files
+  prePatch = ''
     patchShebangs .
   '';
 
+  # Force the regeneration of configure
+  preConfigure = ''
+    ./autogen.pl --force
+  '';
+
+  # Keep generated sources so that plugins can be added
   postInstall = ''
     rm -f $out/lib/*.la
 
