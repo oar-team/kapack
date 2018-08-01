@@ -1,4 +1,4 @@
-{ clangStdenv, fetchgit, cmake, simgrid, remote_simgrid,
+{ stdenv, fetchgit, cmake, simgrid, remote_simgrid,
   boost, cppzmq, glibcLocales, openmpi, jansson, which
 
 # Print btl logs?
@@ -8,7 +8,7 @@
 , printOdlsLogs ? true
 }:
 
-clangStdenv.mkDerivation rec {
+stdenv.mkDerivation rec {
   name = "openmpi-rsg-plugins-${version}";
   version = "unreleased";
 
@@ -41,7 +41,7 @@ clangStdenv.mkDerivation rec {
       src/odls/rsg/odls_rsg_module.c
   '';
 
-  cmakeFlags = with clangStdenv; ["-DCMAKE_BUILD_TYPE=Debug"]
+  cmakeFlags = with stdenv; ["-DCMAKE_BUILD_TYPE=Debug"]
     ++ lib.optional printBtlLogs "-Denable_debug_btl_self=ON"
     ++ lib.optional printOdlsLogs "-Denable_debug_odls_rsg=ON"
   ;
@@ -55,7 +55,7 @@ clangStdenv.mkDerivation rec {
 
   enableParallelBuilding = true;
 
-  meta = with clangStdenv.lib; {
+  meta = with stdenv.lib; {
     description = "OpenMPI plugins to use Remote SimGrid as network backend.";
     homepage    = "https://gitlab.inria.fr/mpoquet/openmpi-rsg-plugins";
     platforms   = platforms.unix;

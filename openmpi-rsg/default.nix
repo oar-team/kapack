@@ -3,17 +3,20 @@
 stdenv.mkDerivation rec {
 # name = "openmpi-3.1.1";
   name = "openmpi-rsg-u"; # BEWARE: Length must equal openmpi package's
-  src = "${openmpi_rsg_plugins}"; # We have no source here...
+
+  # This package has no source. It's just a mix of OpenMPI + plugins
+  phases = [ "buildPhase" "installPhase" ];
 
   nativeBuildInputs = [ python rsync ];
   buildInputs = [ openmpi openmpi_rsg_plugins ];
-  installPhase = ''
+
+  buildPhase = ''
     mkdir -p $TMP/out/lib/openmpi
 
-    # Copy all OpenmMPI files into the build directory
+    echo "Copy OpenMPI files into the build directory"
     rsync -a ${openmpi}/* $TMP/out --exclude ompi --exclude orte --exclude opal
 
-    # Hack the hardcoded install path in OpenMPI binaries.
+    echo "Hack the hardcoded install path of the OpenMPI binaries"
     # This is done in python, for sanity's sake
     export BUILDDIR=$TMP
     export OPENMPI=${openmpi}
@@ -47,20 +50,20 @@ stdenv.mkDerivation rec {
         old_mode = os.stat(filename)[ST_MODE]
         changed_mode = False
         if old_mode & S_IWUSR == 0:
-            print("Setting write permission to {}".format(filename))
             changed_mode = True
             os.chmod(filename, old_mode | S_IWUSR)
 
-        print('hack {}: {} -> {}'.format(filename, openmpi_path, out_path))
+        # print('hack OpenMPI path in {}'.format(filename, openmpi_path,
+        #     out_path))
 
         # Regular (non-directory, non-links) files
         with open(filename, 'rb+') as f:
-            print('File opened!')
             # Just read the content
             content = f.read()
 
             # Hack the path into the file content
-            content = content.replace(openmpi_path.encode('ascii'), out_path.encode('ascii'))
+            content = content.replace(openmpi_path.encode('ascii'),
+                out_path.encode('ascii'))
 
             # Update content
             f.seek(0, 0)
@@ -72,10 +75,12 @@ stdenv.mkDerivation rec {
     )
     python -c "$python_cmd"
 
-    # Copy plugins
+    echo "Copy plugins into the build directory"
     rsync -a ${openmpi_rsg_plugins}/lib/* $TMP/out/lib
+  '';
 
-    # Copy the temporary output directory to the nix store
+  installPhase = ''
+    echo "Move the temporary directory into the nix store"
     rsync -a $TMP/out/* $out
   '';
 }

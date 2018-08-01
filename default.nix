@@ -41,7 +41,7 @@ let
     openmpi = callPackage ./openmpi { };
     openmpi_dev = callPackage ./openmpi/dev_pinned.nix { };
     openmpi_rsg = callPackage ./openmpi-rsg { };
-    openmpi_rsg_dev = callPackage ./openmpi-rsg/dev.nix {
+    openmpi_rsg_dev = callPackage ./openmpi-rsg {
       openmpi = openmpi_dev;
       openmpi_rsg_plugins = openmpi_rsg_plugins_dev;
     };
@@ -49,9 +49,10 @@ let
       simgrid = simgrid_remotesg;
       remote_simgrid = remote_simgrid;
     };
-    openmpi_rsg_plugins_dev = callPackage ./openmpi-rsg-plugins/dev.nix {
+    openmpi_rsg_plugins_dev = callPackage ./openmpi-rsg-plugins/dev_pinned.nix {
       simgrid = simgrid_dev_working;
       remote_simgrid = remote_simgrid_dev;
+      openmpi = openmpi_dev;
     };
     pajeng = callPackage ./pajeng { };
     batexpe = callPackage ./batexpe { };
