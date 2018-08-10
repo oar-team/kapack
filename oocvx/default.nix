@@ -1,4 +1,4 @@
-{ stdenv, fetchFromGitHub, ocaml, findlib, ocamlbuild, opam, ocaml_batteries, sexplib, csv, cmdliner, topkg}:
+{ stdenv, fetchFromGitHub, ocaml, findlib, ocamlbuild, opam, batteries, sexplib, csv, cmdliner, topkg}:
 
 stdenv.mkDerivation rec {
   name = "oocvx-${version}";
@@ -15,7 +15,7 @@ stdenv.mkDerivation rec {
 
   buildInputs = [ ocaml findlib ocamlbuild topkg opam  ];
 
-  propagatedBuildInputs = [ ocaml_batteries sexplib cmdliner csv];
+  propagatedBuildInputs = [ batteries sexplib cmdliner csv];
 
   inherit (topkg) buildPhase installPhase;
 

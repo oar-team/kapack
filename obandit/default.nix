@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, ocaml, findlib, ocamlbuild, opam, ocaml_batteries, topkg }:
+{ stdenv, fetchurl, ocaml, findlib, ocamlbuild, opam, batteries, topkg }:
 
 stdenv.mkDerivation rec {
 	name = "obandit-${version}";
@@ -12,7 +12,7 @@ stdenv.mkDerivation rec {
 
 	buildInputs = [ ocaml findlib ocamlbuild topkg opam ];
 
-  propagatedBuildInputs = [ ocaml_batteries ];
+  propagatedBuildInputs = [ batteries ];
 
 	inherit (topkg) buildPhase installPhase;
 
