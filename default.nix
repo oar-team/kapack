@@ -77,6 +77,7 @@ let
     batsched_dev = callPackage ./batsched/dev.nix { };
     pybatsim = callPackage ./pybatsim { };
     pybatsim_dev = callPackage ./pybatsim/dev.nix { };
+    intervalset = callPackage ./intervalset { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
     procset = callPackage ./procset { };
