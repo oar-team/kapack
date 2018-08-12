@@ -10,6 +10,8 @@ stdenv.mkDerivation rec {
     sha256 = "1lwa2p65yl9jbvvcb0jpg9pdnci5grlwwrl92iczr0wwmshh6sny";
   };
 
+  preConfigure = "rm -rf ./build/*";
+
   nativeBuildInputs = [ cmake ];
   buildInputs = [ boost ];
 
