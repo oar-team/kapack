@@ -1,4 +1,4 @@
-{ stdenv, fetchgit, cmake, boost }:
+{ stdenv, fetchgit, cmake, boost, gtest }:
 
 stdenv.mkDerivation rec {
   version = "unstable";
@@ -6,13 +6,19 @@ stdenv.mkDerivation rec {
 
   src = fetchgit {
     url = "https://framagit.org/batsim/intervalset.git";
-    rev = "99bc8e3e06372b3dd8c93db5fc472f9306459f91";
-    sha256 = "1lwa2p65yl9jbvvcb0jpg9pdnci5grlwwrl92iczr0wwmshh6sny";
+    rev = "0df49d34c0906beb750d2aa10b89fdd7d59c084a";
+    sha256 = "01jzid21sp4yw8s4vybm7xdq3q1wv9fr2shf5hxzahlh4x8bzq0x";
   };
 
-  preConfigure = "rm -rf ./build/*";
+  preConfigure = ''
+    # Always build on a clean directory
+    rm -rf ./build/*
 
-  nativeBuildInputs = [ cmake ];
+    # Enable linking to libintervalset.so (done by tests)
+    export LD_LIBRARY_PATH="$PWD/build"
+  '';
+
+  nativeBuildInputs = [ cmake gtest ];
   buildInputs = [ boost ];
 
   meta = with stdenv.lib; {
