@@ -87,6 +87,7 @@ let
     # TODO push this in nixpkgs (not even used here anymore)
     coloredlogs = callPackage ./coloredlogs { inherit humanfriendly; };
     humanfriendly = callPackage ./humanfriendly { };
+    gcovr = callPackage ./gcovr { };
 
     # l2sched tools and dependencies
     nnpy = callPackage ./nnpy { };
