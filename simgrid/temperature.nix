@@ -1,16 +1,15 @@
-{ simgrid, fetchFromGitHub }:
+{ simgrid_dev_working, fetchgit }:
 
-simgrid.overrideAttrs (oldAttrs: rec {
+simgrid_dev_working.overrideAttrs (oldAttrs: rec {
   name = "simgrid-temperature";
 
-  src = fetchFromGitHub {
-    owner = "simgrid";
-    repo = "simgrid";
-    rev = "6f5199d14e3f1b6505d3e264257bfe64bd991ca7";
-    sha256 = "1al6pi1h0sgwhjshmkckb3spjxg1y1njlrnd3j0jbk4mp8g3m4j6";
-  };
+  #src = /home/mommess/Documents/BatSimGrid/simgrid ;
+  #patches = [];
+  patches = [ ./temperature-working.patch ];
 
-  patches = [ ./temperature.patch ];
+  #Simgrid-working
+  #rev = "b88233071eaaef45c854e84a8c7b460ab5793b7d";
+  #src = fetchTarball "https://github.com/simgrid/simgrid/archive/${rev}.tar.gz";
 
-  doCheck = false;
+  #doCheck = false;
 })

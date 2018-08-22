@@ -1,10 +1,10 @@
 diff --git a/include/simgrid/plugins/temperature.h b/include/simgrid/plugins/temperature.h
 new file mode 100644
-index 0000000..51763ed
+index 000000000..75c1ee7be
 --- /dev/null
 +++ b/include/simgrid/plugins/temperature.h
-@@ -0,0 +1,28 @@
-+/* Copyright (c) 2016-2018. The SimGrid Team. All rights reserved.          */
+@@ -0,0 +1,30 @@
++/* Copyright (c) 2016-2017. The SimGrid Team. All rights reserved.          */
 +
 +/* This program is free software; you can redistribute it and/or modify it
 + * under the terms of the license (GNU LGPL) which comes with this package. */
@@ -20,6 +20,7 @@ index 0000000..51763ed
 +XBT_PUBLIC void sg_host_temperature_plugin_init();
 +XBT_PUBLIC double sg_host_get_processor_temperature(sg_host_t host);
 +XBT_PUBLIC double sg_host_get_air_temperature(sg_host_t host);
++XBT_PUBLIC void sg_host_set_outside_temperature(sg_host_t host, double temperature);
 +XBT_PUBLIC void sg_host_update_temperatures(sg_host_t host);
 +
 +
@@ -27,18 +28,19 @@ index 0000000..51763ed
 +#define MSG_host_temperature_plugin_init() sg_host_temperature_plugin_init()
 +#define MSG_host_get_processor_temperature(host) sg_host_get_processor_temperature(host)
 +#define MSG_host_get_air_temperature(host) sg_host_get_air_temperature(host)
++#define MSG_host_set_outside_temperature(host, temperature) sg_host_set_outside_temperature(host, temperature)
 +#define MSG_host_update_temperatures(host) sg_host_update_temperatures(host)
 +
 +SG_END_DECL()
 +
 +#endif
 \ No newline at end of file
-diff --git a/src/surf/plugins/host_temperature.cpp b/src/surf/plugins/host_temperature.cpp
+diff --git a/src/plugins/host_temperature.cpp b/src/plugins/host_temperature.cpp
 new file mode 100644
-index 0000000..19bc816
+index 000000000..1d3515881
 --- /dev/null
-+++ b/src/surf/plugins/host_temperature.cpp
-@@ -0,0 +1,456 @@
++++ b/src/plugins/host_temperature.cpp
+@@ -0,0 +1,495 @@
 +/* Copyright (c) 2010-2018. The SimGrid Team. All rights reserved.          */
 +
 +/* This program is free software; you can redistribute it and/or modify it
@@ -46,16 +48,18 @@ index 0000000..19bc816
 +
 +#include "simgrid/plugins/temperature.h"
 +#include "simgrid/plugins/energy.h"
++#include "simgrid/s4u/Engine.hpp"
++#include "src/include/surf/surf.hpp"
 +#include "src/plugins/vm/VirtualMachineImpl.hpp"
 +#include "src/surf/cpu_interface.hpp"
-+#include "simgrid/s4u/Engine.hpp"
 +
 +#include <boost/algorithm/string/classification.hpp>
 +#include <boost/algorithm/string/split.hpp>
 +
-+#include <string> //TODO
-+//#include <utility>//TODO
-+//#include <vector>//TODO
++#include <string>
++#include <cmath>
++
++SIMGRID_REGISTER_PLUGIN(host_temperature, "CPU and ambient temperature.", &sg_host_temperature_plugin_init)
 +
 +/** @addtogroup plugin_temperature
 +
@@ -105,22 +109,24 @@ index 0000000..19bc816
 +  double getProcessorTemperature();
 +  double getAirTemperature();
 +  double getEnergyConsumed();
++  void setOutsideTemperature(double temperature);
++  double getOutsideTemperature();
 +  void update();
 +
 +private:
 +  simgrid::s4u::Host *host = nullptr;
 +public:
-+  double air_temperature = 20.0;/*< Temperature of the cooling air (in celsius) where the host is located >*/
-+  double proc_temperature = air_temperature; /*< Current temperature (in celcius) of the host >*/
++  double air_temperature = 20.0;/*< Temperature of the cooling air (in Celsius) where the host is located >*/
++  double proc_temperature = air_temperature; /*< Current temperature (in Celsius) of the host >*/
++  double outside_temperature = 15.0;/*< Temperature of the outside world (in Celsius). Used to model the heat transfer b/w the air and the outside world >*/
 +  
-+  double proc_magic_number = 3; /*<OR MAYBE 5 OR 8 ? Thermal conductivity of proc * area / thickness (in Watt/Kelvin)>*/
-+  double processor_specific_heat = 0.39; /*< specific heat of the processor, defaulted to the value of copper in joules/(grams*kelvin)>*/
-+  double processor_mass = 150; /*< processor mass in grams >*/
++  double proc_magic_number = 1.6; /*< Thermal conductivity of proc * area / thickness (in Watt/Kelvin)>*/
++  double processor_specific_heat = 0.39; /*< Specific heat of the processor, defaulted to the value of copper in joules/(grams*kelvin)>*/
++  double processor_mass = 150; /*< Processor mass in grams >*/
 +
-+  double air_specific_heat = 1.005; /*< specific heat of the air, defaulted to the value of air in joules/(grams*kelvin)>*/
-+  double air_magic_number = 2.0; /*< cooling power between the air and exterior environment per degree above 15°C; approximately .5 degree every 30 minutes at 20°C for a window of 1m^2
-+                                     in general air_magic_number = 2 * area of windows in the room. >*/
-+  double air_mass = 36000; /*< air mass in grams, arbitrary values for a room of 30m^3 of air at 20°C >*/
++  double air_specific_heat = 1.005; /*< Specific heat of the air, defaulted to the value of air in joules/(grams*kelvin)>*/
++  double air_magic_number = 10.4; /*< Cooling power between the air and outside world (roughly air_magic_number = 2 * area of windows in the room) >*/
++  double air_mass = 36000; /*< Air mass in grams, arbitrary values for a room of 30m^3 of air at 20°C >*/
 +
 +  double last_energy;        /*< Amount of energy used so far >*/
 +  double last_updated;       /*< Timestamp of the last temperature update event >*/
@@ -153,23 +159,25 @@ index 0000000..19bc816
 +  double timestep;
 +  double energy_per_step;
 +  if(elapsed_time > 10.0){
-+    nb_timesteps = (int)(elapsed_time / 10.0);
++    nb_timesteps = (int) round(elapsed_time / 10.0);
 +    timestep = elapsed_time / (double)nb_timesteps;
 +    energy_per_step = consumed_energy_at_period / (double)nb_timesteps;
 +  }
 +  else{
 +    nb_timesteps = 1;
 +    timestep = elapsed_time;
++    energy_per_step = consumed_energy_at_period;
 +  }
 +
 +  /* For debugging purpose */
-+  //XBT_INFO("[host %s] ---------- %.2f W in %.2f s; %d steps of %.4f", host->get_cname(), consumed_energy_at_period, elapsed_time, nb_timesteps, timestep);
++  //XBT_INFO("---------------[%.2f] Host %s: %.2f J in %.2f s; %d steps of %.4f s", finish_time, host->get_cname(), consumed_energy_at_period, elapsed_time, nb_timesteps, timestep);
 +  //double tot_proc_energy_lost = 0, tot_proc_energy_kept = 0, tot_air_energy_lost = 0, tot_air_energy_kept = 0;
++  /* End Debug*/
 +
 +  double tmp_proc_temperature = this->proc_temperature;
 +  double tmp_air_temperature = this->air_temperature;
-+  double proc_energy_lost, proc_energy_kept, proc_temperature_change, new_proc_temperature;
-+  double air_energy_lost, air_energy_kept, air_temperature_change, new_air_temperature;
++  double proc_energy_lost, proc_energy_kept, proc_temperature_change, new_proc_temperature = this->proc_temperature;
++  double air_energy_lost, air_energy_kept, air_temperature_change, new_air_temperature = this->air_temperature;
 +
 +  /*< We update the temperatures of the host and the ambient air by timesteps of about 10 seconds (which is roughly *continuous*) >*/
 +  for(int i = 0; i< nb_timesteps; ++i){
@@ -180,7 +188,7 @@ index 0000000..19bc816
 +    new_proc_temperature = tmp_proc_temperature + proc_temperature_change;
 +
 +    /*<Computes the temperature change of the air >*/
-+    air_energy_lost = timestep * this->air_magic_number * (tmp_air_temperature - 15);
++    air_energy_lost = timestep * this->air_magic_number * (tmp_air_temperature - this->outside_temperature);
 +    air_energy_kept = proc_energy_lost - air_energy_lost;
 +    air_temperature_change = air_energy_kept / (this->air_mass * this->air_specific_heat);
 +    new_air_temperature = tmp_air_temperature + air_temperature_change;
@@ -193,19 +201,20 @@ index 0000000..19bc816
 +    tot_proc_energy_lost += proc_energy_lost;
 +    tot_air_energy_kept += air_energy_kept;
 +    tot_air_energy_lost += air_energy_lost;*/
++    /* End Debug */
 +  }
 +
 +  /* For debugging purpose */
-+  /*XBT_INFO("---------------[%.2f] Host %s: elapsed_time %.2f; energy %.2f; proc_lost %.2f proc_kept %.2f old_temp %.6f new_temp %.6f", finish_time, host->get_cname(), elapsed_time, consumed_energy_at_period,
++  /*XBT_INFO("---------------[%.2f] Host %s: elapsed_time %.2fs; energy %.2fJ; proc_lost %.2fJ proc_kept %.2fJ old_temp %.6f°C new_temp %.6f°C", finish_time, host->get_cname(), elapsed_time, consumed_energy_at_period,
 +          tot_proc_energy_lost, tot_proc_energy_kept, this->proc_temperature, new_proc_temperature);
-+  XBT_INFO("---------------[%.2f] Host %s: elapsed_time %.2f; energy %.2f; air_lost %.2f air_kept %.2f old_air %.6f new_air %.6f", finish_time, host->get_cname(), elapsed_time, consumed_energy_at_period,
-+          tot_air_energy_lost, tot_air_energy_kept, this->air_temperature, new_air_temperature);
-+  */
++  XBT_INFO("---------------[%.2f] Host %s: elapsed_time %.2fs; energy %.2fJ; air_lost %.2fJ air_kept %.2fJ old_air %.6f°C new_air %.6f°C outside_temp %.2f°C", finish_time, host->get_cname(), elapsed_time, consumed_energy_at_period,
++          tot_air_energy_lost, tot_air_energy_kept, this->air_temperature, new_air_temperature, this->outside_temperature);*/
++  /* End Debug */
 +
-+  XBT_DEBUG("[update_temperature of %s] period=[%.2f-%.2f]; current power peak=%.0E flop/s; current_temperature: %.2f °C -> "
-+            "%.2f °C; current_air_temperature: %.2f °C -> %.2f °C",
-+            host->get_cname(), start_time, finish_time, host->pimpl_cpu->speed_.peak, this->proc_temperature,
-+            new_proc_temperature, this->air_temperature, new_air_temperature);
++  XBT_DEBUG("[update_temperature of %s] period=[%.2f-%.2f]; current power peak=%.0E flop/s; processor temperature: %.2f °C -> "
++            "%.2f °C; air temperature: %.2f °C -> %.2f °C; Outside temperature: %.2f °C.",
++            host->get_cname(), start_time, finish_time, host->pimpl_cpu->get_speed(1.0), this->proc_temperature,
++            new_proc_temperature, this->air_temperature, new_air_temperature, this->outside_temperature);
 +
 +  this->proc_temperature = new_proc_temperature;
 +  this->air_temperature = new_air_temperature;
@@ -225,7 +234,7 @@ index 0000000..19bc816
 +   */
 +
 +  // air_temperature
-+  const char* air_temp_str = host->getProperty("air_temperature");
++  const char* air_temp_str = host->get_property("air_temperature");
 +  if (air_temp_str != nullptr) {
 +    try {
 +      this->air_temperature = std::stof(std::string(air_temp_str));
@@ -239,7 +248,7 @@ index 0000000..19bc816
 +  }
 +
 +  // processor temperature
-+  const char* proc_temp_str = host->getProperty("proc_temperature");
++  const char* proc_temp_str = host->get_property("proc_temperature");
 +  if (proc_temp_str != nullptr) {
 +    try {
 +      this->proc_temperature = std::stof(std::string(proc_temp_str));
@@ -254,7 +263,7 @@ index 0000000..19bc816
 +  }
 +
 +  // processor magic number related to conductive heat transfer
-+  const char* sp_number_str = host->getProperty("proc_magic_number");
++  const char* sp_number_str = host->get_property("proc_magic_number");
 +  if (sp_number_str != nullptr) {
 +    try {
 +      this->proc_magic_number = std::stof(std::string(sp_number_str));
@@ -268,7 +277,7 @@ index 0000000..19bc816
 +  }
 +
 +  // processor_specific_heat
-+  const char* sp_heat_str = host->getProperty("proc_specific_heat");
++  const char* sp_heat_str = host->get_property("proc_specific_heat");
 +  if (sp_heat_str != nullptr) {
 +    try {
 +      this->processor_specific_heat = std::stof(std::string(sp_heat_str));
@@ -282,7 +291,7 @@ index 0000000..19bc816
 +  }
 +
 +  // processor_mass
-+  const char* proc_mass_str = host->getProperty("grams_proc_mass");
++  const char* proc_mass_str = host->get_property("grams_proc_mass");
 +  if (proc_mass_str != nullptr) {
 +    try {
 +      this->processor_mass = std::stof(std::string(proc_mass_str));
@@ -296,7 +305,7 @@ index 0000000..19bc816
 +  }
 +
 +  // air_magic_number
-+  const char* air_number_str = host->getProperty("air_magic_number");
++  const char* air_number_str = host->get_property("air_magic_number");
 +  if (air_number_str != nullptr) {
 +    try {
 +      this->air_magic_number = std::stof(std::string(air_number_str));
@@ -310,7 +319,7 @@ index 0000000..19bc816
 +  }
 +
 +  // air_specific_heat
-+  const char* fl_sp_heat_str = host->getProperty("air_specific_heat");
++  const char* fl_sp_heat_str = host->get_property("air_specific_heat");
 +  if (fl_sp_heat_str != nullptr) {
 +    try {
 +      this->air_specific_heat = std::stof(std::string(fl_sp_heat_str));
@@ -324,7 +333,7 @@ index 0000000..19bc816
 +  }
 +
 +  //air_mass
-+  const char* fl_mass_str = host->getProperty("grams_air_mass");
++  const char* fl_mass_str = host->get_property("grams_air_mass");
 +  if (fl_mass_str != nullptr) {
 +    try {
 +      this->air_mass = std::stof(std::string(fl_mass_str));
@@ -344,7 +353,7 @@ index 0000000..19bc816
 +double HostTemperature::getProcessorTemperature()
 +{
 +  if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
-+    simgrid::simix::kernelImmediate(std::bind(&HostTemperature::update, this));
++    simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
 +
 +  return proc_temperature;
 +}
@@ -352,7 +361,7 @@ index 0000000..19bc816
 +double HostTemperature::getAirTemperature()
 +{
 +  if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
-+    simgrid::simix::kernelImmediate(std::bind(&HostTemperature::update, this));
++    simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
 +
 +  return air_temperature;
 +}
@@ -360,18 +369,31 @@ index 0000000..19bc816
 +double HostTemperature::getEnergyConsumed()
 +{
 +  if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
-+    simgrid::simix::kernelImmediate(std::bind(&HostTemperature::update, this));
++    simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
 +
 +  return sg_host_get_consumed_energy(host);
 +}
 +
++double HostTemperature::getOutsideTemperature()
++{
++  return outside_temperature;
 +}
++
++void HostTemperature::setOutsideTemperature(double temperature)
++{
++  if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
++    simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
++
++  this->outside_temperature = temperature;
 +}
++
++} // namespace plugin
++} // namespace simgrid
 +
 +using simgrid::plugin::HostTemperature;
 +
 +/* **************************** events  callback *************************** */
-+static void onCreation(simgrid::s4u::Host& host)
++static void on_creation(simgrid::s4u::Host& host)
 +{
 +  if (dynamic_cast<simgrid::s4u::VirtualMachine*>(&host)) // Ignore virtual machines
 +    return;
@@ -381,16 +403,17 @@ index 0000000..19bc816
 +  host.extension_set(new HostTemperature(&host));
 +}
 +
-+static void onActionStateChange(simgrid::surf::CpuAction* action, simgrid::kernel::resource::Action::State previous)
++static void on_action_state_change(simgrid::surf::CpuAction* action,
++                                   simgrid::kernel::resource::Action::State /*previous*/)
 +{
 +  for (simgrid::surf::Cpu* const& cpu : action->cpus()) {
-+    simgrid::s4u::Host* host = cpu->getHost();
++    simgrid::s4u::Host* host = cpu->get_host();
 +    if (host != nullptr) {
 +
 +      // If it's a VM, take the corresponding PM
 +      simgrid::s4u::VirtualMachine* vm = dynamic_cast<simgrid::s4u::VirtualMachine*>(host);
 +      if (vm) // If it's a VM, take the corresponding PM
-+        host = vm->getPm();
++        host = vm->get_pm();
 +
 +      // Get the host_temperature extension for the relevant host
 +      HostTemperature* host_temperature = host->extension<HostTemperature>();
@@ -403,7 +426,7 @@ index 0000000..19bc816
 +
 +/* This callback is fired either when the host changes its state (on/off) ("onStateChange") or its speed
 + * (because the user changed the pstate, or because of external trace events) ("onSpeedChange") */
-+static void onHostChange(simgrid::s4u::Host& host)
++static void on_host_change(simgrid::s4u::Host& host)
 +{
 + if (dynamic_cast<simgrid::s4u::VirtualMachine*>(&host)) // Ignore virtual machines
 +    return;
@@ -413,7 +436,7 @@ index 0000000..19bc816
 +  host_temperature->update();
 +}
 +
-+static void onHostDestruction(simgrid::s4u::Host& host)
++static void on_host_destruction(simgrid::s4u::Host& host)
 +{
 +  if (dynamic_cast<simgrid::s4u::VirtualMachine*>(&host)) // Ignore virtual machines
 +    return;
@@ -423,13 +446,20 @@ index 0000000..19bc816
 +
 +  HostTemperature* host_temperature = host.extension<HostTemperature>();
 +  host_temperature->update();
-+  XBT_INFO("Temperature of host %s: %.2f °C, Air temperature: %.2f °C, Total energy consumed %f", host.get_cname(), host_temperature->getProcessorTemperature(),
-+           host_temperature->getAirTemperature(), host_temperature->getEnergyConsumed());
-+  //XBT_INFO("Temperature of host %s: %.2f °C, Air temperature: %.2f °C", host.get_cname(), host_temperature->getProcessorTemperature(),
-+  //         host_temperature->getAirTemperature());
++  double tot_energy = host_temperature->getEnergyConsumed();
++  if (tot_energy > 1e6){
++    XBT_INFO("[Host %s] CPU temperature: %.2f °C, Air temperature: %.2f °C, Outside temperature: %.2f °C, Total energy consumed: %.0f kJ",
++            host.get_cname(), host_temperature->getProcessorTemperature(),
++            host_temperature->getAirTemperature(), host_temperature->getOutsideTemperature(), (tot_energy / 1000.0));
++  }
++  else{
++    XBT_INFO("[Host %s] CPU temperature: %.2f °C, Air temperature: %.2f °C, Outside temperature: %.2f °C, Total energy consumed %.0f J",
++            host.get_cname(), host_temperature->getProcessorTemperature(),
++            host_temperature->getAirTemperature(), host_temperature->getOutsideTemperature(), tot_energy);
++  }
 +}
 +
-+static void onSimulationEnd()
++static void on_simulation_end()
 +{
 +  /*TODO: Do nothing. Maybe do something in another version
 +   */
@@ -437,7 +467,6 @@ index 0000000..19bc816
 +}
 +
 +/* **************************** Public interface *************************** */
-+extern "C" {
 +
 +/** \ingroup plugin_temperature
 + * \brief Enable host temperature plugin
@@ -450,10 +479,10 @@ index 0000000..19bc816
 +  sg_host_energy_plugin_init();
 +  HostTemperature::EXTENSION_ID = simgrid::s4u::Host::extension_create<HostTemperature>();
 +
-+  simgrid::s4u::Host::onCreation.connect(&onCreation);
-+  simgrid::s4u::Host::onStateChange.connect(&onHostChange);
-+  simgrid::s4u::Host::onDestruction.connect(&onHostDestruction);
-+  simgrid::surf::CpuAction::onStateChange.connect(&onActionStateChange);
++  simgrid::s4u::Host::on_creation.connect(&on_creation);
++  simgrid::s4u::Host::on_state_change.connect(&on_host_change);
++  simgrid::s4u::Host::on_destruction.connect(&on_host_destruction);
++  simgrid::surf::CpuAction::on_state_change.connect(&on_action_state_change);
 +}
 +
 +
@@ -485,6 +514,20 @@ index 0000000..19bc816
 +}
 +
 +/** @ingroup plugin_temperature
++ *  @brief Sets the outside world temperature to the temperature given in argument.
++ *  Please note that since the temperature is lazily updated, it may require a simcall to update it.
++ *  The result is that the actor requesting this value will be interrupted,
++ *  the value will be updated in kernel mode before returning the control to the requesting actor.
++ */
++void sg_host_set_outside_temperature(sg_host_t host, double temperature)
++{
++  xbt_assert(HostTemperature::EXTENSION_ID.valid(),
++             "The Temperature plugin is not active. Please call sg_temperature_plugin_init() during initialization.");
++
++  host->extension<HostTemperature>()->setOutsideTemperature(temperature);
++}
++
++/** @ingroup plugin_temperature
 + *  @brief updates the temperatures of the host
 + */
 +void sg_host_update_temperatures(sg_host_t host)
@@ -493,43 +536,23 @@ index 0000000..19bc816
 +             "The Temperature plugin is not active. Please call sg_temperature_plugin_init() during initialization.");
 +  host->extension<HostTemperature>()->update();
 +}
-+
-+}
-\ No newline at end of file
-diff --git a/src/surf/surf_interface.cpp b/src/surf/surf_interface.cpp
-index 2ed96e5..8ba53c1 100644
---- a/src/surf/surf_interface.cpp
-+++ b/src/surf/surf_interface.cpp
-@@ -45,10 +45,12 @@ simgrid::xbt::signal<void()> surfExitCallbacks;
- 
- #include <simgrid/plugins/energy.h> // FIXME: this plug-in should not be linked to the core
- #include <simgrid/plugins/load.h>   // FIXME: this plug-in should not be linked to the core
-+#include <simgrid/plugins/temperature.h> // FIXME: this plugin should not be linked to the core
- 
- s_surf_model_description_t surf_plugin_description[] = {
-     {"Energy", "Cpu energy consumption.", &sg_host_energy_plugin_init},
-     {"Load", "Cpu load.", &sg_host_load_plugin_init},
-+    {"Temperature", "Cpu temperature monitoring.", &sg_host_temperature_plugin_init},
-     {nullptr, nullptr, nullptr} /* this array must be nullptr terminated */
- };
- 
 diff --git a/tools/cmake/DefinePackages.cmake b/tools/cmake/DefinePackages.cmake
-index 43d0ae0..a51392f 100644
+index 493b62f5e..9be1ad7d7 100644
 --- a/tools/cmake/DefinePackages.cmake
 +++ b/tools/cmake/DefinePackages.cmake
-@@ -337,6 +337,7 @@ set(SURF_SRC
-   src/surf/plugins/host_energy.cpp
-   src/surf/plugins/link_energy.cpp
-   src/surf/plugins/host_load.cpp
-+  src/surf/plugins/host_temperature.cpp
-   src/surf/PropertyHolder.cpp
-   src/surf/sg_platf.cpp
-   src/surf/StorageImpl.cpp
-@@ -669,6 +670,7 @@ set(headers_to_install
+@@ -353,6 +353,7 @@ set(PLUGINS_SRC
+   src/plugins/host_dvfs.cpp
+   src/plugins/host_energy.cpp
+   src/plugins/link_energy.cpp
++  src/plugins/host_temperature.cpp
+   src/plugins/host_load.cpp
+   src/plugins/file_system/s4u_FileSystem.cpp
+   src/plugins/vm/VirtualMachineImpl.hpp
+@@ -667,6 +668,7 @@ set(headers_to_install
+   include/simgrid/chrono.hpp
+   include/simgrid/plugins/dvfs.h
+   include/simgrid/plugins/energy.h
++  include/simgrid/plugins/temperature.h
    include/simgrid/plugins/file_system.h
    include/simgrid/plugins/live_migration.h
    include/simgrid/plugins/load.h
-+  include/simgrid/plugins/temperature.h
-   include/simgrid/instr.h
-   include/simgrid/msg.h
-   include/simgrid/simdag.h

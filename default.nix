@@ -33,7 +33,7 @@ let
     simgrid_dev_working = callPackage ./simgrid/dev_working.nix { };
     simgrid_batsim = callPackage ./simgrid/batsim.nix { inherit simgrid; };
     simgrid_remotesg = callPackage ./simgrid/remotesg.nix { inherit simgrid; };
-    simgrid_temperature = callPackage ./simgrid/temperature.nix { inherit simgrid; };
+    simgrid_temperature = callPackage ./simgrid/temperature.nix { };
     remote_simgrid = callPackage ./remote-simgrid {
       simgrid = simgrid_remotesg; };
     remote_simgrid_dev = callPackage ./remote-simgrid/dev.nix {
@@ -69,7 +69,8 @@ let
       pybatsim = pybatsim_dev;
     };
     batsim_temperature = callPackage ./batsim/dev.nix {
-      batsim = batsim.override { simgrid = simgrid_temperature; };
+      #batsim = batsim.override { simgrid = simgrid_temperature; };
+      simgrid = simgrid_temperature;
       batsched = batsched_dev;
       pybatsim = pybatsim_dev;
     };
