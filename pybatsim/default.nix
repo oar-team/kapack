@@ -1,13 +1,11 @@
-{ stdenv, pythonPackages, fetchurl }:
+{ stdenv, pythonPackages, fetchurl, procset }:
 
 pythonPackages.buildPythonPackage rec {
-    pname = "pybatsim";
-    version = "2.0";
-    name = "${pname}-${version}";
+    name = "pybatsim-2.1";
 
     src = fetchurl {
-      url = "https://pypi.python.org/packages/56/32/37c5c5fcd2c770b986e4ae05395004531176cb291e54a6f4ce0434b89e3d/pybatsim-2.0.tar.gz";
-      sha256 = "1185e6c38676903fe230212f550f6a7ff3ab8670f074279a894071225924c951";
+      url = "https://files.pythonhosted.org/packages/75/b9/a19f5b18349221185ade8c7b21f25800b3094f5d13f3af16d8c08c4ab220/pybatsim-2.1.tar.gz";
+      sha256 = "1qf618vc57x3fbxzm73ya87j98dx5mjpijlwsxbsjlh4kpr153ym";
     };
 
     buildInputs = with pythonPackages; [
@@ -21,6 +19,7 @@ pythonPackages.buildPythonPackage rec {
       click
       pandas
       docopt
+      procset
     ];
 
     doCheck = false;

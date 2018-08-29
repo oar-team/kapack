@@ -76,7 +76,8 @@ let
     };
     batsched = callPackage ./batsched { };
     batsched_dev = callPackage ./batsched/dev.nix { };
-    pybatsim = callPackage ./pybatsim { };
+    pybatsim = callPackage ./pybatsim/default.nix { };
+    pybatsim20 = callPackage ./pybatsim/pybatsim20.nix { };
     pybatsim_dev = callPackage ./pybatsim/dev.nix { };
     intervalset = callPackage ./intervalset { };
     redox = callPackage ./redox { };
