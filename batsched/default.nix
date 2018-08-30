@@ -1,6 +1,8 @@
-{ stdenv, fetchurl, cmake, boost,
-gmp, rapidjson, openssl, redox, hiredis, libev, cppzmq,
-zeromq}:
+{ stdenv, fetchurl,
+  cmake, boost, gmp, rapidjson, openssl,
+  redox, hiredis, libev,
+  cppzmq, zeromq
+}:
 
 stdenv.mkDerivation rec {
   name = "batsched-${version}";
@@ -11,7 +13,10 @@ stdenv.mkDerivation rec {
     sha256 = "0apdbx48ywazi9y8q7hylix8ngw52qvr11i5jq8c4pl6ip1hbym3";
   };
 
-  nativeBuildInputs= [ boost  gmp  rapidjson openssl redox hiredis libev cppzmq zeromq cmake ];
+  nativeBuildInputs = [ cmake boost gmp rapidjson openssl
+    redox hiredis libev
+    cppzmq zeromq
+  ];
 
   enableParallelBuilding = true;
 
