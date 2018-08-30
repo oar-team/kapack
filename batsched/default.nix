@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, cmake, simgrid_batsim, boost,
+{ stdenv, fetchurl, cmake, boost,
 gmp, rapidjson, openssl, redox, hiredis, libev, cppzmq,
 zeromq}:
 
@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
     sha256 = "0apdbx48ywazi9y8q7hylix8ngw52qvr11i5jq8c4pl6ip1hbym3";
   };
 
-  nativeBuildInputs= [ simgrid_batsim  boost  gmp  rapidjson openssl redox hiredis libev cppzmq zeromq cmake ];
+  nativeBuildInputs= [ boost  gmp  rapidjson openssl redox hiredis libev cppzmq zeromq cmake ];
 
   enableParallelBuilding = true;
 
