@@ -27,7 +27,6 @@ let
     #stdenv = pkgs.clangStdenv;
 
     # Batsim tools an dependencies
-    # FIXME: Maybe use upstream Simgrid instead
     simgrid = callPackage ./simgrid { };
     simgrid_dev = callPackage ./simgrid/dev.nix { };
     simgrid_dev_working = callPackage ./simgrid/dev_working.nix { };
@@ -56,6 +55,7 @@ let
     };
     pajeng = callPackage ./pajeng { };
     batexpe = callPackage ./batexpe { };
+    batexpe_dev = callPackage ./batexpe/dev.nix { };
     batsim = callPackage ./batsim { simgrid = simgrid_batsim; };
     batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim; };
     batsim_dev = callPackage ./batsim/dev.nix {
