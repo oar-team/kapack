@@ -4,9 +4,9 @@
 }:
 (batsim.override {inherit simgrid;}).overrideAttrs (attrs: rec {
     name = "batsim-${version}";
-    version = "git";
+    version = "3.0-dev";
     src = fetchTarball "https://gitlab.inria.fr/batsim/batsim/repository/master/archive.tar.gz";
-    preConfigure = "rm -rf ./build/*";
+
     expeToolInputs = [
       pythonPackages.pandas
       batexpe
