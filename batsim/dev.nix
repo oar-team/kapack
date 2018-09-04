@@ -27,6 +27,9 @@
 
     enableParallelBuilding = true;
 
+    # Remove previous builds to avoid CMake complain
+    preConfigure = "rm -rf ./build/*";
+
     # Disable checks by default to enable installing broken version
     doCheck = false;
 
