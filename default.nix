@@ -107,7 +107,7 @@ let
       zmq=ocaml-zmq;
     };
     cuneiformlang = callPackage ./cuneiformlang { };
-
+    colmet = callPackage ./colmet {};
     # Misc.
     cgvg = callPackage ./cgvg { };
     cgvg_mpoquet = callPackage ./cgvg/mpoquet.nix { };
