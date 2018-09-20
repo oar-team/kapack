@@ -127,7 +127,9 @@ let
 
     batsimImage = callPackage ./batsim/batsim-docker.nix {};
     batsimDocker = batsimImage batsim null;
-    inherit pkgs;
+
+    #Expose the pinned nixpkgs.
+    pinnedPkgs = pkgs;
   };
 in
   self
