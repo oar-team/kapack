@@ -16,13 +16,13 @@ nix-env -f /path/to/kapack -iA packagename
 
 Temporarily put some packages in your environment using:
 ```
-nix-run -f /path/to/kapack packagename packagename
+nix-run -f /path/to/kapack/default.nix packagename packagename
 ```
 
 Note that this also exposes packages from the pinned nixpkgs version, if you
 should need one of those:
 ```
-nix-run -f /path/to/kapack packagename pinnedPkgs.ghc
+nix-run -f /path/to/kapack/default.nix packagename pinnedPkgs.ghc
 ```
 
 Some 'user' environments are available (e.g. evalysEnv).
