@@ -130,4 +130,4 @@ let
     inherit pkgs;
   };
 in
-  self
+  self // pkgs

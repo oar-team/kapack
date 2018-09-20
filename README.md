@@ -14,6 +14,13 @@ Install a package using:
 nix-env -f /path/to/kapack -iA packagename
 ```
 
+Temporarily put some packages in your environment using:
+```
+nix-run -f /path/to/kapack packagename packagename2
+```
+Note that this also exposes packages from the pinned nixpkgs version, if you
+should need one of those.
+
 Some 'user' environments are available (e.g. evalysEnv).
 Enter an environment (either the build env for one of our packages,
 or a 'user' environment) using:
