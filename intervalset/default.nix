@@ -1,13 +1,13 @@
 { stdenv, fetchgit, cmake, boost, gtest }:
 
 stdenv.mkDerivation rec {
-  version = "unstable";
+  version = "1.0.0";
   name = "intervalset-${version}";
 
   src = fetchgit {
     url = "https://framagit.org/batsim/intervalset.git";
-    rev = "0df49d34c0906beb750d2aa10b89fdd7d59c084a";
-    sha256 = "01jzid21sp4yw8s4vybm7xdq3q1wv9fr2shf5hxzahlh4x8bzq0x";
+    rev = "v${version}";
+    sha256 = "05nzqvmhi9dhqs0yzw7g6ybkdxkp74hnc53w4w4aa22a65dji637";
   };
 
   preConfigure = ''
