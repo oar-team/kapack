@@ -1,4 +1,4 @@
-{ stdenv, batsim, simgrid
+{ stdenv, batsim, simgrid, intervalset
 , installTestsDeps ? true, batsched, pybatsim, python, pythonPackages, batexpe, redis, coreutils
 , buildDoc ? true, doxygen, graphviz
 }:
@@ -22,6 +22,7 @@
     ];
     nativeBuildInputs =
     attrs.nativeBuildInputs
+    ++ [intervalset]
     ++ stdenv.lib.optional installTestsDeps (testInputs ++ expeToolInputs)
     ++ stdenv.lib.optional buildDoc docInputs;
 
