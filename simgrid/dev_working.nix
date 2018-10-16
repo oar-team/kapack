@@ -15,7 +15,7 @@ simgrid_dev.overrideAttrs (oldAttrs: rec {
   #  *               *
   # *******************
 
-  rev = "5256bf5722d6ccd15cfae45d774b5c6e35a4dd3e";
+  rev = "f9b70a2e6b1e4076a895a8492e614c77d5eb4bf7";
   src = fetchTarball "https://github.com/simgrid/simgrid/archive/${rev}.tar.gz";
   doCheck = false;
 })
