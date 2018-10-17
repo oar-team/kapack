@@ -94,6 +94,7 @@ let
     # l2sched tools and dependencies
     nnpy = callPackage ./nnpy { };
     nanomsg = callPackage ./nanomsg { };
+    npb = callPackage ./npb { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
     ocaml-zmq = pkgs.ocamlPackages.callPackage ./ocaml-zmq { inherit stdint; };
     bigstring = pkgs.ocamlPackages.callPackage ./bigstring { };
