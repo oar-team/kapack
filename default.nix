@@ -69,7 +69,6 @@ let
       pybatsim = pybatsim_dev;
     };
     batsim_temperature = callPackage ./batsim/dev.nix {
-      #batsim = batsim.override { simgrid = simgrid_temperature; };
       simgrid = simgrid_temperature;
       batsched = batsched_dev;
       pybatsim = pybatsim_dev;
