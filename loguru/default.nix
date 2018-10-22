@@ -2,11 +2,18 @@
 
 stdenv.mkDerivation rec {
   name = "loguru-${version}";
-  version = "1.8.0";
+  version = "2.0.0";
 
   src = fetchTarball "https://github.com/emilk/loguru/archive/v${version}.tar.gz";
 
+  buildPhase = ''
+    $CC -o libloguru.so -shared -pthread -fPIC loguru.cpp
+  '';
+
   installPhase = ''
+    mkdir -p $out/lib
+    cp libloguru.so $out/lib/
+
     mkdir -p $out/include
     cp ./loguru.hpp $out/include/
   '';
