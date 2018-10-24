@@ -56,22 +56,20 @@ let
     pajeng = callPackage ./pajeng { };
     batexpe = callPackage ./batexpe { };
     batexpe_dev = callPackage ./batexpe/dev.nix { };
-    batsim = callPackage ./batsim { simgrid = simgrid_batsim; };
-    batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim; };
-    batsim_dev = callPackage ./batsim/dev.nix {
+
+    batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim200; };
+    batsim200 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim; };
+    batsim = callPackage ./batsim/default.nix {
       simgrid = simgrid_dev_working;
       batsched = batsched_dev;
-      pybatsim = pybatsim_dev;
     };
-    batsim_dev_upstreamsg = callPackage ./batsim/dev.nix {
+    batsim_upstreamsg = callPackage ./batsim/default.nix {
       simgrid = simgrid_dev;
       batsched = batsched_dev;
-      pybatsim = pybatsim_dev;
     };
-    batsim_temperature = callPackage ./batsim/dev.nix {
+    batsim_temperature = callPackage ./batsim/default.nix {
       simgrid = simgrid_temperature;
       batsched = batsched_dev;
-      pybatsim = pybatsim_dev;
     };
     batsched = callPackage ./batsched { };
     batsched_dev = callPackage ./batsched/dev.nix { };
