@@ -78,6 +78,7 @@ let
     pybatsim = callPackage ./pybatsim/default.nix { };
     pybatsim20 = callPackage ./pybatsim/pybatsim20.nix { };
     pybatsim_dev = callPackage ./pybatsim/dev.nix { };
+    batbroker = callPackage ./batbroker/default.nix { };
     intervalset = callPackage ./intervalset { };
     redox = callPackage ./redox { };
     rapidjson = callPackage ./rapidjson { };
