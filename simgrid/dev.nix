@@ -4,8 +4,8 @@
   name = "simgrid-${version}";
   version = "3.21-dev";
 
-  patches = [ ./fix_smpi_host_init.patch ];
-  src = fetchTarball "https://github.com/simgrid/simgrid/archive/master.tar.gz";
+  patches = [ ];
+  src = fetchTarball "https://framagit.org/simgrid/simgrid/-/archive/master/simgrid-master.tar.bz2";
 
   # Avoid debug information striping
   dontStrip = true;
