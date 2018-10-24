@@ -8,6 +8,7 @@
   src = fetchTarball "https://framagit.org/simgrid/simgrid/-/archive/master/simgrid-master.tar.bz2";
 
   # Avoid debug information striping
+  hardeningDisable = [ "all" ];
   dontStrip = true;
   doCheck = false;
 })
