@@ -59,15 +59,16 @@ let
 
     batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim200; };
     batsim200 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim; };
-    batsim = callPackage ./batsim/default.nix {
+    batsim = batsim200;
+    batsim_dev = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev_working;
       batsched = batsched_dev;
     };
-    batsim_upstreamsg = callPackage ./batsim/default.nix {
+    batsim_upstreamsg = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev;
       batsched = batsched_dev;
     };
-    batsim_temperature = callPackage ./batsim/default.nix {
+    batsim_temperature = callPackage ./batsim/dev.nix {
       simgrid = simgrid_temperature;
       batsched = batsched_dev;
     };
@@ -90,9 +91,9 @@ let
     gcovr = callPackage ./gcovr { };
 
     # l2sched tools and dependencies
-    nnpy = callPackage ./nnpy { };
+    #nnpy = callPackage ./nnpy { };
     nanomsg = callPackage ./nanomsg { };
-    npb = callPackage ./npb { };
+    #npb = callPackage ./npb { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
     ocaml-zmq = pkgs.ocamlPackages.callPackage ./ocaml-zmq { inherit stdint; };
     bigstring = pkgs.ocamlPackages.callPackage ./bigstring { };
