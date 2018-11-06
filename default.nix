@@ -127,6 +127,7 @@ let
 
     batsimImage = callPackage ./batsim/batsim-docker.nix {};
     batsimDocker = batsimImage batsim null;
+    platform_calibration = callPackage ./platform-calibration {};
     inherit pkgs;
   };
 in
