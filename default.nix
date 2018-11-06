@@ -10,7 +10,7 @@
     in import pinnedPkgs {}),
     #pkgs-unstable ? import (
     #pkfetchTarball "https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz") {},
-  mylib ? import ./mylib {}
+  mylib ? import ./mylib { inherit pkgs; }
 }:
 let
   # Add libraries to the scope of callPackage
