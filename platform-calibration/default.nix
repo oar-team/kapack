@@ -1,12 +1,12 @@
-{ stdenv,  zlib, openmpi, fetchgit, libxml2, clang  }:
+{ stdenv,  zlib, openmpi, libxml2, clang  }:
 
 stdenv.mkDerivation rec {
   name = "calibration";
   version = "git";
 
-  src = fetchgit {
-    url = "https://gitlab.inria.fr/simgrid/platform-calibration.git";
-    sha256 = "141q2irziaf02rvxgmgb3692ixx0yq9i9b49mcld7r2dqp3x2pn6";
+  src = fetchGit {
+    url = "https://github.com/Ezibenroc/platform-calibration.git";
+    rev = "8021f22842268471d20e34848a470b5bb0e844d1";
   };
 
   # patches = [ ./libxml.diff ];
