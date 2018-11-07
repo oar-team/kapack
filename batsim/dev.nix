@@ -1,8 +1,7 @@
 { stdenv, fetchurl, cmake, simgrid, boost, gmp, rapidjson, openssl, git,
   redox, hiredis, libev, cppzmq, zeromq, docopt_cpp, pugixml, intervalset,
   installTestsDeps? false, batsched, python, pythonPackages, batexpe,
-  redis, coreutils,
-  installDocDeps ? false, doxygen, graphviz
+  redis, coreutils, netcat-gnu, psmisc, which, doxygen, graphviz
 }:
 
 stdenv.mkDerivation rec {
@@ -35,10 +34,13 @@ stdenv.mkDerivation rec {
 
   buildInputs = stdenv.lib.optional installTestsDeps [
     pythonPackages.pandas
+    netcat-gnu
+    coreutils
+    psmisc
+    which
     batexpe
     batsched
     redis
-  ] ++ stdenv.lib.optional installDocDeps [
     doxygen
     graphviz
   ];
@@ -56,25 +58,13 @@ stdenv.mkDerivation rec {
 
   preCheck = ''
     # Patch tests script she bang
-    patchShebangs ..
-
-    # Patch inside scripts in the yaml test files that are not catch by
-    # patchShebangs utility
-    find .. -type f | xargs sed -i -e 's#\(.*\)/usr/bin/env\(.*\)#\1${coreutils}/bin/env\2#'
-
-    # start Redis and keep PID
-    redis-server > /dev/null &
-    REDIS_PID=$!
+    patchShebangs ../test
   '';
+
   checkPhase = ''
     runHook preCheck
-
-    PATH="$(pwd):$PATH" ctest --output-on-failure -E 'remote'
-
-    runHook postCheck
-    '';
-  postCheck = ''
-    kill $REDIS_PID
+    ${stdenv.shell} ../ci/run-tests.bash
+    ${stdenv.shell} ../ci/run-unittests.bash
   '';
 
   meta = with stdenv.lib; {
