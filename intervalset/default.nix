@@ -1,25 +1,17 @@
-{ stdenv, fetchgit, cmake, boost, gtest }:
+{ stdenv, fetchgit, meson, ninja, pkgconfig, boost, gtest }:
 
 stdenv.mkDerivation rec {
-  version = "1.0.0";
+  version = "1.1.0-dev";
   name = "intervalset-${version}";
 
   src = fetchgit {
     url = "https://framagit.org/batsim/intervalset.git";
-    rev = "v${version}";
-    sha256 = "05nzqvmhi9dhqs0yzw7g6ybkdxkp74hnc53w4w4aa22a65dji637";
+    rev = "65a0626ad3b3a76e895540b3186dfa538fb55da5";
+    sha256 = "0i152xdgvqpc64p5lkfk7rzh6b2i59dy2s98ccs9pp22919k2yff";
   };
 
-  preConfigure = ''
-    # Always build on a clean directory
-    rm -rf ./build/*
-
-    # Enable linking to libintervalset.so (done by tests)
-    export LD_LIBRARY_PATH="$PWD/build"
-  '';
-
-  nativeBuildInputs = [ cmake gtest ];
-  buildInputs = [ boost ];
+  nativeBuildInputs = [ meson ninja gtest pkgconfig ];
+  buildInputs = [ boost gtest ];
 
   meta = with stdenv.lib; {
     description = "C++ library to manage sets of integral closed intervals";
