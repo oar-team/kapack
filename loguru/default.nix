@@ -7,7 +7,7 @@ stdenv.mkDerivation rec {
   src = fetchTarball "https://github.com/emilk/loguru/archive/v${version}.tar.gz";
 
   buildPhase = ''
-    $CC -o libloguru.so -shared -pthread -fPIC loguru.cpp
+    $CXX -std=c++11 -o libloguru.so -shared -pthread -fPIC loguru.cpp
   '';
 
   installPhase = ''
