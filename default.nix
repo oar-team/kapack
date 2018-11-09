@@ -10,7 +10,9 @@
     in import pinnedPkgs {}),
     #pkgs-unstable ? import (
     #pkfetchTarball "https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz") {},
-  mylib ? import ./mylib { inherit pkgs; }
+  mylib ? import ./mylib { inherit pkgs; },
+  # use Clang instead of GCC
+  useClang ? false
 }:
 let
   # Add libraries to the scope of callPackage
@@ -21,10 +23,6 @@ let
     # Freeze python version to 3.6
     pythonPackages = pkgs.python36Packages;
     python = pkgs.python36;
-
-    # use Clang instead of GCC
-    # NOTE: Clang seems to optimize things even with -O0 so don't use this for debug
-    #stdenv = pkgs.clangStdenv;
 
     # Batsim tools an dependencies
     simgrid = callPackage ./simgrid { };
@@ -129,6 +127,7 @@ let
     batsimDocker = batsimImage batsim null;
     platform_calibration = callPackage ./platform-calibration {};
     inherit pkgs;
-  };
+  }
+  // pkgs.stdenv.lib.optionalAttrs useClang { stdenv = pkgs.clangStdenv; };
 in
   self
