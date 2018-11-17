@@ -61,6 +61,7 @@ let
     batsim_dev = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev_working;
       batsched = batsched_dev;
+      batexpe = batexpe_dev;
     };
     batsim_upstreamsg = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev;
