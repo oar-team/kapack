@@ -54,6 +54,7 @@ let
     pajeng = callPackage ./pajeng { };
     batexpe = callPackage ./batexpe { };
     batexpe_dev = callPackage ./batexpe/dev.nix { };
+    npb = callPackage ./npb { };
 
     batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim200; };
     batsim200 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim; };
@@ -92,7 +93,6 @@ let
     # l2sched tools and dependencies
     #nnpy = callPackage ./nnpy { };
     nanomsg = callPackage ./nanomsg { };
-    #npb = callPackage ./npb { };
     obandit = pkgs.ocamlPackages.callPackage ./obandit { };
     ocaml-zmq = pkgs.ocamlPackages.callPackage ./ocaml-zmq { inherit stdint; };
     bigstring = pkgs.ocamlPackages.callPackage ./bigstring { };
