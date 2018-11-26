@@ -28,7 +28,7 @@ let
     simgrid = callPackage ./simgrid { };
     simgrid_dev = callPackage ./simgrid/dev.nix { };
     simgrid_dev_working = callPackage ./simgrid/dev_working.nix { };
-    simgrid_batsim = callPackage ./simgrid/batsim.nix { inherit simgrid; };
+    simgrid_batsim140or200 = callPackage ./simgrid/batsim140or200.nix { inherit simgrid; };
     simgrid_remotesg = callPackage ./simgrid/remotesg.nix { inherit simgrid; };
     simgrid_temperature = callPackage ./simgrid/temperature.nix { };
     remote_simgrid = callPackage ./remote-simgrid {
@@ -57,7 +57,7 @@ let
     npb = callPackage ./npb { };
 
     batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim200; };
-    batsim200 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim; };
+    batsim200 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim140or200; };
     batsim = batsim200;
     batsim_dev = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev_working;
