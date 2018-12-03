@@ -69,6 +69,7 @@ let
     };
     npb_with_mini = callPackage ./npb {
       openmpi = pkgs.openmpi;
+      papi = pkgs-unstable.papi;
       enable_time_independant_trace = true;
       max_size_in_power_of_two = "7"; # 128 procs
     };

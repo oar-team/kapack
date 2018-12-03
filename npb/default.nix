@@ -1,7 +1,7 @@
 {
   stdenv, fetchurl, openmpi, automake, gfortran, gcc, bc,
   max_size_in_power_of_two ? "10",
-  enable_time_independant_trace ? false, mini
+  enable_time_independant_trace ? false, mini, papi
 }:
 
 stdenv.mkDerivation rec {
@@ -20,6 +20,8 @@ stdenv.mkDerivation rec {
   buildInputs = [ openmpi ];
 
   configurePhase = ''
+    runHook preConfigure
+
     echo "building NAS for size from 2^2 to 2^${max_size_in_power_of_two}"
 
     mkdir -p $out/bin
@@ -27,13 +29,17 @@ stdenv.mkDerivation rec {
 
     cp config/make.def{.template,}
 
-    sed -i 's/^MPIF77.*/MPIF77 = mpif77/' config/make.def
-    sed -i 's/^MPICC.*/MPICC = mpicc/' config/make.def
-    sed -i 's/^FFLAGS.*/FFLAGS  = -O -mcmodel=medium/' config/make.def
+    sed -i 's#^MPIF77.*#MPIF77 = mpif77#' config/make.def
+    sed -i 's#^MPICC.*#MPICC = mpicc#' config/make.def
+    sed -i 's#^FFLAGS.*#FFLAGS  = -O -mcmodel=medium#' config/make.def
+
+    runHook postConfigure
   '';
 
-  postConfigurePhase = stdenv.lib.optional enable_time_independant_trace ''
-    sed -i "s/^FMPI_LIB.*/FMPI_LIB = -L${mini}/lib -lmini -lpapi -lmpi_f77 -lmpi/" config/make.def
+  postConfigure = stdenv.lib.optional enable_time_independant_trace ''
+    echo "Activating mini"
+    sed -i "s#^FMPI_INC.*#FMPI_INC  = -I${openmpi}/include/#" config/make.def
+    sed -i "s#^FMPI_LIB.*#FMPI_LIB = -L${mini}/lib -lmini -L${papi}/lib -lpapi -lmpi_mpifh -lmpi_usempif08 -lmpi#" config/make.def
   '';
 
   buildPhase = ''
@@ -45,7 +51,7 @@ stdenv.mkDerivation rec {
         for bench in is ep cg mg ft bt sp lu
         do
           # Not all bench are compiling so skip the errors
-          make -j $(nproc) $bench NPROCS=$nbproc CLASS=$class > buildlog.out 2>&1 || echo \
+          make -j $(nproc) $bench NPROCS=$nbproc CLASS=$class || echo \
           "Warning: the bench $bench.$class.$nbproc is not compiling: see buildlog.out for details"
         done
       done
