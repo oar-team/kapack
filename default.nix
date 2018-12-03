@@ -8,8 +8,14 @@
         inherit (pinnedVersion) rev sha256;
       };
     in import pinnedPkgs {}),
-    #pkgs-unstable ? import (
-    #pkfetchTarball "https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz") {},
+  pkgs-unstable ? (let
+      pinnedVersion = hostPkgs.lib.importJSON ./nixpkgs-unstable.json;
+      pinnedPkgs = hostPkgs.fetchFromGitHub {
+        owner = "NixOS";
+        repo = "nixpkgs-channels";
+        inherit (pinnedVersion) rev sha256;
+      };
+    in import pinnedPkgs {}),
   mylib ? import ./mylib { inherit pkgs; },
   # use Clang instead of GCC
   useClang ? false
