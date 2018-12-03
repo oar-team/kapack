@@ -145,6 +145,13 @@ let
     batsimImage = callPackage ./batsim/batsim-docker.nix {};
     batsimDocker = batsimImage batsim null;
     platform_calibration = callPackage ./platform-calibration {};
+
+    # Oar lib and some dependencies
+    sqlalchemy_utils = callPackage ./sqlalchemy-utils { };
+    pytest_flask = callPackage ./pytest-flask { };
+    oar = callPackage ./oar { };
+    oar_dev = callPackage ./oar/dev.nix { };
+    
     inherit pkgs;
     inherit pkgs-unstable;
   }
