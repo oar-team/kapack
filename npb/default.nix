@@ -1,4 +1,8 @@
-{ stdenv, fetchurl, openmpi, automake, gfortran, gcc, bc}:
+{
+  stdenv, fetchurl, openmpi, automake, gfortran, gcc, bc,
+  max_size_in_power_of_two ? "10",
+  enable_time_independant_trace ? false, mini
+}:
 
 stdenv.mkDerivation rec {
   name = "NPB-${version}";
@@ -9,31 +13,43 @@ stdenv.mkDerivation rec {
     sha256 = "0bbxfjd4rh36xydgdy5n5gn50sn2nfc73i24qn1zasfzn5wsd3ja";
   };
 
-  nativeBuildInputs = [ openmpi automake gfortran gcc bc ];
+  nativeBuildInputs = [ automake gfortran gcc bc ];
+
+  hardeningDisable = ["all"];
+
+  buildInputs = [ openmpi ];
+
+  configurePhase = ''
+    echo "building NAS for size from 2^2 to 2^${max_size_in_power_of_two}"
+
+    mkdir -p $out/bin
+    cd NPB3.3-MPI/
+
+    cp config/make.def{.template,}
+
+    sed -i 's/^MPIF77.*/MPIF77 = mpif77/' config/make.def
+    sed -i 's/^MPICC.*/MPICC = mpicc/' config/make.def
+    sed -i 's/^FFLAGS.*/FFLAGS  = -O -mcmodel=medium/' config/make.def
+  '';
+
+  postConfigurePhase = stdenv.lib.optional enable_time_independant_trace ''
+    sed -i "s/^FMPI_LIB.*/FMPI_LIB = -L${mini}/lib -lmini -lpapi -lmpi_f77 -lmpi/" config/make.def
+  '';
 
   buildPhase = ''
-  mkdir -p $out/bin
-  cd NPB3.3-MPI/
-
-  cp config/make.def{.template,}
-
-  sed -i 's/^MPIF77.*/MPIF77 = mpif77/' config/make.def
-  sed -i 's/^MPICC.*/MPICC = mpicc/' config/make.def
-  sed -i 's/^FFLAGS.*/FFLAGS  = -O -mcmodel=medium/' config/make.def
-
-  for nbproc in $(for i in $(seq 2 10); do echo "2^$i" | bc; done)
-  do
-    echo $nbproc
-    for class in A B C D E
+    for nbproc in $(for i in $(seq 2 ${max_size_in_power_of_two}); do echo "2^$i" | bc; done)
     do
-      for bench in is ep cg mg ft bt sp lu
+      echo Compiling for $nbproc process...
+      for class in A B C D E
       do
-        # Not all bench are compiling so skip the errors
-        make -j $(nproc) $bench NPROCS=$nbproc CLASS=$class || echo \
-        "Warning: the bench $class for $nbproc procs is not compiling"
+        for bench in is ep cg mg ft bt sp lu
+        do
+          # Not all bench are compiling so skip the errors
+          make -j $(nproc) $bench NPROCS=$nbproc CLASS=$class > buildlog.out 2>&1 || echo \
+          "Warning: the bench $bench.$class.$nbproc is not compiling: see buildlog.out for details"
+        done
       done
     done
-  done
   '';
 
   installPhase = ''
