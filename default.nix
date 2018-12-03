@@ -146,6 +146,7 @@ let
     batsimDocker = batsimImage batsim null;
     platform_calibration = callPackage ./platform-calibration {};
     inherit pkgs;
+    inherit pkgs-unstable;
   }
   // pkgs.stdenv.lib.optionalAttrs useClang { stdenv = pkgs.clangStdenv; };
 in
