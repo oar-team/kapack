@@ -17,12 +17,14 @@ stdenv.mkDerivation rec {
 
   hardeningDisable = ["all"];
 
+  dontStrip = true;
+
   buildInputs = [ openmpi ];
 
   configurePhase = ''
     runHook preConfigure
 
-    echo "building NAS for size from 2^2 to 2^${max_size_in_power_of_two}"
+    echo "building NAS for size from 2^1 to 2^${max_size_in_power_of_two}"
 
     mkdir -p $out/bin
     cd NPB3.3-MPI/
@@ -39,11 +41,11 @@ stdenv.mkDerivation rec {
   postConfigure = stdenv.lib.optional enable_time_independant_trace ''
     echo "Activating mini"
     sed -i "s#^FMPI_INC.*#FMPI_INC  = -I${openmpi}/include/#" config/make.def
-    sed -i "s#^FMPI_LIB.*#FMPI_LIB = -L${mini}/lib -lmini -L${papi}/lib -lpapi -lmpi_mpifh -lmpi_usempif08 -lmpi#" config/make.def
+    sed -i "s#^FMPI_LIB.*#FMPI_LIB = -L${mini}/lib -lmini -L${papi}/lib -lpapi -lmpi#" config/make.def
   '';
 
   buildPhase = ''
-    for nbproc in $(for i in $(seq 2 ${max_size_in_power_of_two}); do echo "2^$i" | bc; done)
+    for nbproc in $(for i in $(seq 1 ${max_size_in_power_of_two}); do echo "2^$i" | bc; done)
     do
       echo Compiling for $nbproc process...
       for class in A B C D E
@@ -51,7 +53,7 @@ stdenv.mkDerivation rec {
         for bench in is ep cg mg ft bt sp lu
         do
           # Not all bench are compiling so skip the errors
-          make -j $(nproc) $bench NPROCS=$nbproc CLASS=$class || echo \
+          make $bench NPROCS=$nbproc CLASS=$class || echo \
           "Warning: the bench $bench.$class.$nbproc is not compiling: see buildlog.out for details"
         done
       done
