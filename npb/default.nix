@@ -64,8 +64,6 @@ stdenv.mkDerivation rec {
     cp -r bin $out/
   '';
 
-  enableParallelBuilding = true;
-
   meta = with stdenv.lib; {
     description = ''
     The NAS Parallel Benchmarks (NPB) are a small set of programs designed to
