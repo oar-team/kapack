@@ -14,8 +14,10 @@ stdenv.mkDerivation rec {
 
   hardeningDisable = ["all"];
 
+  dontStrip = true;
+
   buildPhase = ''
-    gcc -Wno-error=format-security -shared -fPIC -c -I${openmpi}/include/ mini.c
+    gcc -shared -fPIC -c -I${openmpi}/include/ mini.c
     gcc -fPIC -shared -o libmini.so mini.o
   '';
 
