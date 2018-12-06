@@ -60,18 +60,20 @@ let
     pajeng = callPackage ./pajeng { };
     batexpe = callPackage ./batexpe { };
     batexpe_dev = callPackage ./batexpe/dev.nix { };
+    papi = pkgs-unstable.papi;
     npb = callPackage ./npb {
       openmpi = pkgs.openmpi;
     };
+    # WARNING: NOT WORKING use extrae instead
     mini = callPackage ./mini {
-      openmpi = pkgs.openmpi;
-      papi = pkgs-unstable.papi;
     };
     npb_with_mini = callPackage ./npb {
       openmpi = pkgs.openmpi;
-      papi = pkgs-unstable.papi;
       enable_time_independant_trace = true;
       max_size_in_power_of_two = "7"; # 128 procs
+    };
+    extrae = callPackage ./extrae {
+      openmpi = pkgs.openmpi;
     };
 
     batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim200; };
