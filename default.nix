@@ -138,11 +138,33 @@ let
 
     evalysEnv = (python.withPackages (ps: [ ps.ipython evalys ])).env;
 
-    evalysNotebookEnv = (python.withPackages (ps: with ps; [
-        jupyter
-        evalys
-        pip
-      ])).env;
+    evalysNotebookEnv = pkgs.stdenv.mkDerivation rec {
+      name = "evalysNotebook";
+      LC_ALL = "C";
+      XDG_RUNTIME_DIR="/tmp/evalysNotebook-tmp";
+
+      shellHook = ''
+        echo -e "\e[32m=============================================\e[0m"
+        echo -e "\e[32m=== Welcome to evalysNotebook environment ===\e[0m"
+        echo -e "\e[32m=============================================\e[0m"
+
+        jupyter-notebook --ip $(hostname)
+
+        echo -e "\e[32m=============================================\e[0m"
+        echo -e "\e[32m===            Good Bye!                  ===\e[0m"
+        echo -e "\e[32m=============================================\e[0m"
+        exit 0
+      '';
+      env = pkgs.buildEnv { name = name; paths = buildInputs; };
+      buildInputs = [
+        wget
+        (python.withPackages (ps: with ps; [
+          jupyter
+          evalys
+          pip
+        ]))
+      ];
+    };
 
     batsimImage = callPackage ./batsim/batsim-docker.nix {};
     batsimDocker = batsimImage batsim null;
@@ -153,7 +175,7 @@ let
     pytest_flask = callPackage ./pytest-flask { };
     oar = callPackage ./oar { };
     oar_dev = callPackage ./oar/dev.nix { };
-    
+
     inherit pkgs;
     inherit pkgs-unstable;
   }
