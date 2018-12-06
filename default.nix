@@ -148,6 +148,7 @@ let
         echo -e "\e[32m=== Welcome to evalysNotebook environment ===\e[0m"
         echo -e "\e[32m=============================================\e[0m"
 
+        export XDG_RUNTIME_DIR="/tmp/evalysNotebook-tmp"
         jupyter-notebook --ip $(hostname)
 
         echo -e "\e[32m=============================================\e[0m"
