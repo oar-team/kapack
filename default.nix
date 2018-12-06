@@ -157,7 +157,7 @@ let
       '';
       env = pkgs.buildEnv { name = name; paths = buildInputs; };
       buildInputs = [
-        wget
+        pkgs.wget
         (python.withPackages (ps: with ps; [
           jupyter
           evalys
