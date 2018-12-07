@@ -177,7 +177,7 @@ let
     oar = callPackage ./oar { };
     oar_dev = callPackage ./oar/dev.nix { };
     oardocker = callPackage ./oardocker { };
-  
+    gemmpi = callPackage ./gemmpi {};
     inherit pkgs;
     inherit pkgs-unstable;
   }
