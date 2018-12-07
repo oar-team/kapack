@@ -176,7 +176,8 @@ let
     pytest_flask = callPackage ./pytest-flask { };
     oar = callPackage ./oar { };
     oar_dev = callPackage ./oar/dev.nix { };
-
+    oardocker = callPackage ./oardocker { };
+  
     inherit pkgs;
     inherit pkgs-unstable;
   }
