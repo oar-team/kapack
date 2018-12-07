@@ -5,14 +5,19 @@ stdenv.mkDerivation rec {
 
   src = fetchFromGitHub {
     repo = "redox";
-    owner = "hmartiro";
-    rev = "520fe0c2bfb99c1a10796f15f1d71c26b0b64db8";
-    sha256= "1jx1gj72vwgk3vxh0645wax3i30wp22zdgb7la29pcg790jnhmkf";
+    owner = "mpoquet";
+    rev = "e7904da79d5360ba22fbab64b96be167b6dda5f6";
+    sha256= "0mmxrjfidcm5fq233wsgjb9rj81hq78rn52c02vwfmz8ax9bc5yg";
   };
 
   nativeBuildInputs = [ cmake ];
-
   buildInputs = [ hiredis libev ];
+
+  cmakeFlags = ["-Dstatic_lib=OFF"];
+  postFixup = ''
+    # fix libdir in pkgconfig file (lib64 -> lib)
+    sed -i -E 'sW^libdir=(.*)/lib[0-9]{2}Wlibdir=\1/libW' $out/lib*/pkgconfig/redox.pc
+  '';
 
   meta = with stdenv.lib; {
     description = "Modern, asynchronous, and wicked fast C++11 client for Redis";
