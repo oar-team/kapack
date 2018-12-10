@@ -1,5 +1,5 @@
 { stdenv, fetchurl, cmake, simgrid, boost, gmp, rapidjson, openssl, git,
-  redox, hiredis, libev, cppzmq, zeromq, docopt_cpp, pugixml, intervalset,
+  redox, hiredis, libev, zeromq, docopt_cpp, pugixml, intervalset,
   installTestsDeps? false, batsched, python, pythonPackages, batexpe,
   redis, coreutils, netcat-gnu, psmisc, which, doxygen, graphviz
 }:
@@ -25,7 +25,6 @@ stdenv.mkDerivation rec {
     redox
     hiredis
     libev
-    cppzmq
     zeromq
     docopt_cpp
     pugixml
