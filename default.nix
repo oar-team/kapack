@@ -105,6 +105,7 @@ let
     procset_dev = callPackage ./procset/dev.nix { };
     evalys = callPackage ./evalys { };
     execo = callPackage ./execo { };
+    docopt_cpp = callPackage ./docopt-cpp { };
     # TODO push this in nixpkgs (not even used here anymore)
     coloredlogs = callPackage ./coloredlogs { inherit humanfriendly; };
     humanfriendly = callPackage ./humanfriendly { };
