@@ -106,6 +106,7 @@ let
     evalys = callPackage ./evalys { };
     execo = callPackage ./execo { };
     docopt_cpp = callPackage ./docopt-cpp { };
+    pugixml = callPackage ./pugixml { shared = true; };
     # TODO push this in nixpkgs (not even used here anymore)
     coloredlogs = callPackage ./coloredlogs { inherit humanfriendly; };
     humanfriendly = callPackage ./humanfriendly { };
