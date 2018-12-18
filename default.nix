@@ -104,6 +104,7 @@ let
     procset = callPackage ./procset { };
     procset_dev = callPackage ./procset/dev.nix { };
     evalys = callPackage ./evalys { };
+    evalys4 = callPackage ./evalys/evalys4.nix { };
     execo = callPackage ./execo { };
     docopt_cpp = callPackage ./docopt-cpp { };
     pugixml = callPackage ./pugixml { shared = true; };
