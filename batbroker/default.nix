@@ -3,14 +3,16 @@
 }:
 pkgs.buildGoPackage rec {
   name = "batbroker-${version}";
-  version = "1.0";
+  version = "1.1.0";
 
   goPackagePath = "gitlab.inria.fr/batsim/batbroker";
 
   src = pkgs.fetchurl {
-    url = "https://gitlab.inria.fr/batsim/batbroker/repository/${version}/archive.tar.gz";
-    sha256 = "0qlp3ig22d83j6bf004j313lx0d7i3hibyskjs01bsakvji9v1aj";
-  };  goDeps = ./deps.nix;
+    url = "https://gitlab.inria.fr/batsim/batbroker/repository/v${version}/archive.tar.gz";
+    sha256 = "0vqqcgw74c9qcya5ic9ssc45p52gd57iqlw6v52gbs01hb4k746r";
+  };
+
+  goDeps = ./deps.nix;
 
   LC_ALL = "C";
 
