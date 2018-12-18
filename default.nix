@@ -16,7 +16,6 @@
         inherit (pinnedVersion) rev sha256;
       };
     in import pinnedPkgs {}),
-  mylib ? import ./mylib { inherit pkgs; },
   # use Clang instead of GCC
   useClang ? false
 }:

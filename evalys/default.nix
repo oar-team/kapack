@@ -1,11 +1,11 @@
-{ stdenv, pypi_url, fetchurl, pythonPackages, procset}:
+{stdenv, pythonPackages, procset}:
 pythonPackages.buildPythonPackage rec {
   pname = "evalys";
   version = "2.6.1";
   name = "${pname}-${version}";
 
-  src = fetchurl {
-    url = pypi_url pname name;
+  src = pythonPackages.fetchPypi {
+    inherit pname version;
     sha256 = "25c4806121764afdd657cc43ff25ac233fd4f9ce4e398f1fbe29b87fed36dbe1";
   };
 
