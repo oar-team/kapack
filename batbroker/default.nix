@@ -7,9 +7,12 @@ pkgs.buildGoPackage rec {
 
   goPackagePath = "gitlab.inria.fr/batsim/batbroker";
 
-  src = pkgs.fetchurl {
-    url = "https://gitlab.inria.fr/batsim/batbroker/repository/v${version}/archive.tar.gz";
-    sha256 = "1i3gaxcg2rwxb59g4gihpgrk8rn5ybzzn43lqws9samikr0vz70w";
+  # to update use:
+  # $ nix-prefetch-git url rev
+  src = pkgs.fetchgit {
+    rev = "v${version}";
+    url = "https://gitlab.inria.fr/batsim/batbroker.git";
+    sha256 = "1jvhlqlkzwiz01vgsx8mikcls3qzyazfd39j2v3mdv51ld7xfcax";
   };
 
   goDeps = ./deps.nix;
