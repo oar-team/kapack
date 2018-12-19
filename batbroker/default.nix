@@ -9,7 +9,7 @@ pkgs.buildGoPackage rec {
 
   src = pkgs.fetchurl {
     url = "https://gitlab.inria.fr/batsim/batbroker/repository/v${version}/archive.tar.gz";
-    sha256 = "0vqqcgw74c9qcya5ic9ssc45p52gd57iqlw6v52gbs01hb4k746r";
+    sha256 = "1i3gaxcg2rwxb59g4gihpgrk8rn5ybzzn43lqws9samikr0vz70w";
   };
 
   goDeps = ./deps.nix;
