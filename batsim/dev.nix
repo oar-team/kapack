@@ -60,6 +60,8 @@ stdenv.mkDerivation rec {
     patchShebangs ../test
   '';
 
+  # Tunable ctest command. Used in the Batsim job of SimGrid's CI.
+  CTEST_COMMAND = "ctest --output-on-failure";
   checkPhase = ''
     runHook preCheck
     ${stdenv.shell} ../ci/run-tests.bash
