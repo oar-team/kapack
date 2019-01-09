@@ -1,7 +1,7 @@
 { stdenv, fetchurl, cmake, simgrid, boost, gmp, rapidjson, openssl, git,
   redox, hiredis, libev, zeromq, docopt_cpp, pugixml, intervalset,
   installTestsDeps? false, batsched, python, pythonPackages, batexpe,
-  redis, coreutils, netcat-gnu, psmisc, which, doxygen, graphviz
+  redis, coreutils, netcat-gnu, procps, psmisc, which, doxygen, graphviz
 }:
 
 stdenv.mkDerivation rec {
@@ -35,6 +35,7 @@ stdenv.mkDerivation rec {
     pythonPackages.pandas
     netcat-gnu
     coreutils
+    procps
     psmisc
     which
     batexpe
