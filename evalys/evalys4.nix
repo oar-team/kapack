@@ -1,11 +1,11 @@
 {evalys, pythonPackages}:
 evalys.overrideAttrs (oldAttrs: rec {
   inherit (oldAttrs) pname;
-  version = "4.0.3";
+  version = "4.0.4";
   name = "${pname}-${version}";
 
   src = pythonPackages.fetchPypi {
     inherit pname version;
-    sha256 = "0yywih3pv4w4ynl3b3dz9wz0qkhiqyrph5srl330wla2ycyppwb1";
+    sha256 = "1j9gp1zdfaip0kfyf64n1aa9ayllfb85xlbn0srmr4a2gb3r4jq7";
   };
 })
