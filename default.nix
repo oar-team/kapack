@@ -93,8 +93,10 @@ let
       simgrid = simgrid_temperature;
       batsched = batsched_dev;
     };
-    batsched = callPackage ./batsched { };
-    batsched_dev = callPackage ./batsched/dev.nix { };
+    batsched121 = callPackage ./batsched/batsched121.nix { };
+    batsched130 = callPackage ./batsched/batsched130.nix { };
+    batsched = batsched130;
+    batsched_dev = callPackage ./batsched/dev.nix { batsched = batsched130; };
     pybatsim = callPackage ./pybatsim/default.nix { };
     pybatsim20 = callPackage ./pybatsim/pybatsim20.nix { };
     pybatsim_dev = callPackage ./pybatsim/dev.nix { };
