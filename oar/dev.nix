@@ -2,7 +2,6 @@
 
 oar.overrideAttrs (oldAttrs: rec {
   name = "oar-${version}";
-  version = "src-local";
   #src = /home/auguste/dev/oar3;
   version = "git";
   src = fetchTarball "https://github/repository/master/archive.tar.gz";
