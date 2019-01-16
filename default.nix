@@ -34,7 +34,7 @@ let
     simgrid_dev = callPackage ./simgrid/dev.nix { };
     simgrid_dev_working = callPackage ./simgrid/dev_working.nix { };
     simgrid_batsim140or200 = callPackage ./simgrid/batsim140or200.nix { inherit simgrid; };
-    simgrid_batsim300 = callPackage ./simgrid/batsim300.nix { inherit simgrid; };
+    simgrid_batsim3 = callPackage ./simgrid/batsim300.nix { inherit simgrid; };
     simgrid_remotesg = callPackage ./simgrid/remotesg.nix { inherit simgrid; };
     simgrid_temperature = callPackage ./simgrid/temperature.nix { };
     remote_simgrid = callPackage ./remote-simgrid {
@@ -76,10 +76,10 @@ let
       openmpi = pkgs.openmpi;
     };
 
-    batsim1 = callPackage ./batsim/batsim140.nix { batsim = batsim200; };
+    batsim1 = callPackage ./batsim/batsim140.nix { batsim = batsim2; };
     batsim2 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim140or200; };
-    batsim3 = callPackage ./batsim/batsim300.nix { simgrid = simgrid_batsim300; };
-    batsim = batsim300;
+    batsim3 = callPackage ./batsim/batsim300.nix { simgrid = simgrid_batsim3; };
+    batsim = batsim3;
     batsim_dev = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev_working;
       batsched = batsched_dev;
@@ -95,11 +95,11 @@ let
     };
     batsched12 = callPackage ./batsched/batsched121.nix { };
     batsched13 = callPackage ./batsched/batsched130.nix { };
-    batsched = batsched130;
-    batsched_dev = callPackage ./batsched/dev.nix { batsched = batsched130; };
+    batsched = batsched13;
+    batsched_dev = callPackage ./batsched/dev.nix { batsched = batsched13; };
     pybatsim2 = callPackage ./pybatsim/pybatsim2.nix { };
     pybatsim3 = callPackage ./pybatsim/pybatsim300.nix { };
-    pybatsim = pybatsim300;
+    pybatsim = pybatsim3;
     pybatsim_dev = callPackage ./pybatsim/dev.nix { };
     batbroker = callPackage ./batbroker/default.nix { };
     intervalset = callPackage ./intervalset { };
