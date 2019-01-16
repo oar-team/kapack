@@ -76,9 +76,9 @@ let
       openmpi = pkgs.openmpi;
     };
 
-    batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim200; };
-    batsim200 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim140or200; };
-    batsim300 = callPackage ./batsim/batsim300.nix { simgrid = simgrid_batsim300; };
+    batsim1 = callPackage ./batsim/batsim140.nix { batsim = batsim200; };
+    batsim2 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim140or200; };
+    batsim3 = callPackage ./batsim/batsim300.nix { simgrid = simgrid_batsim300; };
     batsim = batsim300;
     batsim_dev = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev_working;
@@ -93,12 +93,12 @@ let
       simgrid = simgrid_temperature;
       batsched = batsched_dev;
     };
-    batsched121 = callPackage ./batsched/batsched121.nix { };
-    batsched130 = callPackage ./batsched/batsched130.nix { };
+    batsched12 = callPackage ./batsched/batsched121.nix { };
+    batsched13 = callPackage ./batsched/batsched130.nix { };
     batsched = batsched130;
     batsched_dev = callPackage ./batsched/dev.nix { batsched = batsched130; };
     pybatsim2 = callPackage ./pybatsim/pybatsim2.nix { };
-    pybatsim300 = callPackage ./pybatsim/pybatsim300.nix { };
+    pybatsim3 = callPackage ./pybatsim/pybatsim300.nix { };
     pybatsim = pybatsim300;
     pybatsim_dev = callPackage ./pybatsim/dev.nix { };
     batbroker = callPackage ./batbroker/default.nix { };
