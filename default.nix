@@ -97,8 +97,9 @@ let
     batsched130 = callPackage ./batsched/batsched130.nix { };
     batsched = batsched130;
     batsched_dev = callPackage ./batsched/dev.nix { batsched = batsched130; };
-    pybatsim = callPackage ./pybatsim/default.nix { };
-    pybatsim20 = callPackage ./pybatsim/pybatsim20.nix { };
+    pybatsim2 = callPackage ./pybatsim/pybatsim2.nix { };
+    pybatsim300 = callPackage ./pybatsim/pybatsim300.nix { };
+    pybatsim = pybatsim300;
     pybatsim_dev = callPackage ./pybatsim/dev.nix { };
     batbroker = callPackage ./batbroker/default.nix { };
     intervalset = callPackage ./intervalset { };
