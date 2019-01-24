@@ -3,9 +3,9 @@
 python27Packages.buildPythonPackage rec {
 
   src = fetchFromGitHub {
-    owner = "oar-team";
+    owner = "adfaure";
     repo = "colmet";
-    rev = "56e1d9098dea0df340d7798f4cc6d4ba66c567b0";
+    rev = "88de18da67c9a24a2f3b4a5f30f735b382cfe0ff";
     sha256 = "1cz97l84xhz3rzhd5rfa92sc7zx8s3mhq71y0fj2si9j5bmcsm0b";
   };
 
@@ -16,7 +16,7 @@ python27Packages.buildPythonPackage rec {
     pyzmq
   ];
 
-  name = "colmet-0.5.4";
+  name = "colmet-0.5.5dev1";
 
   # Tests do not pass
   doCheck = false;
