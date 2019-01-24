@@ -1,4 +1,4 @@
-{ stdenv, fetchFromGitHub }:
+{ stdenv, fetchFromGitHub, cmake }:
 
 stdenv.mkDerivation rec {
   name = "rapidjson";
@@ -10,9 +10,12 @@ stdenv.mkDerivation rec {
     sha256 = "1m0c6s8n5858zxdlanybanly42cigxz0i111nn69nxybmiv85sm0";
   };
 
-  installPhase = ''
-    cp -r include $out
-  '';
+  nativeBuildInputs = [cmake];
+  cmakeFlags = [
+    "-DRAPIDJSON_BUILD_DOC=OFF"
+    "-DRAPIDJSON_BUILD_EXAMPLES=OFF"
+    "-DRAPIDJSON_BUILD_TESTS=OFF"
+  ];
 
   meta = with stdenv.lib; {
     description = "A JSON parser/generator for C++";

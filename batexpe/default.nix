@@ -9,15 +9,16 @@
 
 buildGoPackage rec {
   name = "batexpe-${version}";
-  version = "1.1.0";
-  rev = "v${version}";
+  version = "1.2.0";
 
   goPackagePath = "framagit.org/batsim/batexpe";
 
+  # to update use:
+  # $ nix-prefetch-git url rev
   src = fetchgit {
-    inherit rev;
+    rev = "v${version}";
     url = "https://framagit.org/batsim/batexpe.git";
-    sha256 = "1d3j9hbakrjasbbywaxih3227ip8gq8spy70xz6yjxns7wq4smxq";
+    sha256 = "1mr9g78cmyvz0jnx20fnybqb2pqqhg9vdg0vz1g6c9h43rm800hj";
   };
 
   buildInputs = [procps iproute which findutils git];

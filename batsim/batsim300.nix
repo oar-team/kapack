@@ -7,13 +7,11 @@
 stdenv.mkDerivation rec {
 
   name = "batsim-${version}";
-  version = "3.1.0-dev";
-  src = fetchTarball "https://gitlab.inria.fr/batsim/batsim/repository/master/archive.tar.gz";
-
-  #src = fetchurl {
-  #  url = "https://gitlab.inria.fr/batsim/batsim/repository/v${version}/archive.tar.gz";
-  #  sha256 = "1r5yfj984xbzlgv5zzai2w19z174s7j52nkdzfsgfqqrzzz5g3r2";
-  #};
+  version = "3.0.0";
+  src = fetchurl {
+    url = "https://gitlab.inria.fr/batsim/batsim/repository/v${version}/archive.tar.gz";
+    sha256 = "1x2qblw7fvr6mrml1p8siybrdvrr71g5vdif368hjkhqmr1ld7wp";
+  };
 
   nativeBuildInputs= [
     simgrid
@@ -49,11 +47,7 @@ stdenv.mkDerivation rec {
 
   enableParallelBuilding = true;
 
-
-  # Remove previous builds to avoid CMake complain
-  preConfigure = "rm -rf ./build/*";
-
-  # Disable checks by default to enable installing broken version
+  # Disable tests by default
   doCheck = false;
 
   preCheck = ''

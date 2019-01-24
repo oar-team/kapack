@@ -11,6 +11,7 @@ pybatsim.overrideAttrs (oldAttrs: rec {
       pytest
       ipython
       ipdb
+      coverage
       # for doc generation
       sphinx
     ];# ++ [ batsim ];

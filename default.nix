@@ -16,13 +16,12 @@
         inherit (pinnedVersion) rev sha256;
       };
     in import pinnedPkgs {}),
-  mylib ? import ./mylib { inherit pkgs; },
   # use Clang instead of GCC
   useClang ? false
 }:
 let
   # Add libraries to the scope of callPackage
-  callPackage = pkgs.lib.callPackageWith (pkgs // pkgs.xlibs // mylib // self);
+  callPackage = pkgs.lib.callPackageWith (pkgs // pkgs.xlibs // self);
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
 
   self = rec {
@@ -35,6 +34,7 @@ let
     simgrid_dev = callPackage ./simgrid/dev.nix { };
     simgrid_dev_working = callPackage ./simgrid/dev_working.nix { };
     simgrid_batsim140or200 = callPackage ./simgrid/batsim140or200.nix { inherit simgrid; };
+    simgrid_batsim3 = callPackage ./simgrid/batsim300.nix { inherit simgrid; };
     simgrid_remotesg = callPackage ./simgrid/remotesg.nix { inherit simgrid; };
     simgrid_temperature = callPackage ./simgrid/temperature.nix { };
     remote_simgrid = callPackage ./remote-simgrid {
@@ -76,9 +76,10 @@ let
       openmpi = pkgs.openmpi;
     };
 
-    batsim140 = callPackage ./batsim/batsim140.nix { batsim = batsim200; };
-    batsim200 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim140or200; };
-    batsim = batsim200;
+    batsim1 = callPackage ./batsim/batsim140.nix { batsim = batsim2; };
+    batsim2 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim140or200; };
+    batsim3 = callPackage ./batsim/batsim300.nix { simgrid = simgrid_batsim3; };
+    batsim = batsim3;
     batsim_dev = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev_working;
       batsched = batsched_dev;
@@ -92,10 +93,13 @@ let
       simgrid = simgrid_temperature;
       batsched = batsched_dev;
     };
-    batsched = callPackage ./batsched { };
-    batsched_dev = callPackage ./batsched/dev.nix { };
-    pybatsim = callPackage ./pybatsim/default.nix { };
-    pybatsim20 = callPackage ./pybatsim/pybatsim20.nix { };
+    batsched12 = callPackage ./batsched/batsched121.nix { };
+    batsched13 = callPackage ./batsched/batsched130.nix { };
+    batsched = batsched13;
+    batsched_dev = callPackage ./batsched/dev.nix { batsched = batsched13; };
+    pybatsim2 = callPackage ./pybatsim/pybatsim2.nix { };
+    pybatsim3 = callPackage ./pybatsim/pybatsim300.nix { };
+    pybatsim = pybatsim3;
     pybatsim_dev = callPackage ./pybatsim/dev.nix { };
     batbroker = callPackage ./batbroker/default.nix { };
     intervalset = callPackage ./intervalset { };
@@ -104,7 +108,10 @@ let
     procset = callPackage ./procset { };
     procset_dev = callPackage ./procset/dev.nix { };
     evalys = callPackage ./evalys { };
+    evalys4 = callPackage ./evalys/evalys4.nix { };
     execo = callPackage ./execo { };
+    docopt_cpp = callPackage ./docopt-cpp { };
+    pugixml = callPackage ./pugixml { shared = true; };
     # TODO push this in nixpkgs (not even used here anymore)
     coloredlogs = callPackage ./coloredlogs { inherit humanfriendly; };
     humanfriendly = callPackage ./humanfriendly { };
@@ -177,7 +184,9 @@ let
     oar = callPackage ./oar { };
     oar_dev = callPackage ./oar/dev.nix { };
     oardocker = callPackage ./oardocker { };
+
     gemmpi = callPackage ./gemmpi {};
+
     inherit pkgs;
     inherit pkgs-unstable;
   }

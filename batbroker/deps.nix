@@ -4,8 +4,8 @@
     fetch = {
       type = "git";
       url = "https://github.com/pebbe/zmq4.git";
-      rev = "90d69e4";
-      sha256 = "169yk7547r471hy7ghl4lg1dj9nswrmfg5cim8i2hy3qlybn93rl";
+      rev = "v1.0.0";
+      sha256 = "0vnwlabrlrzszqyfbw4vypalhsxi4l4ywcbjhfhwl1fpvcph5dar";
       };
     }
   ]
