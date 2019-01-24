@@ -26,8 +26,10 @@ stdenv.mkDerivation rec {
 
   meta = with stdenv.lib; {
     description = ''
+      Matrix multiplication benchmark on MPI.
+      The algorithm is a distributed pdgemm.
     '';
-    homepage    = "https://www.nas.nasa.gov/publications/npb.html";
+    homepage    = "https://gitlab.inria.fr/adfaure/gemmpi";
     platforms   = platforms.unix;
   };
 }
