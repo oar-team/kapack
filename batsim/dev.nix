@@ -31,7 +31,7 @@ stdenv.mkDerivation rec {
     cmake
   ];
 
-  buildInputs = stdenv.lib.optional installTestsDeps [
+  buildInputs = stdenv.lib.optionals installTestsDeps [
     pythonPackages.pandas
     netcat-gnu
     coreutils
