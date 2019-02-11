@@ -66,7 +66,6 @@ stdenv.mkDerivation rec {
   checkPhase = ''
     runHook preCheck
     ${stdenv.shell} ../ci/run-tests.bash
-    ${stdenv.shell} ../ci/run-unittests.bash
   '';
 
   meta = with stdenv.lib; {
