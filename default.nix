@@ -143,7 +143,7 @@ let
     gocov_xml = callPackage ./gocov-xml { };
     loguru = callPackage ./loguru { };
 
-    evalysEnv = (python.withPackages (ps: [ ps.ipython evalys ])).env;
+    evalysEnv = (python.withPackages (ps: [ ps.ipython evalys4 ])).env;
 
     evalysNotebookEnv = pkgs.stdenv.mkDerivation rec {
       name = "evalysNotebook";
@@ -168,7 +168,7 @@ let
         pkgs.wget
         (python.withPackages (ps: with ps; [
           jupyter
-          evalys
+          evalys4
           pip
         ]))
       ];
