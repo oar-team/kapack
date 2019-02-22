@@ -1,13 +1,13 @@
 { stdenv, fetchgit, meson, ninja, pkgconfig, boost, gtest }:
 
 stdenv.mkDerivation rec {
-  version = "1.1.0";
+  version = "1.2.0";
   name = "intervalset-${version}";
 
   src = fetchgit {
     url = "https://framagit.org/batsim/intervalset.git";
     rev = "v${version}";
-    sha256 = "0kksrr1l9gv7fg6rdjz39ph9l6smy74jsahyaj6pmpi1kzs33qva";
+    sha256 = "1ayj6jjznbd0kwacz6dki6yk4rxdssapmz4gd8qh1yq1z1qbjqgs";
   };
 
   nativeBuildInputs = [ meson ninja pkgconfig ];
