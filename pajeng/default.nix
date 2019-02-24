@@ -1,12 +1,12 @@
 { stdenv, fetchFromGitHub, cmake, boost, flex, bison }:
 
 stdenv.mkDerivation rec {
-  version = "1.3.4";
+  version = "1.3.5";
   name = "pajeng-${version}";
   src = fetchFromGitHub {
     owner = "schnorr";
     repo = "pajeng";
-    rev = "master";
+    rev = "${version}";
     sha256 = "1l7x7whg1n82c3m4b1wfb7krar4vwh0xx97cmmmc1rq6l23qz9jw";
   };
 
