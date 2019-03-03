@@ -6,7 +6,7 @@ python27Packages.buildPythonPackage rec {
     owner = "adfaure";
     repo = "colmet";
     rev = "88de18da67c9a24a2f3b4a5f30f735b382cfe0ff";
-    sha256 = "1cz97l84xhz3rzhd5rfa92sc7zx8s3mhq71y0fj2si9j5bmcsm0b";
+    sha256 = "0hswgmjbs5yglsgmxmr3qra8zfc3w7ds3clxqihhhb96q7ppk5rg";
   };
 
   propagatedBuildInputs = with python27Packages; [
