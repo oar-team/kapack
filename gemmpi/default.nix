@@ -1,10 +1,8 @@
-{
-  stdenv, fetchgit, openmpi, automake, clang, openblas
-}:
+{ pkgs, stdenv, fetchgit, openmpi, automake, clang, openblas }:
 
 stdenv.mkDerivation rec {
   name = "gemmpi-${version}";
-  version = "1";
+  version = "dev";
 
   src = fetchgit {
     url = "https://gitlab.inria.fr/adfaure/gemmpi";
@@ -16,7 +14,9 @@ stdenv.mkDerivation rec {
   buildInputs = [ openmpi ];
 
   buildPhase = ''
-    mpicc main.c -lopenblas
+    mpicc --version
+    mpirun --version
+    mpicc main.c -lopenblas -lm
   '';
 
   installPhase = ''
