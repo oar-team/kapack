@@ -1,0 +1,573 @@
+diff --git a/include/simgrid/plugins/temperature.h b/include/simgrid/plugins/temperature.h
+new file mode 100644
+index 000000000..cc26b83ae
+--- /dev/null
++++ b/include/simgrid/plugins/temperature.h
+@@ -0,0 +1,36 @@
++/* Copyright (c) 2016-2017. The SimGrid Team. All rights reserved.          */
++
++/* This program is free software; you can redistribute it and/or modify it
++ * under the terms of the license (GNU LGPL) which comes with this package. */
++
++#ifndef SIMGRID_PLUGINS_TEMPERATURE_H_
++#define SIMGRID_PLUGINS_TEMPERATURE_H_
++
++#include <xbt/base.h>
++#include <simgrid/forward.h>
++
++SG_BEGIN_DECL()
++
++XBT_PUBLIC void sg_host_temperature_plugin_init();
++XBT_PUBLIC double sg_host_get_aggregated_consumed_energy(sg_host_t host);
++XBT_PUBLIC double sg_host_get_host_temperature(sg_host_t host);
++XBT_PUBLIC double sg_host_get_air_temperature(sg_host_t host);
++XBT_PUBLIC double sg_host_get_outside_temperature(sg_host_t host);
++XBT_PUBLIC void sg_host_set_outside_temperature(sg_host_t host, double temperature);
++XBT_PUBLIC void sg_host_update_temperatures(sg_host_t host);
++XBT_PUBLIC void sg_host_init_master_slaves(sg_host_t host);
++
++
++
++#define MSG_host_temperature_plugin_init() sg_host_temperature_plugin_init()
++#define MSG_host_get_aggregated_consumed_energy(host) sg_host_get_aggregated_consumed_energy(host)
++#define MSG_host_get_host_temperature(host) sg_host_get_host_temperature(host)
++#define MSG_host_get_air_temperature(host) sg_host_get_air_temperature(host)
++#define MSG_host_get_outside_temperature(host) sg_host_get_outside_temperature(host)
++#define MSG_host_set_outside_temperature(host, temperature) sg_host_set_outside_temperature(host, temperature)
++#define MSG_host_update_temperatures(host) sg_host_update_temperatures(host)
++#define MSG_host_init_master_slaves(host) sg_host_init_master_slaves(host)
++
++SG_END_DECL()
++
++#endif
+\ No newline at end of file
+diff --git a/src/plugins/host_temperature.cpp b/src/plugins/host_temperature.cpp
+new file mode 100644
+index 000000000..7acb8434c
+--- /dev/null
++++ b/src/plugins/host_temperature.cpp
+@@ -0,0 +1,504 @@
++﻿/* Copyright (c) 2010-2018. The SimGrid Team. All rights reserved.          */
++
++/* This program is free software; you can redistribute it and/or modify it
++ * under the terms of the license (GNU LGPL) which comes with this package. */
++
++#include "simgrid/plugins/temperature.h"
++#include "simgrid/plugins/energy.h"
++#include "simgrid/s4u/Engine.hpp"
++#include "src/include/surf/surf.hpp"
++#include "src/plugins/vm/VirtualMachineImpl.hpp"
++#include "src/surf/cpu_interface.hpp"
++
++#include <boost/algorithm/string/classification.hpp>
++#include <boost/algorithm/string/split.hpp>
++
++#include <vector>
++#include <string>
++#include <cmath>
++
++SIMGRID_REGISTER_PLUGIN(host_temperature, "host and ambient temperature.", &sg_host_temperature_plugin_init)
++
++/** @addtogroup plugin_temperature
++
++This is the temperature plugin, enabling to account not only for computation time, but also for the temperature in the
++simulated platform.
++To activate this plugin, first call sg_host_temperature_plugin_init() before your #MSG_init(), and then use
++MSG_host_get_host_temperature() to retrieve the temperature of a given host.
++It is also possible to retrieve the ambient air temperature with MSG_host_get_air_temperature().
++
++When the host is on, this temperature naturally depends on the energy consumed by the processor, calculated by the energy plugin.
++This model is based on thermodynamics heat formulae, namely conductive heat transfer and specific heat formula.
++This model computes the temperatures of a host and the ambient air. Computed temperatures can also depend on the temperature of the 'outside world'.
++
++Here is an example of XML declaration:
++
++\code{.xml}//TODO
++<host id="MyHost1" speed="100.0Mf,50.0Mf,20.0Mf" pstate="0" core="4" >
++      <prop id="watt_per_state" value="100.0:120.0:200.0, 93.0:110.0:170.0, 90.0:105.0:150.0" />
++        <prop id="watt_off" value="10" />
++        <prop id="host_temperature" value="30.0"/>
++        <prop id="air_temperature" value="18.0"/>
++        <prop id="temperature_coeffs" value="1.6, 4.6, 0.9, 1.005, 25000, 36000"/>
++    </host>
++\endcode
++
++### How accurate are these models?
++Please note that this model is still a work in progress. Further improvement of the model and evaluation of its accuracy is needed.
++Keep this in mind when using this plugin.
++*/
++
++XBT_LOG_NEW_DEFAULT_SUBCATEGORY(surf_temperature, surf, "Logging specific to the SURF temperature plugin");
++
++namespace simgrid {
++namespace plugin {
++
++class HostTemperature {
++public:
++  static simgrid::xbt::Extension<simgrid::s4u::Host, HostTemperature> EXTENSION_ID;
++
++  explicit HostTemperature(simgrid::s4u::Host *ptr);
++  ~HostTemperature();
++
++  double getAggregatedConsumedEnergy();
++  double getHostTemperature();
++  double getAirTemperature();
++  double getOutsideTemperature();
++  void setOutsideTemperature(double temperature);
++  void update();
++  void initMasterSlaves();
++
++private:
++  simgrid::s4u::Host * host = nullptr;
++  std::vector<simgrid::s4u::Host *> slave_hosts; /*< The list of hosts that are slaves to me. Empty if i'm not a master. >*/
++  simgrid::s4u::Host * master_host = nullptr; /*< The master host if I'm a slave, nullptr if I'm the master. >*/
++
++  double air_temperature = 20.0;/*< Temperature of the ambient air (in Celsius) where the host is located >*/
++  double host_temperature = air_temperature; /*< Current temperature (in Celsius) of the host >*/
++  double outside_temperature = air_temperature;/*< Temperature of the outside world (in Celsius). Used to model the heat transfer b/w the air and the outside world >*/
++  
++  double host_conductive_coeff = 9; /*< host thermal conductivity * area / thickness (in Watt/Kelvin), where the area is the surface of heat exchange b/w the host and the ambient air, same for thickness.>*/
++  double host_specific_heat = 0.9; /*< Specific heat of the host in joules/(gram*kelvin)>*/
++  double host_mass = 25000; /*< Host mass in gram >*/
++
++  double air_conductive_coeff = 5; /*< same as host_conductive_coeff, b/w the air and outside world >*/
++  double air_specific_heat = 1.005; /*< Specific heat of the air, in joules/(gram*kelvin)>*/
++  double air_mass = 36000; /*< Air mass in gram, arbitrary values for a room of 30m^3 of air at 20°C >*/
++public:
++  double last_energy;        /*< Amount of energy used so far >*/
++  double last_updated;       /*< Timestamp of the last update event >*/
++  bool is_master = true; /*< Whether I'm a master host in the sense of the temperature plugin >*/
++  const char* rad_name; /*< The name of the QRad >*/
++};
++
++simgrid::xbt::Extension<simgrid::s4u::Host, HostTemperature> HostTemperature::EXTENSION_ID;
++
++/* Computes the temperature. Called lazily on need. */
++void HostTemperature::update()
++{
++	if (dynamic_cast<simgrid::s4u::VirtualMachine*>(host)) // Ignore virtual machines
++		return;
++
++	if (!is_master) // Ignore slave hosts
++		return;
++
++
++	double start_time  = this->last_updated;
++	double finish_time = surf_get_clock();
++	double elapsed_time = finish_time - start_time;
++
++	if(elapsed_time < 1){
++	/*< we do not update if the time period is too small >*/
++	return;
++	}
++
++	// Get the new energy of me and all my slaves
++	double new_energy = sg_host_get_consumed_energy(host);
++	for (simgrid::s4u::Host * slave : slave_hosts) {
++		new_energy += sg_host_get_consumed_energy(slave);
++	}
++
++	XBT_DEBUG("[Update temperature of %s] period=[%.2f-%.2f] Last energy was %f Joules, consumed %f Joules durig this period.",
++	          host->get_cname(), start_time, finish_time, this->last_energy, new_energy);
++
++	double consumed_energy_at_period = new_energy - this->last_energy; // Energy consumed in this time period for me and my slaves
++
++	/*< Compute the number of timesteps of ~10 seconds >*/
++	int nb_timesteps;
++	double timestep;
++	double energy_per_step;
++	if(elapsed_time > 10.0){
++	nb_timesteps = (int) round(elapsed_time / 10.0);
++	timestep = elapsed_time / (double)nb_timesteps;
++	energy_per_step = consumed_energy_at_period / (double)nb_timesteps;
++	}
++	else{
++	nb_timesteps = 1;
++	timestep = elapsed_time;
++	energy_per_step = consumed_energy_at_period;
++	}
++
++	double tmp_host_temperature = this->host_temperature;
++	double tmp_air_temperature = this->air_temperature;
++	double host_energy_lost, host_energy_kept, host_temperature_change, new_host_temperature = this->host_temperature;
++	double air_energy_lost, air_energy_kept, air_temperature_change, new_air_temperature = this->air_temperature;
++
++	/*< We update the temperatures of the host and the air by timesteps of about 10 seconds (which is *roughly continuous*) >*/
++	for(int i = 0; i< nb_timesteps; ++i){
++	/*< Computes the temperature change of the host >*/
++	host_energy_lost = timestep * this->host_conductive_coeff * (tmp_host_temperature - tmp_air_temperature);
++	host_energy_kept = energy_per_step - host_energy_lost;
++	host_temperature_change = host_energy_kept / (this->host_mass * this->host_specific_heat);
++	new_host_temperature = tmp_host_temperature + host_temperature_change;
++
++	/*<Computes the temperature change of the air >*/
++	air_energy_lost = timestep * this->air_conductive_coeff * (tmp_air_temperature - this->outside_temperature);
++	air_energy_kept = host_energy_lost - air_energy_lost;
++	air_temperature_change = air_energy_kept / (this->air_mass * this->air_specific_heat);
++	new_air_temperature = tmp_air_temperature + air_temperature_change;
++
++	tmp_host_temperature = new_host_temperature;
++	tmp_air_temperature = new_air_temperature;
++	}
++
++	XBT_DEBUG("[Update temperature of %s] period=[%.2f-%.2f] Current power peak=%.0E flop/s; Host temperature: %.2f °C -> "
++	        "%.2f °C; Air temperature: %.2f °C -> %.2f °C; Outside temperature: %.2f °C.",
++	        host->get_cname(), start_time, finish_time, host->pimpl_cpu->get_speed(1.0), this->host_temperature, new_host_temperature,
++	        this->air_temperature, new_air_temperature, this->outside_temperature);
++
++	this->host_temperature = new_host_temperature;
++	this->air_temperature = new_air_temperature;
++	this->last_updated = finish_time;
++	this->last_energy = new_energy;
++}
++
++void HostTemperature::initMasterSlaves()
++{
++	if (is_master) {
++		// Let's retrieve my list of slave hosts, if any!
++		const char* slave_hosts_str = host->get_property("temperature_slave_hosts");
++        if (slave_hosts_str != nullptr && strcmp(slave_hosts_str, "")) {
++			std::vector<std::string> slave_names;
++			boost::split(slave_names, slave_hosts_str, boost::is_any_of(","));
++			slave_hosts.reserve(slave_names.size());
++			for (const std::string host_name : slave_names)
++			{
++				slave_hosts.push_back(simgrid::s4u::Host::by_name(host_name)); // Throws a error if the host does not exist
++			}
++		}
++	} else {
++		// If I'm a slave, retrieve the Host of my master
++		const char* master_host_str = host->get_property("temperature_master_host");
++		xbt_assert(master_host_str != nullptr,"Host %s has no master host for the temperature plugin", host->get_cname());
++		this->master_host = simgrid::s4u::Host::by_name(master_host_str);
++	}
++}
++
++
++HostTemperature::HostTemperature(simgrid::s4u::Host* ptr) : host(ptr), last_updated(surf_get_clock())
++{
++	// First check if this host is a "master" in the sense of the temperature plugin
++	const char* temperature_role_str = host->get_property("temperature_role");
++
++	if ((temperature_role_str == nullptr) || (!strcmp(temperature_role_str, "slave")) ) {
++		// Either this plugin does not apply to me or I'm just a slave
++		this->is_master = false;
++		return;
++	}
++	// Else I'm a master
++	this->is_master = true;
++    this->last_energy = sg_host_get_consumed_energy(host);
++
++	// Then read some properties from the XML platform file
++	// air_temperature
++	const char* air_temp_str = host->get_property("temperature_air");
++	if (air_temp_str != nullptr) {
++		try {
++		  this->air_temperature = std::stof(std::string(air_temp_str));
++		} catch (std::invalid_argument& ia) {
++		  throw std::invalid_argument(std::string("Invalid value for property temperature_air of host ") + host->get_cname() +
++			                          ": " + air_temp_str);
++		}
++	} else {
++		XBT_WARN("Host %s: Missing value for property temperature_air, using default value (%.2f).", host->get_cname(), this->air_temperature);
++	}
++
++	// host_temperature
++	const char* host_temp_str = host->get_property("temperature_host");
++	if (host_temp_str != nullptr) {
++		try {
++			this->host_temperature = std::stof(std::string(host_temp_str));
++		} catch (std::invalid_argument& ia) {
++			throw std::invalid_argument(std::string("Invalid value for property temperature_host of host ") + host->get_cname() +
++			                            ": " + host_temp_str);
++		}
++	} else{
++		XBT_WARN("Host %s: Missing value for property temperature_host, using value of temperature_air (%.2f).", host->get_cname(),
++		         this->air_temperature);
++		this->host_temperature = this->air_temperature;
++	}
++
++	/* Array of values. Either only conductive coefficients of host and air. Example: <prop id="temperature_coeffs" value="1.6, 4.6"/>
++	   Or conductive coefficients, specific heat and mass of host and air respectively. Example: <prop id="temperature_coeffs" value="1.6, 4.6, 0.9, 1.005, 25000, 36000"/> */
++	const char* coefficients_str = host->get_property("temperature_coeffs");
++	if (coefficients_str != nullptr) {
++		std::vector<std::string> all_coeffs;
++		boost::split(all_coeffs, coefficients_str, boost::is_any_of(","));
++		xbt_assert(all_coeffs.size() == 2 or all_coeffs.size() == 6,
++		          "Incorrect size for 'temperature_coeffs' property of host %s."
++		          "This property should contain either 2 or 6 values.", host->get_cname());
++		this->host_conductive_coeff = std::stof(std::string(all_coeffs[0]));
++		this->air_conductive_coeff = std::stof(std::string(all_coeffs[1]));
++		if (all_coeffs.size() == 6) {
++			this->host_specific_heat = std::stof(std::string(all_coeffs[2]));
++			this->air_specific_heat = std::stof(std::string(all_coeffs[3]));
++			this->host_mass = std::stof(std::string(all_coeffs[4]));
++			this->air_mass = std::stof(std::string(all_coeffs[5]));
++		}
++	} else {
++		XBT_WARN("Host %s: Missing value for property temperature_coeffs, using default values.", host->get_cname());
++	}
++}
++
++HostTemperature::~HostTemperature() = default;
++
++double HostTemperature::getAggregatedConsumedEnergy()
++{
++    if (this->is_master) {
++        if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
++            simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
++
++        return this->last_energy;
++    } else {
++        return master_host->extension<HostTemperature>()->getAggregatedConsumedEnergy();
++    }
++}
++
++
++double HostTemperature::getHostTemperature()
++{
++	if (this->is_master) {
++		if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
++		  simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
++
++		return host_temperature;
++	} else {
++		return master_host->extension<HostTemperature>()->getHostTemperature();
++	}
++}
++
++double HostTemperature::getAirTemperature()
++{
++	if (this->is_master) {
++		if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
++		simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
++
++		return air_temperature;
++	} else {
++		return master_host->extension<HostTemperature>()->getAirTemperature();
++	}
++}
++
++double HostTemperature::getOutsideTemperature()
++{
++	if (this->is_master) {
++		return outside_temperature;
++	} else {
++		return master_host->extension<HostTemperature>()->getOutsideTemperature();
++	}
++}
++
++void HostTemperature::setOutsideTemperature(double temperature)
++{
++	if (this->is_master) {
++		if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
++		simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
++
++		this->outside_temperature = temperature;
++	} else {
++		XBT_WARN("Trying to set the outside temperature of Host %s which is a slave host. Doing nothing", host->get_cname());
++	}
++}
++
++} // namespace plugin
++} // namespace simgrid
++
++using simgrid::plugin::HostTemperature;
++
++/* **************************** events  callback *************************** */
++static void on_creation(simgrid::s4u::Host& host)
++{
++  if (dynamic_cast<simgrid::s4u::VirtualMachine*>(&host)) // Ignore virtual machines
++    return;
++
++  host.extension_set(new HostTemperature(&host));
++}
++
++static void on_action_state_change(simgrid::surf::CpuAction* action,
++                                   simgrid::kernel::resource::Action::State /*previous*/)
++{
++  for (simgrid::surf::Cpu* const& cpu : action->cpus()) {
++    simgrid::s4u::Host* host = cpu->get_host();
++    if (host != nullptr) {
++
++      // If it's a VM, take the corresponding PM
++      simgrid::s4u::VirtualMachine* vm = dynamic_cast<simgrid::s4u::VirtualMachine*>(host);
++      if (vm) // If it's a VM, take the corresponding PM
++        host = vm->get_pm();
++
++      // Get the host_temperature extension for the relevant host
++      HostTemperature* host_temperature = host->extension<HostTemperature>();
++
++      if (host_temperature->last_updated < surf_get_clock())
++        host_temperature->update();
++    }
++  }
++}
++
++/* This callback is fired either when the host changes its state (on/off) ("onStateChange") or its speed
++ * (because the user changed the pstate, or because of external trace events) ("onSpeedChange") */
++static void on_host_change(simgrid::s4u::Host& host)
++{
++ if (dynamic_cast<simgrid::s4u::VirtualMachine*>(&host)) // Ignore virtual machines
++    return;
++
++  HostTemperature* host_temperature = host.extension<HostTemperature>();
++
++  host_temperature->update();
++}
++
++static void on_host_destruction(simgrid::s4u::Host& host)
++{
++  if (dynamic_cast<simgrid::s4u::VirtualMachine*>(&host)) // Ignore virtual machines
++    return;
++
++  HostTemperature* host_temperature = host.extension<HostTemperature>();
++
++  if(!host_temperature->is_master)
++	  return;
++  
++  host_temperature->update();
++  double tot_energy = host_temperature->last_energy;
++  if (tot_energy > 1e6){
++	XBT_INFO("[Host %s] Host+slaves temperature: %.2f °C, Air temperature: %.2f °C, Outside temperature: %.2f °C, Total energy consumed: %.0f kJ",
++            host.get_cname(), host_temperature->getHostTemperature(), host_temperature->getAirTemperature(), host_temperature->getOutsideTemperature(), (tot_energy / 1000.0));
++  }
++  else{
++	XBT_INFO("[Host %s] Host+slaves temperature: %.2f °C, Air temperature: %.2f °C, Outside temperature: %.2f °C, Total energy consumed %.0f J",
++            host.get_cname(), host_temperature->getHostTemperature(), host_temperature->getAirTemperature(), host_temperature->getOutsideTemperature(), tot_energy);
++  }
++}
++
++static void on_simulation_end()
++{
++  //Do nothing. Maybe do something in another version
++  return;
++}
++
++/* **************************** Public interface *************************** */
++
++/** \ingroup plugin_temperature
++ * \brief Enable host temperature plugin
++ * \details Enable temperature plugin to get the temperature of each cpu. Call this function before #MSG_init().
++ */
++void sg_host_temperature_plugin_init()
++{
++  if (HostTemperature::EXTENSION_ID.valid())
++    return;
++  sg_host_energy_plugin_init();
++  HostTemperature::EXTENSION_ID = simgrid::s4u::Host::extension_create<HostTemperature>();
++
++  simgrid::s4u::Host::on_creation.connect(&on_creation);
++  simgrid::s4u::Host::on_state_change.connect(&on_host_change);
++  simgrid::s4u::Host::on_destruction.connect(&on_host_destruction);
++  simgrid::surf::CpuAction::on_state_change.connect(&on_action_state_change);
++}
++
++
++/** @ingroup plugin_temperature
++ *  @brief Returns the current temperature of the (group of) hosts (in Celcius)
++ *
++ *  Please note that since the temperature is lazily updated, it may require a simcall to update it.
++ *  The result is that the actor requesting this value will be interrupted,
++ *  the value will be updated in kernel mode before returning the control to the requesting actor.
++ */
++double sg_host_get_host_temperature(sg_host_t host)
++{
++  xbt_assert(HostTemperature::EXTENSION_ID.valid(),
++             "The Temperature plugin is not active. Please call sg_temperature_plugin_init() during initialization.");
++  return host->extension<HostTemperature>()->getHostTemperature();
++}
++
++/** @ingroup plugin_temperature
++ *  @brief Returns the total consumed energy of the (group of) hosts (in Joules)
++ *
++ *  Please note that since the temperature is lazily updated, it may require a simcall to update it.
++ *  The result is that the actor requesting this value will be interrupted,
++ *  the value will be updated in kernel mode before returning the control to the requesting actor.
++ */
++double sg_host_get_aggregated_consumed_energy(sg_host_t host)
++{
++  xbt_assert(HostTemperature::EXTENSION_ID.valid(),
++             "The Temperature plugin is not active. Please call sg_temperature_plugin_init() during initialization.");
++  return host->extension<HostTemperature>()->getAggregatedConsumedEnergy();
++}
++
++/** @ingroup plugin_temperature
++ *  @brief Returns the current ambient air temperature (in Celcius)
++ *  Please note that since the temperature is lazily updated, it may require a simcall to update it.
++ *  The result is that the actor requesting this value will be interrupted,
++ *  the value will be updated in kernel mode before returning the control to the requesting actor.
++ */
++double sg_host_get_air_temperature(sg_host_t host)
++{
++  xbt_assert(HostTemperature::EXTENSION_ID.valid(),
++             "The Temperature plugin is not active. Please call sg_temperature_plugin_init() during initialization.");
++  return host->extension<HostTemperature>()->getAirTemperature();
++}
++
++/** @ingroup plugin_temperature
++ *  @brief Returns the current outside world temperature (in Celcius)
++ *  Please note that since the temperature is lazily updated, it may require a simcall to update it.
++ *  The result is that the actor requesting this value will be interrupted,
++ *  the value will be updated in kernel mode before returning the control to the requesting actor.
++ */
++double sg_host_get_outside_temperature(sg_host_t host)
++{
++  xbt_assert(HostTemperature::EXTENSION_ID.valid(),
++             "The Temperature plugin is not active. Please call sg_temperature_plugin_init() during initialization.");
++  return host->extension<HostTemperature>()->getOutsideTemperature();
++}
++
++/** @ingroup plugin_temperature
++ *  @brief Sets the outside world temperature to the temperature given in argument.
++ *  Please note that since the temperature is lazily updated, it may require a simcall to update it.
++ *  The result is that the actor requesting this value will be interrupted,
++ *  the value will be updated in kernel mode before returning the control to the requesting actor.
++ */
++void sg_host_set_outside_temperature(sg_host_t host, double temperature)
++{
++  xbt_assert(HostTemperature::EXTENSION_ID.valid(),
++             "The Temperature plugin is not active. Please call sg_temperature_plugin_init() during initialization.");
++
++  host->extension<HostTemperature>()->setOutsideTemperature(temperature);
++}
++
++/** @ingroup plugin_temperature
++ *  @brief updates the temperatures of the host
++ */
++void sg_host_update_temperatures(sg_host_t host)
++{
++  xbt_assert(HostTemperature::EXTENSION_ID.valid(),
++             "The Temperature plugin is not active. Please call sg_temperature_plugin_init() during initialization.");
++  host->extension<HostTemperature>()->update();
++}
++
++/** @ingroup plugin_temperature
++ *  @brief init the temperature plugin on this host
++ */
++void sg_host_init_master_slaves(sg_host_t host)
++{
++  xbt_assert(HostTemperature::EXTENSION_ID.valid(),
++             "The Temperature plugin is not active. Please call sg_temperature_plugin_init() during initialization.");
++  host->extension<HostTemperature>()->initMasterSlaves();
++}
+diff --git a/tools/cmake/DefinePackages.cmake b/tools/cmake/DefinePackages.cmake
+index 3cb6710ab..9a301380f 100644
+--- a/tools/cmake/DefinePackages.cmake
++++ b/tools/cmake/DefinePackages.cmake
+@@ -354,6 +354,7 @@ set(PLUGINS_SRC
+   src/plugins/host_dvfs.cpp
+   src/plugins/host_energy.cpp
+   src/plugins/link_energy.cpp
++  src/plugins/host_temperature.cpp
+   src/plugins/host_load.cpp
+   src/plugins/file_system/s4u_FileSystem.cpp
+   src/plugins/vm/VirtualMachineImpl.hpp
+@@ -669,6 +670,7 @@ set(headers_to_install
+   include/simgrid/chrono.hpp
+   include/simgrid/plugins/dvfs.h
+   include/simgrid/plugins/energy.h
++  include/simgrid/plugins/temperature.h
+   include/simgrid/plugins/file_system.h
+   include/simgrid/plugins/live_migration.h
+   include/simgrid/plugins/load.h
