@@ -183,6 +183,7 @@ let
     pytest_flask = callPackage ./pytest-flask { };
     oar = callPackage ./oar { };
     oar_dev = callPackage ./oar/dev.nix { };
+    oar_lib = callPackage ./oar/oarlib.nix { };
     oardocker = callPackage ./oardocker { };
 
     gemmpi = callPackage ./gemmpi {};
