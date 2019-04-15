@@ -2,12 +2,12 @@
 
 pythonPackages.buildPythonPackage rec {
   name = "procset-${version}";
-  version = "v0.4";
+  version = "v1.0";
 
   src = fetchgit {
     url = "https://gitlab.inria.fr/bleuse/procset.py.git";
     rev = version;
-    sha256 = "07vcsag212ln2fgrr4pj3n4d5gwqrm7wacksg57wq4lf0qggnr5d";
+    sha256 = "1cnmbw4sgl9156lgvakdkpjr7mgd2wasqz1zml9qzk29p705420z";
   };
 
   LC_ALL = "en_US.UTF-8";

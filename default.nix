@@ -98,7 +98,7 @@ let
     batsched = batsched13;
     batsched_dev = callPackage ./batsched/dev.nix { batsched = batsched13; };
     pybatsim2 = callPackage ./pybatsim/pybatsim2.nix { };
-    pybatsim3 = callPackage ./pybatsim/pybatsim300.nix { };
+    pybatsim3 = callPackage ./pybatsim/pybatsim3.nix { };
     pybatsim = pybatsim3;
     pybatsim_dev = callPackage ./pybatsim/dev.nix { };
     batbroker = callPackage ./batbroker/default.nix { };
@@ -143,7 +143,7 @@ let
     gocov_xml = callPackage ./gocov-xml { };
     loguru = callPackage ./loguru { };
 
-    evalysEnv = (python.withPackages (ps: [ ps.ipython evalys ])).env;
+    evalysEnv = (python.withPackages (ps: [ ps.ipython evalys4 ])).env;
 
     evalysNotebookEnv = pkgs.stdenv.mkDerivation rec {
       name = "evalysNotebook";
@@ -168,7 +168,7 @@ let
         pkgs.wget
         (python.withPackages (ps: with ps; [
           jupyter
-          evalys
+          evalys4
           pip
         ]))
       ];
@@ -187,6 +187,7 @@ let
     oardocker = callPackage ./oardocker { };
 
     gemmpi = callPackage ./gemmpi {};
+    gemmpi_with_mpi = callPackage ./gemmpi/env.nix { inherit pkgs openmpi; };
 
     inherit pkgs;
     inherit pkgs-unstable;
