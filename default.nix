@@ -1,7 +1,7 @@
 {
   hostPkgs ? import <nixpkgs> {},
   pkgs ? (let
-      pinnedVersion = hostPkgs.lib.importJSON ./nixpkgs-18.03.json;
+      pinnedVersion = hostPkgs.lib.importJSON ./nixpkgs-19.03.json;
       pinnedPkgs = hostPkgs.fetchFromGitHub {
         owner = "NixOS";
         repo = "nixpkgs-channels";
