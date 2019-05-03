@@ -21,8 +21,20 @@
 }:
 let
   # Add libraries to the scope of callPackage
-  callPackage = pkgs.lib.callPackageWith (pkgs // pkgs.xlibs // self);
+  callPackage = path : attrset : check (pkgs.lib.callPackageWith (pkgs // pkgs.xlibs // self) path attrset);
   #ocamlCallPackage = pkgs.ocamlPackages.callPackageWith (pkgs // pkgs.xlibs // self);
+
+  check = drv:
+    let
+    makeC = c : s : if c then true else throw ''meta attribute missing or incorrect: missing the "${s}" attribute.'';
+    test = meta:
+      (makeC (meta ? longDescription ) "longDescription")  &&
+      (makeC (meta ? description     ) "description")  &&
+      (makeC (meta ? homepage        ) "homepage")  &&
+      (makeC (meta ? platforms       ) "platforms")  &&
+      (makeC (meta ? licence         ) "licence") &&
+      (makeC (meta ? broken          ) "broken");
+    in if (test drv.meta) then drv else {};
 
   self = rec {
     # Freeze python version to 3.6
