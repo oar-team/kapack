@@ -43,7 +43,7 @@ index 000000000..cc26b83ae
 \ No newline at end of file
 diff --git a/src/plugins/host_temperature.cpp b/src/plugins/host_temperature.cpp
 new file mode 100644
-index 000000000..7acb8434c
+index 000000000..31c91895c
 --- /dev/null
 +++ b/src/plugins/host_temperature.cpp
 @@ -0,0 +1,504 @@
@@ -383,10 +383,10 @@ index 000000000..7acb8434c
 +  host.extension_set(new HostTemperature(&host));
 +}
 +
-+static void on_action_state_change(simgrid::surf::CpuAction* action,
++static void on_action_state_change(simgrid::kernel::resource::CpuAction const& action,
 +                                   simgrid::kernel::resource::Action::State /*previous*/)
 +{
-+  for (simgrid::surf::Cpu* const& cpu : action->cpus()) {
++  for (simgrid::kernel::resource::Cpu* const& cpu : action.cpus()) {
 +    simgrid::s4u::Host* host = cpu->get_host();
 +    if (host != nullptr) {
 +
@@ -406,9 +406,9 @@ index 000000000..7acb8434c
 +
 +/* This callback is fired either when the host changes its state (on/off) ("onStateChange") or its speed
 + * (because the user changed the pstate, or because of external trace events) ("onSpeedChange") */
-+static void on_host_change(simgrid::s4u::Host& host)
++static void on_host_change(simgrid::s4u::Host const& host)
 +{
-+ if (dynamic_cast<simgrid::s4u::VirtualMachine*>(&host)) // Ignore virtual machines
++  if (dynamic_cast<simgrid::s4u::VirtualMachine const*>(&host)) // Ignore virtual machines
 +    return;
 +
 +  HostTemperature* host_temperature = host.extension<HostTemperature>();
@@ -416,9 +416,9 @@ index 000000000..7acb8434c
 +  host_temperature->update();
 +}
 +
-+static void on_host_destruction(simgrid::s4u::Host& host)
++static void on_host_destruction(simgrid::s4u::Host const& host)
 +{
-+  if (dynamic_cast<simgrid::s4u::VirtualMachine*>(&host)) // Ignore virtual machines
++  if (dynamic_cast<simgrid::s4u::VirtualMachine const*>(&host)) // Ignore virtual machines
 +    return;
 +
 +  HostTemperature* host_temperature = host.extension<HostTemperature>();
@@ -460,7 +460,7 @@ index 000000000..7acb8434c
 +  simgrid::s4u::Host::on_creation.connect(&on_creation);
 +  simgrid::s4u::Host::on_state_change.connect(&on_host_change);
 +  simgrid::s4u::Host::on_destruction.connect(&on_host_destruction);
-+  simgrid::surf::CpuAction::on_state_change.connect(&on_action_state_change);
++  simgrid::kernel::resource::CpuAction::on_state_change.connect(&on_action_state_change);
 +}
 +
 +
@@ -552,10 +552,10 @@ index 000000000..7acb8434c
 +  host->extension<HostTemperature>()->initMasterSlaves();
 +}
 diff --git a/tools/cmake/DefinePackages.cmake b/tools/cmake/DefinePackages.cmake
-index 3cb6710ab..9a301380f 100644
+index b856d198b..07855bffa 100644
 --- a/tools/cmake/DefinePackages.cmake
 +++ b/tools/cmake/DefinePackages.cmake
-@@ -354,6 +354,7 @@ set(PLUGINS_SRC
+@@ -357,6 +357,7 @@ set(PLUGINS_SRC
    src/plugins/host_dvfs.cpp
    src/plugins/host_energy.cpp
    src/plugins/link_energy.cpp
@@ -563,7 +563,7 @@ index 3cb6710ab..9a301380f 100644
    src/plugins/host_load.cpp
    src/plugins/file_system/s4u_FileSystem.cpp
    src/plugins/vm/VirtualMachineImpl.hpp
-@@ -669,6 +670,7 @@ set(headers_to_install
+@@ -672,6 +673,7 @@ set(headers_to_install
    include/simgrid/chrono.hpp
    include/simgrid/plugins/dvfs.h
    include/simgrid/plugins/energy.h
