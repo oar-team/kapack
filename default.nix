@@ -30,12 +30,13 @@ let
     python = pkgs.python36;
 
     # Batsim tools an dependencies
-    simgrid = callPackage ./simgrid { };
+    # "simgrid" is defined in pkgs
+    simgrid317 = callPackage ./simgrid/simgrid317.nix { };
     simgrid_dev = callPackage ./simgrid/dev.nix { };
     simgrid_dev_working = callPackage ./simgrid/dev_working.nix { };
-    simgrid_batsim140or200 = callPackage ./simgrid/batsim140or200.nix { inherit simgrid; };
-    simgrid_batsim3 = callPackage ./simgrid/batsim300.nix { inherit simgrid; };
-    simgrid_remotesg = callPackage ./simgrid/remotesg.nix { inherit simgrid; };
+    simgrid_batsim140or200 = callPackage ./simgrid/batsim140or200.nix { simgrid = simgrid317; };
+    simgrid_batsim3 = callPackage ./simgrid/batsim300.nix { simgrid = simgrid317; };
+    simgrid_remotesg = callPackage ./simgrid/remotesg.nix { simgrid = simgrid317; };
     simgrid_temperature = callPackage ./simgrid/temperature.nix { };
     remote_simgrid = callPackage ./remote-simgrid {
       simgrid = simgrid_remotesg; };
