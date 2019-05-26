@@ -32,6 +32,7 @@ let
     # Batsim tools an dependencies
     # "simgrid" is defined in pkgs
     simgrid317 = callPackage ./simgrid/simgrid317.nix { };
+    simgrid322_2 = callPackage ./simgrid/simgrid322_2.nix { };
     simgrid_dev = callPackage ./simgrid/dev.nix { };
     simgrid_dev_working = callPackage ./simgrid/dev_working.nix { };
     simgrid_batsim140or200 = callPackage ./simgrid/batsim140or200.nix { simgrid = simgrid317; };
