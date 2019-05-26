@@ -80,8 +80,9 @@ let
 
     batsim1 = callPackage ./batsim/batsim140.nix { batsim = batsim2; };
     batsim2 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim140or200; };
-    batsim3 = callPackage ./batsim/batsim300.nix { simgrid = simgrid_batsim3; };
-    batsim = batsim3;
+    batsim300 = callPackage ./batsim/batsim300.nix { simgrid = simgrid_batsim3; };
+    batsim310 = callPackage ./batsim/batsim310.nix { simgrid = simgrid322_2; };
+    batsim = batsim310;
     batsim_dev = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev_working;
       batsched = batsched_dev;
