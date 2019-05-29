@@ -26,7 +26,7 @@ let
 
   check = drv:
     let
-    makeC = c : s : if c then true else throw ''meta attribute missing or incorrect: missing the "${s}" attribute.'';
+    makeC = c : s : if c then true else throw ''meta attribute missing or incorrect: missing the "${s}" attribute for "${drv.name}".'';
     test = meta:
       (makeC (meta ? longDescription ) "longDescription")  &&
       (makeC (meta ? description     ) "description")  &&
