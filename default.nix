@@ -32,7 +32,7 @@ let
       (makeC (meta ? description     ) "description")  &&
       (makeC (meta ? homepage        ) "homepage")  &&
       (makeC (meta ? platforms       ) "platforms")  &&
-      (makeC (meta ? licence         ) "licence") &&
+      (makeC (meta ? license         ) "license") &&
       (makeC (meta ? broken          ) "broken");
     in if (test drv.meta) then drv else {};
 
