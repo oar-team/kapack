@@ -22,6 +22,7 @@ stdenv.mkDerivation rec {
     homepage    = http://rapidjson.org;
     license     = licenses.gpl3Plus;
     platforms   = platforms.unix;
+    broken = false;
 
     longDescription = ''
       A fast JSON parser/generator for C++ with both SAX/DOM style API

@@ -20,8 +20,10 @@ stdenv.mkDerivation rec {
 
   meta = with stdenv.lib; {
     description = "A header-only C++ logging library";
+    longDescription = "A lightweight and flexible C++ logging library.";
     homepage = https://github.com/emilk/loguru;
     platforms = platforms.x86_64;
     license = licenses.publicDomain;
+    broken = false;
   };
 }

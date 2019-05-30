@@ -106,6 +106,7 @@ stdenv.mkDerivation rec {
     '';
     homepage = https://simgrid.org/;
     license = licenses.lgpl2Plus;
+    broken = false;
     maintainers = with maintainers; [ mickours ];
     platforms = ["x86_64-linux"];
   };

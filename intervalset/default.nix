@@ -15,8 +15,13 @@ stdenv.mkDerivation rec {
 
   meta = with stdenv.lib; {
     description = "C++ library to manage sets of integral closed intervals";
+    longDescription = ''
+      intervalset is a C++ library to manage sets of closed intervals of integers.
+      This is a simple wrapper around Boost.Icl.
+    '';
     homepage = https://framagit.org/batsim/intervalset;
     platforms = platforms.x86_64;
     license = licenses.lgpl3;
+    broken = false;
   };
 }

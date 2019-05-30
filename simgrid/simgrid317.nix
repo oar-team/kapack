@@ -124,5 +124,6 @@ stdenv.mkDerivation rec {
     maintainers = with maintainers; [ "mickours" ];
     platforms = platforms.x86_64;
     license = licenses.lgpl2Plus;
+    broken = false;
   };
 }

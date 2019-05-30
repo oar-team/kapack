@@ -23,6 +23,8 @@ stdenv.mkDerivation rec {
     description = "A batch scheduler simulator with a focus on realism that facilitates comparison.";
     homepage    = "https://github.com/oar-team/batsim";
     platforms   = platforms.unix;
+    license = licenses.lgpl3;
+    broken = false;
 
     longDescription = ''
       Batsim is a Batch Scheduler Simulator that uses SimGrid as the

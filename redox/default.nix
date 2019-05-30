@@ -24,6 +24,7 @@ stdenv.mkDerivation rec {
     homepage    = https://github.com/hmartiro/redox;
     license     = licenses.asl20;
     platforms   = platforms.unix;
+    broken = false;
 
     longDescription = ''
       A fast JSON parser/generator for C++ with both SAX/DOM style API

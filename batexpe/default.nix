@@ -108,6 +108,7 @@ buildGoPackage rec {
         decent code reuse.
     '';
     license = stdenv.lib.licenses.lgpl3;
+    broken = false;
     maintainers = [ stdenv.lib.maintainers.mickours ];
     meta.platforms = stdenv.lib.platforms.linux;
   };

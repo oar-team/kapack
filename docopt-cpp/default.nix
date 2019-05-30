@@ -20,8 +20,10 @@ stdenv.mkDerivation rec {
 
   meta = with stdenv.lib; {
     description = "C++11 port of docopt";
+    longDescription = ''A C++11 port of docopt, a library to define command-line interfaces.'';
     homepage = https://github.com/docopt/docopt.cpp;
     license = with licenses; [ mit boost ];
+    broken = false;
     platforms = platforms.all;
     maintainers = with maintainers; [ knedlsepp ];
   };

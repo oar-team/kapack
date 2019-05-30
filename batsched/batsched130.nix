@@ -22,7 +22,10 @@ stdenv.mkDerivation rec {
 
   meta = with stdenv.lib; {
     description = "Batsim C++ scheduling algorithms.";
+    longDescription = "A set of scheduling algorithms for Batsim (and WRENCH).";
     homepage    = "https://gitlab.inria.fr/batsim/batsched";
     platforms   = platforms.unix;
+    license = licenses.free;
+    broken = false;
   };
 }
