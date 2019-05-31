@@ -42,9 +42,9 @@ let
     python = pkgs.python36;
 
     # Batsim tools an dependencies
-    # "simgrid" is defined in pkgs
     simgrid317 = callPackage ./simgrid/simgrid317.nix { };
     simgrid322_2 = callPackage ./simgrid/simgrid322_2.nix { };
+    simgrid = simgrid322_2;
     simgrid_dev = callPackage ./simgrid/dev.nix { };
     simgrid_dev_working = callPackage ./simgrid/dev_working.nix { };
     simgrid_batsim140or200 = callPackage ./simgrid/batsim140or200.nix { simgrid = simgrid317; };
@@ -97,8 +97,6 @@ let
     batsim = batsim310;
     batsim_dev = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev_working;
-      batsched = batsched_dev;
-      batexpe = batexpe_dev;
     };
     batsim_upstreamsg = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev;

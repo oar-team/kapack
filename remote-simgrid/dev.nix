@@ -6,5 +6,7 @@
 
   patches = [];
   src = fetchTarball "https://github.com/simgrid/remote-simgrid/archive/master.tar.gz";
+  hardeningDisable = [ "all" ];
+  dontStrip = true;
   }
 )
