@@ -54,7 +54,7 @@ let
     remote_simgrid = callPackage ./remote-simgrid {
       simgrid = simgrid_remotesg; };
     remote_simgrid_dev = callPackage ./remote-simgrid/dev.nix {
-      simgrid = simgrid_dev_working; };
+      simgrid = simgrid322_2; };
     openmpi = callPackage ./openmpi { };
     openmpi_dev = callPackage ./openmpi/dev_pinned.nix { };
     openmpi_rsg = callPackage ./openmpi-rsg { };
