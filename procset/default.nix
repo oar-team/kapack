@@ -14,13 +14,15 @@ pythonPackages.buildPythonPackage rec {
   buildInputs = [ pkgs.glibcLocales ];
 
   meta = with stdenv.lib; {
-    description = ''
+    longDescription = ''
       Toolkit to manage sets of closed intervals.
       procset is a pure python module to manage sets of closed intervals. It can be
       used as a small python library to manage sets of resources, and is especially
       useful when writing schedulers.'';
+    description = ''Toolkit to manage sets of closed intervals.'';
     homepage    = "https://gitlab.inria.fr/bleuse/procset.py";
     platforms   = platforms.unix;
     license     = licenses.lgpl3;
+    broken      = false;
   };
 }
