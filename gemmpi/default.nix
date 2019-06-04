@@ -1,4 +1,4 @@
-{ pkgs, stdenv, fetchgit, openmpi, automake, clang, openblas }:
+{ pkgs, stdenv, fetchgit, openmpi, automake, clang, openblas, ninja, simgrid }:
 
 stdenv.mkDerivation rec {
   name = "gemmpi-${version}";
@@ -6,30 +6,36 @@ stdenv.mkDerivation rec {
 
   src = fetchgit {
     url = "https://gitlab.inria.fr/adfaure/gemmpi";
-    sha256 = "1piqjcdpffr2bffmx4glc98gvvf25809h6wa41rrvd4zpp6nym7s";
+    sha256 = "01shkaa41v0cl371xldc15z8hwma2bv8rc25vi8bpbhx4cg2irh9";
   };
 
-  nativeBuildInputs = [ clang openblas ];
+  nativeBuildInputs = [ clang openblas ninja ];
 
-  buildInputs = [ openmpi ];
+  buildInputs = [ openmpi simgrid ];
 
   buildPhase = ''
     mpicc --version
     mpirun --version
-    mpicc main.c -lopenblas -lm
+    ninja
   '';
 
   installPhase = ''
     mkdir -p $out/bin
-    cp -r a.out $out/bin/gemmpi
+    cp -r gemmpi   $out/bin/gemmpi
+    cp -r gemsmpi  $out/bin/gemsmpi
   '';
 
   meta = with stdenv.lib; {
+    longDescription = ''
+      Performs distributed pdgemm, the algorithm is the direct apadtation of the outer product
+      discribed in Parallel Algorithms (Chapman & Hall/CRC Numerical Analysis and Scientific Computing Series).
+    '';
     description = ''
       Matrix multiplication benchmark on MPI.
-      The algorithm is a distributed pdgemm.
     '';
-    homepage    = "https://gitlab.inria.fr/adfaure/gemmpi";
-    platforms   = platforms.unix;
+    homepage = "https://gitlab.inria.fr/adfaure/gemmpi";
+    license = licenses.gpl3;
+    platforms = platforms.unix;
+    broken = false;
   };
 }

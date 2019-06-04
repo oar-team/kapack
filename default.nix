@@ -200,7 +200,7 @@ let
     oardocker = callPackage ./oardocker { };
 
     gemmpi = callPackage ./gemmpi {};
-    gemmpi_with_mpi = callPackage ./gemmpi/env.nix { inherit pkgs openmpi; };
+    gemmpi_with_mpi = callPackage ./gemmpi/env.nix { inherit pkgs openmpi simgrid; };
 
     inherit pkgs;
     inherit pkgs-unstable;

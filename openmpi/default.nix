@@ -1,4 +1,4 @@
-{ clangStdenv, fetchurl, gfortran, perl, libnl, rdma-core, zlib
+{ clangStdenv, fetchurl, gfortran, perl, libnl, rdma-core, zlib, utillinux
 
 # Needed by autoconf.pl to generate configure
 , autoconf, libtool, automake, flex
@@ -31,7 +31,7 @@ in clangStdenv.mkDerivation rec {
 
   autoconfInputs = [ autoconf libtool automake flex ];
 
-  buildInputs = with clangStdenv; [ gfortran zlib ]
+  buildInputs = with clangStdenv; [ gfortran zlib utillinux ]
     ++ autoconfInputs
     ++ lib.optional isLinux libnl
     ++ lib.optional (isLinux || isFreeBSD) rdma-core;
@@ -76,7 +76,7 @@ in clangStdenv.mkDerivation rec {
       bash -eux
    '';
 
-  doCheck = true;
+  doCheck = false;
 
   meta = with clangStdenv.lib; {
     homepage = http://www.open-mpi.org/;
@@ -85,5 +85,6 @@ in clangStdenv.mkDerivation rec {
     maintainers = with maintainers; [ markuskowa ];
     license = licenses.bsd3;
     platforms = platforms.unix;
+    broken = false;
   };
 }
