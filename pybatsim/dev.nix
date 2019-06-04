@@ -16,4 +16,6 @@ pybatsim.overrideAttrs (oldAttrs: rec {
       sphinx
     ];# ++ [ batsim ];
   propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ devTools;
+
+  meta = oldAttrs.meta;
 })
