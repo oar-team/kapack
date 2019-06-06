@@ -10,6 +10,10 @@ stdenv.mkDerivation rec {
     sha256 = "1l7x7whg1n82c3m4b1wfb7krar4vwh0xx97cmmmc1rq6l23qz9jw";
   };
 
+  # patchPhase = "patchShebangs scripts/pj_gantt";
+
+  postInstall = "sed -i -e 's!/usr/bin/Rscript!/usr/bin/env Rscript!g' $out/bin/pj_gantt";
+
   nativeBuildInputs = [ cmake boost flex bison ];
 
   meta = with stdenv.lib; {
@@ -31,5 +35,7 @@ stdenv.mkDerivation rec {
     maintainers = with maintainers; [ "mickours" ];
     platforms = platforms.x86_64;
     license = licenses.gpl3;
+    broken = false;
   };
+
 }
