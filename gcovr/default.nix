@@ -13,6 +13,15 @@ pythonPackages.buildPythonPackage rec {
 
   meta = {
     description = "A Python script for summarizing gcov data";
+    longDescription = ''
+      Gcovr provides a utility for managing the use of the GNU gcov utility
+      and generating summarized code coverage results. This command is
+      inspired by the Python coverage.py package, which provides a similar
+      utility for Python.
+    '';
+    homepage = "https://www.gcovr.com/en/stable/";
+    platforms = stdenv.lib.platforms.unix;
     license = "BSD";
+    broken = false;
   };
 }
