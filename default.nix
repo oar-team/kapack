@@ -102,9 +102,8 @@ let
       simgrid = simgrid_dev;
       batsched = batsched_dev;
     };
-    batsim_temperature = callPackage ./batsim/dev.nix {
+    batsim_temperature = callPackage ./batsim/batsim300.nix {
       simgrid = simgrid_temperature;
-      batsched = batsched_dev;
     };
     batsched12 = callPackage ./batsched/batsched121.nix { };
     batsched13 = callPackage ./batsched/batsched130.nix { };
