@@ -37,9 +37,9 @@ let
     in if (test drv.meta) then drv else {};
 
   self = rec {
-    # Freeze python version to 3.6
-    pythonPackages = pkgs.python36Packages;
-    python = pkgs.python36;
+    # Freeze python version to 3.7
+    pythonPackages = pkgs.python37Packages;
+    python = pkgs.python37;
 
     # Batsim tools an dependencies
     simgrid317 = callPackage ./simgrid/simgrid317.nix { };
