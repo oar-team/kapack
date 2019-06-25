@@ -15,7 +15,8 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ meson pkgconfig ninja ];
-  buildInputs = [ simgrid docopt_cpp boost protobuf ];
+  buildInputs = [ simgrid docopt_cpp boost ];
+  propagatedBuildInputs = [ protobuf ];
 
   enableParallelBuilding = true;
 
