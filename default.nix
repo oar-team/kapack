@@ -51,8 +51,11 @@ let
     simgrid_batsim3 = callPackage ./simgrid/batsim300.nix { simgrid = simgrid317; };
     simgrid_remotesg = callPackage ./simgrid/remotesg.nix { simgrid = simgrid317; };
     simgrid_temperature = callPackage ./simgrid/temperature.nix { };
-    remote_simgrid = callPackage ./remote-simgrid {
+    remote_simgrid020 = callPackage ./remote-simgrid {
       simgrid = simgrid_remotesg; };
+    remote_simgrid030 = callPackage ./remote-simgrid/rsg030.nix {
+      simgrid = simgrid322_2; };
+    remote_simgrid = remote_simgrid030;
     remote_simgrid_dev = callPackage ./remote-simgrid/dev.nix {
       simgrid = simgrid322_2; };
     openmpi = callPackage ./openmpi { };
