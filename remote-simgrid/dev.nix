@@ -5,7 +5,7 @@
   version = "git";
 
   patches = [];
-  src = fetchTarball "https://github.com/simgrid/remote-simgrid/archive/master.tar.gz";
+  src = fetchTarball "https://framagit.org/simgrid/remote-simgrid/-/archive/master/remote-simgrid-master.tar.gz";
   hardeningDisable = [ "all" ];
   dontStrip = true;
   }
