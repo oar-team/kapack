@@ -20,7 +20,6 @@ pythonPackages.buildPythonPackage rec {
     description = "Python OAR Common Library";
     homepage    = https://github.com/oar-team/oar3;
     platforms   = platforms.unix;
-    # amybe
     license     = license.bsd3;
     broken = false;
     longDescription = ''
