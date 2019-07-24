@@ -23,8 +23,12 @@ pythonPackages.buildPythonPackage rec {
     doCheck = false;
 
     meta = with stdenv.lib; {
+      broken = false;
       homepage = "https://github.com/kvesteri/sqlalchemy-utils";
       description = "Various utility functions and datatypes for SQLAlchemy.";
-      # license = licenses.lgpl3;
+      license = licenses.bsd3;
+      longDescription = ''
+        Various utility functions and datatypes for SQLAlchemy.
+      '';
     };
 }

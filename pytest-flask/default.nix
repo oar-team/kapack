@@ -17,5 +17,11 @@ pythonPackages.buildPythonPackage rec {
     homepage = "https://pytest-flask.readthedocs.io/en/latest/";
     description = "A plugin for pytest that provides a set of tools to test Flask applications.";
     license = licenses.mit;
+    longDescription = ''
+      An extension of pytest test runner which provides a set of useful tools
+      to simplify testing and development of the Flask extensions and
+      applications.
+    '';
+    broken = false;
   };
 }
