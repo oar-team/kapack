@@ -92,7 +92,6 @@ let
     extrae = callPackage ./extrae {
       openmpi = pkgs.openmpi;
     };
-
     batsim1 = callPackage ./batsim/batsim140.nix { batsim = batsim2; };
     batsim2 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim140or200; };
     batsim300 = callPackage ./batsim/batsim300.nix { simgrid = simgrid_batsim3; };
@@ -108,6 +107,7 @@ let
     batsim_temperature = callPackage ./batsim/batsim300.nix {
       simgrid = simgrid_temperature;
     };
+    accasim = callPackage ./accasim {};
     batsched12 = callPackage ./batsched/batsched121.nix { };
     batsched13 = callPackage ./batsched/batsched130.nix { };
     batsched = batsched13;
