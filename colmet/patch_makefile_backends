@@ -1,0 +1,17 @@
+diff --git a/colmet/node/backends/lib_perf_hw/makefile b/colmet/node/backends/lib_perf_hw/makefile
+index 7bad4f6..a039bed 100644
+--- a/colmet/node/backends/lib_perf_hw/makefile
++++ b/colmet/node/backends/lib_perf_hw/makefile
+@@ -1,2 +1,2 @@
+ all:
+-	gcc -g -fPIC -Wall -Wextra lib_perf_hw.c -shared -o /usr/lib/lib_perf_hw.so
+\ No newline at end of file
++	gcc -g -fPIC -Wall -Wextra lib_perf_hw.c -shared -o lib_perf_hw.so
+diff --git a/colmet/node/backends/lib_rapl/makefile b/colmet/node/backends/lib_rapl/makefile
+index b28bcfa..7a32be5 100644
+--- a/colmet/node/backends/lib_rapl/makefile
++++ b/colmet/node/backends/lib_rapl/makefile
+@@ -1,2 +1,2 @@
+ all:
+-	gcc -g -fPIC -Wall -Wextra *.c -shared -o /usr/lib/lib_rapl.so -lpowercap
++	gcc -g -fPIC -Wall -Wextra *.c -shared -o lib_rapl.so -lpowercap

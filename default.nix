@@ -148,7 +148,9 @@ let
       zmq=ocaml-zmq;
     };
     cuneiformlang = callPackage ./cuneiformlang { };
-    colmet = callPackage ./colmet {};
+    powercap = callPackage ./powercap {};
+    colmet2 = callPackage ./colmet/colmet2.nix {};
+    colmet = callPackage ./colmet { inherit powercap; };
     # Misc.
     cgvg = callPackage ./cgvg { };
     cgvg_mpoquet = callPackage ./cgvg/mpoquet.nix { };
