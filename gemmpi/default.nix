@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
 
   src = fetchgit {
     url = "https://gitlab.inria.fr/adfaure/gemmpi";
-    sha256 = "01shkaa41v0cl371xldc15z8hwma2bv8rc25vi8bpbhx4cg2irh9";
+    sha256 = "0ym4bpxpiamipc3jcychrs071vj0yd3z61pqxxi4kikskmivslmr";
   };
 
   nativeBuildInputs = [ clang openblas ninja ];
@@ -38,4 +38,5 @@ stdenv.mkDerivation rec {
     platforms = platforms.unix;
     broken = false;
   };
+
 }
