@@ -2,7 +2,7 @@
 
 (simgrid.override { debug = true; }).overrideAttrs (oldAttrs: rec {
   name = "simgrid-${version}";
-  version = "3.21-dev";
+  version = "3.22-dev";
 
   patches = [ ];
   src = fetchTarball "https://framagit.org/simgrid/simgrid/-/archive/master/simgrid-master.tar.bz2";
