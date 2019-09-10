@@ -26,6 +26,7 @@ includedir=$out/include
 Name: loguru
 Description: A lightweight and flexible C++ logging library.
 Version: 2.0.0
+Libs: -L$out/lib -lloguru
 Cflags: -I$out/include
 EOF
   '';
