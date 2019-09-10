@@ -16,6 +16,18 @@ stdenv.mkDerivation rec {
 
     mkdir -p $out/include
     cp ./loguru.hpp $out/include/
+
+    mkdir -p $out/lib/pkgconfig
+    cat <<EOF >>$out/lib/pkgconfig/loguru.pc
+prefix=$out
+libdir=$out/lib
+includedir=$out/include
+
+Name: loguru
+Description: A lightweight and flexible C++ logging library.
+Version: 2.0.0
+Cflags: -I$out/include
+EOF
   '';
 
   meta = with stdenv.lib; {
