@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ cmake ];
-  buildInputs = [ hiredis libev ];
+  propagatedBuildInputs = [ hiredis libev ];
 
   cmakeFlags = ["-Dstatic_lib=OFF"];
   postFixup = ''
