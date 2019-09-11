@@ -158,6 +158,7 @@ let
     gocovmerge = callPackage ./gocovmerge { };
     gocov_xml = callPackage ./gocov-xml { };
     loguru = callPackage ./loguru { };
+    gmp = callPackage ./gmp { };
 
     evalysEnv = (python.withPackages (ps: [ ps.ipython evalys4 ])).env;
 
