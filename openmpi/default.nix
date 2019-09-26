@@ -38,7 +38,7 @@ in stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ perl eject ];
 
-  configureFlags = with stdenv; []
+  configureFlags = with stdenv; ["--enable-debug"]
     ++ lib.optional isLinux  "--with-libnl=${libnl.dev}"
     ++ lib.optional enableSGE "--with-sge"
     ++ lib.optional enablePrefix "--enable-mpirun-prefix-by-default"
@@ -64,19 +64,21 @@ in stdenv.mkDerivation rec {
     # Retrieve some source files, so that plugins can be compiled
     ###
 
-    # 1. Create all directories containing .h files
-    find ompi orte opal -name '*.h' | \
+    # 1. Create all directories containing code files
+    find ompi orte opal -name '*\.[ch]' | \
       rev | cut -d'/' -f2- | rev | sort -u | \
       sed -E 's/(.*)/mkdir -p $out\/\1/' | \
       bash -eux
 
     # 2. Copy all .h files into $out at their initial position
-    find ompi orte opal -name '*.h' | \
+    find ompi orte opal -name '*\.[ch]' | \
       sed -E 'sW(.*)Wcp \1 $out/\1W' | \
       bash -eux
    '';
 
   doCheck = false;
+  hardeningDisable = [ "all" ];
+  dontStrip = true;
 
   meta = with stdenv.lib; {
     homepage = http://www.open-mpi.org/;
