@@ -43,8 +43,8 @@ let
 
     # Batsim tools an dependencies
     simgrid317 = callPackage ./simgrid/simgrid317.nix { };
-    simgrid322_2 = callPackage ./simgrid/simgrid322_2.nix { };
-    simgrid = simgrid322_2;
+    simgrid324 = callPackage ./simgrid/simgrid324.nix { };
+    simgrid = simgrid324;
     simgrid_dev = callPackage ./simgrid/dev.nix { };
     simgrid_batsim140or200 = callPackage ./simgrid/batsim140or200.nix { simgrid = simgrid317; };
     simgrid_batsim3 = callPackage ./simgrid/batsim300.nix { simgrid = simgrid317; };
@@ -53,10 +53,10 @@ let
     remote_simgrid020 = callPackage ./remote-simgrid {
       simgrid = simgrid_remotesg; };
     remote_simgrid030 = callPackage ./remote-simgrid/rsg030.nix {
-      simgrid = simgrid322_2; };
+      simgrid = simgrid324; };
     remote_simgrid = remote_simgrid030;
     remote_simgrid_dev = callPackage ./remote-simgrid/dev.nix {
-      simgrid = simgrid322_2; };
+      simgrid = simgrid324; };
     openmpi = callPackage ./openmpi { };
     openmpi_dev = callPackage ./openmpi/dev_pinned.nix { };
     openmpi_rsg = callPackage ./openmpi-rsg { };
@@ -95,7 +95,7 @@ let
     batsim1 = callPackage ./batsim/batsim140.nix { batsim = batsim2; };
     batsim2 = callPackage ./batsim/batsim200.nix { simgrid = simgrid_batsim140or200; };
     batsim300 = callPackage ./batsim/batsim300.nix { simgrid = simgrid_batsim3; };
-    batsim310 = callPackage ./batsim/batsim310.nix { simgrid = simgrid322_2; };
+    batsim310 = callPackage ./batsim/batsim310.nix { simgrid = simgrid324; };
     batsim = batsim310;
     batsim_dev = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev;
