@@ -150,6 +150,7 @@ let
     powercap = callPackage ./powercap {};
     colmet2 = callPackage ./colmet/colmet2.nix {};
     colmet = callPackage ./colmet { inherit powercap; };
+    mojitos = callPackage ./mojitos {};
     # Misc.
     cgvg = callPackage ./cgvg { };
     cgvg_mpoquet = callPackage ./cgvg/mpoquet.nix { };
