@@ -130,6 +130,7 @@ let
     coloredlogs = callPackage ./coloredlogs { inherit humanfriendly; };
     humanfriendly = callPackage ./humanfriendly { };
     gcovr = callPackage ./gcovr { };
+    gtest = callPackage ./gtest { };
 
     # l2sched tools and dependencies
     #nnpy = callPackage ./nnpy { };
