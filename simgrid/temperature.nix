@@ -3,10 +3,9 @@
 simgrid_dev.overrideAttrs (oldAttrs: rec {
   name = "simgrid-temperature";
 
-  rev = "52fa9e20e056119074cd759141021286786655c5";
+  rev = "8ca88f5944989c937734b5c28bfdd074aa990367";
   src = fetchTarball "https://github.com/simgrid/simgrid/archive/${rev}.tar.gz";
 
-  #patches = [ ./temperature-working.patch ];
   patches = [ ./temperature-multiple.patch ];
 
   doCheck = false;

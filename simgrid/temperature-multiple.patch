@@ -1,6 +1,6 @@
 diff --git a/include/simgrid/plugins/temperature.h b/include/simgrid/plugins/temperature.h
 new file mode 100644
-index 000000000..cc26b83ae
+index 0000000000..6dcd7ba62b
 --- /dev/null
 +++ b/include/simgrid/plugins/temperature.h
 @@ -0,0 +1,36 @@
@@ -15,7 +15,7 @@ index 000000000..cc26b83ae
 +#include <xbt/base.h>
 +#include <simgrid/forward.h>
 +
-+SG_BEGIN_DECL()
++SG_BEGIN_DECL
 +
 +XBT_PUBLIC void sg_host_temperature_plugin_init();
 +XBT_PUBLIC double sg_host_get_aggregated_consumed_energy(sg_host_t host);
@@ -37,16 +37,15 @@ index 000000000..cc26b83ae
 +#define MSG_host_update_temperatures(host) sg_host_update_temperatures(host)
 +#define MSG_host_init_master_slaves(host) sg_host_init_master_slaves(host)
 +
-+SG_END_DECL()
++SG_END_DECL
 +
 +#endif
-\ No newline at end of file
 diff --git a/src/plugins/host_temperature.cpp b/src/plugins/host_temperature.cpp
 new file mode 100644
-index 000000000..31c91895c
+index 0000000000..2b64516440
 --- /dev/null
 +++ b/src/plugins/host_temperature.cpp
-@@ -0,0 +1,504 @@
+@@ -0,0 +1,503 @@
 +﻿/* Copyright (c) 2010-2018. The SimGrid Team. All rights reserved.          */
 +
 +/* This program is free software; you can redistribute it and/or modify it
@@ -137,7 +136,6 @@ index 000000000..31c91895c
 +  double last_energy;        /*< Amount of energy used so far >*/
 +  double last_updated;       /*< Timestamp of the last update event >*/
 +  bool is_master = true; /*< Whether I'm a master host in the sense of the temperature plugin >*/
-+  const char* rad_name; /*< The name of the QRad >*/
 +};
 +
 +simgrid::xbt::Extension<simgrid::s4u::Host, HostTemperature> HostTemperature::EXTENSION_ID;
@@ -315,7 +313,7 @@ index 000000000..31c91895c
 +{
 +    if (this->is_master) {
 +        if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
-+            simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
++            simgrid::kernel::actor::simcall(std::bind(&HostTemperature::update, this));
 +
 +        return this->last_energy;
 +    } else {
@@ -328,7 +326,7 @@ index 000000000..31c91895c
 +{
 +	if (this->is_master) {
 +		if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
-+		  simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
++          simgrid::kernel::actor::simcall(std::bind(&HostTemperature::update, this));
 +
 +		return host_temperature;
 +	} else {
@@ -340,7 +338,7 @@ index 000000000..31c91895c
 +{
 +	if (this->is_master) {
 +		if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
-+		simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
++        simgrid::kernel::actor::simcall(std::bind(&HostTemperature::update, this));
 +
 +		return air_temperature;
 +	} else {
@@ -361,7 +359,7 @@ index 000000000..31c91895c
 +{
 +	if (this->is_master) {
 +		if (last_updated < surf_get_clock()) // We need to simcall this as it modifies the environment
-+		simgrid::simix::simcall(std::bind(&HostTemperature::update, this));
++        simgrid::kernel::actor::simcall(std::bind(&HostTemperature::update, this));
 +
 +		this->outside_temperature = temperature;
 +	} else {
@@ -552,10 +550,10 @@ index 000000000..31c91895c
 +  host->extension<HostTemperature>()->initMasterSlaves();
 +}
 diff --git a/tools/cmake/DefinePackages.cmake b/tools/cmake/DefinePackages.cmake
-index b856d198b..07855bffa 100644
+index 725e75df24..f2c3c3a042 100644
 --- a/tools/cmake/DefinePackages.cmake
 +++ b/tools/cmake/DefinePackages.cmake
-@@ -357,6 +357,7 @@ set(PLUGINS_SRC
+@@ -372,6 +372,7 @@ set(PLUGINS_SRC
    src/plugins/host_dvfs.cpp
    src/plugins/host_energy.cpp
    src/plugins/link_energy.cpp
@@ -563,7 +561,7 @@ index b856d198b..07855bffa 100644
    src/plugins/host_load.cpp
    src/plugins/file_system/s4u_FileSystem.cpp
    src/plugins/vm/VirtualMachineImpl.hpp
-@@ -672,6 +673,7 @@ set(headers_to_install
+@@ -685,6 +686,7 @@ set(headers_to_install
    include/simgrid/chrono.hpp
    include/simgrid/plugins/dvfs.h
    include/simgrid/plugins/energy.h
