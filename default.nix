@@ -97,7 +97,7 @@ let
     batsim310 = callPackage ./batsim/batsim310.nix { simgrid = simgrid324; };
     batsim = batsim310;
     batsim_dev = callPackage ./batsim/dev.nix {
-      simgrid = simgrid_dev;
+      simgrid = simgrid;
     };
     batsim_upstreamsg = callPackage ./batsim/dev.nix {
       simgrid = simgrid_dev;
