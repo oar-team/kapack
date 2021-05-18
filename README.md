@@ -1,5 +1,9 @@
-## Kapack Nix Expressions
 
+----------------------------------------------------------------------------------------------------
+## Note: Kapack Nix Expressions is superseded by [NUR-Kapack](https://github.com/oar-team/nur-kapack/)
+----------------------------------------------------------------------------------------------------
+
+## Kapack Nix Expressions
 ### Usage
 
 The `/path/to/kapack` in all the folowing commands can be given using different methods:
